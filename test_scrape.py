@@ -19,6 +19,18 @@ class TestFetchAndParse(unittest.TestCase):
         soup = _scrape_dynamic_content(url)
         # Will return a 0 if a url is invalid.
         self.assertEqual(soup, 0)
+
+    def test_no_url(self):
+        url = ""
+        soup = _scrape_dynamic_content(url)
+        # Will return a 0 if a url is invalid.
+        self.assertEqual(soup, 0)
+    
+    def test_none_url(self):
+        url = None
+        soup = _scrape_dynamic_content(url)
+        # Will return a 0 if a url is invalid.
+        self.assertEqual(soup, 0)
     
     def test_player_scrape(self):
         player_data = scrape_nwsl_players()
