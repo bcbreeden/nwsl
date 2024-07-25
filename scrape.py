@@ -1,24 +1,39 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 
+'''
+Content on the NWSL website is dynamically generated. In order to scrape the data, an instance of the page needs to be rendered using Playwright.
+
+Then the soup object can be returned.
+'''
 def _scrape_dynamic_content(url):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         print('Playwright accessing:', url)
-        page.goto(url)
-        page.wait_for_load_state('networkidle')
+        try:
+            page.goto(url)
+            page.wait_for_load_state('networkidle')
 
-        # Get the page content
-        html_content = page.content()
-        browser.close()
+            # Get the page content
+            html_content = page.content()
+            browser.close()
 
-        # Parse with BeautifulSoup
-        print('Building HTML content...')
-        soup = BeautifulSoup(html_content, 'html.parser')
-        return soup
+            # Parse with BeautifulSoup
+            print('Building HTML content...')
+            soup = BeautifulSoup(html_content, 'html.parser')
+            return soup
+        except:
+            print('Failed to navigate to the url:', url)
+            print('Verify the url is correct and try again.')
+            return 0
 
+'''
+The NWSL player page has a table that contains all of the data required for the database.
+
+This function will scrape the site and return a list of lists containing the player data.
+'''
 def scrape_nwsl_players():
     url = 'https://www.nwslsoccer.com/stats/players/all'
     soup = _scrape_dynamic_content(url)
