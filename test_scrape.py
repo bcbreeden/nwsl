@@ -1,10 +1,10 @@
 import unittest
 from bs4 import BeautifulSoup
-from scrape import _scrape_dynamic_content
+from scrape import _scrape_dynamic_content, scrape_nwsl_players
 
 class TestFetchAndParse(unittest.TestCase):
 
-    def test_fetch_and_parse(self):
+    def test_valid_fetch_and_parse(self):
         url = "https://www.nwslsoccer.com"
         soup = _scrape_dynamic_content(url)
         # Check if the result is a BeautifulSoup object
@@ -19,6 +19,10 @@ class TestFetchAndParse(unittest.TestCase):
         soup = _scrape_dynamic_content(url)
         # Will return a 0 if a url is invalid.
         self.assertEqual(soup, 0)
+    
+    def test_player_scrape(self):
+        player_data = scrape_nwsl_players()
+        self.assertGreater(len(player_data), 10)
 
 if __name__ == '__main__':
     unittest.main()
