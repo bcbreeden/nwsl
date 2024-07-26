@@ -49,23 +49,21 @@ def scrape_nwsl_players():
     # Find the table
     print('Locating player table...')
     table = soup.find('table')
-    tables = soup.find_all('table')
 
     # Process the table
     data = []
-    for table in tables:
-        rows = table.find_all('tr')
-        headers_needed = True
-        for row in rows:
-            cells = row.find_all(['td', 'th'])
-            cell_data = [cell.get_text(strip=True) for cell in cells]
-            try:
-                image_tag = cells[0].find('img')
-                cell_data[0] = image_tag.get('alt', '')
-            except:
-                if headers_needed:
-                    data.append(cell_data)
-                    headers_needed = False
-            data.append(cell_data)
+    rows = table.find_all('tr')
+    headers_needed = True
+    for row in rows:
+        cells = row.find_all(['td', 'th'])
+        cell_data = [cell.get_text(strip=True) for cell in cells]
+        try:
+            image_tag = cells[0].find('img')
+            cell_data[0] = image_tag.get('alt', '')
+        except:
+            if headers_needed:
+                data.append(cell_data)
+                headers_needed = False
+        data.append(cell_data)
     print('Player data scrapping complete...')
     return data
