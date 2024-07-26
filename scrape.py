@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import re
 import time
+import pandas as pd
 
 '''
 Content on the NWSL website is dynamically generated. In order to scrape the data, an instance of the page needs to be rendered using Playwright.
@@ -37,20 +38,27 @@ def _scrape_dynamic_content(url):
             print('Verify the url is correct and try again.')
             return 0
 
-'''
-The NWSL player page has a table that contains all of the data required for the database.
+def _get_player_first_last_names(table):
+    name_data = []
+    rows = table.find_all('tr')
+    for row in rows:
+        cells = row.find_all('td')
+        cell_data = []
+        for cell in cells:
+            first_name = cell.find('span', class_='d3w-player-name--first')
+            last_name = cell.find('span', class_='d3w-player-name--last')
+            if first_name and last_name:
+                cell_data.append(first_name.get_text(strip=True))
+                cell_data.append(last_name.get_text(strip=True))
+                name_data.append(cell_data)
+            if not first_name and last_name:
+                cell_data.append(last_name.get_text(strip=True))
+                cell_data.append(None)
+                name_data.append(cell_data)
+    df = pd.DataFrame(name_data, columns=['First Name', 'Last Name'])
+    return(df)
 
-This function will scrape the site and return a list of lists containing the player data.
-'''
-def scrape_nwsl_players():
-    url = 'https://www.nwslsoccer.com/stats/players/all'
-    soup = _scrape_dynamic_content(url)
-
-    # Find the table
-    print('Locating player table...')
-    table = soup.find('table')
-
-    # Process the table
+def _get_player_data(table):
     data = []
     rows = table.find_all('tr')
     headers_needed = True
@@ -65,5 +73,37 @@ def scrape_nwsl_players():
                 data.append(cell_data)
                 headers_needed = False
         data.append(cell_data)
+        data_header = data[0]
+    rows = data[1:]
+
+    # The scraping function grab an a11y row that duplicates the header and the first row. This will seek to remove the duplicate.
+    if rows[0] == data_header:
+        rows = rows[1:]
+    
+    df = pd.DataFrame(rows, columns=data_header)
+
+    # If there is a blank column (usually due to an icon or other feature in the site data), we can remove it.
+    df = df.loc[:, df.columns != '']
+    return df
+
+
+'''
+The NWSL player page has a table that contains all of the data required for the database.
+
+This function will scrape the site and return a list of lists containing the player data.
+'''
+def scrape_nwsl_players():
+    url = 'https://www.nwslsoccer.com/stats/players/all'
+    soup = _scrape_dynamic_content(url)
+
+    # Find the table
+    print('Locating player table...')
+    table = soup.find('table')
+    names_df = _get_player_first_last_names(table)
+    data_df = _get_player_data(table)
+    full_data = pd.concat([names_df, data_df], axis=1)
+
     print('Player data scrapping complete...')
-    return data
+    return full_data
+
+scrape_nwsl_players()
