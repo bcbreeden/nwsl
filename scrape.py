@@ -1,5 +1,7 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
+import re
+import time
 
 '''
 Content on the NWSL website is dynamically generated. In order to scrape the data, an instance of the page needs to be rendered using Playwright.
@@ -15,6 +17,12 @@ def _scrape_dynamic_content(url):
         try:
             page.goto(url)
             page.wait_for_load_state('networkidle')
+            page.get_by_role("button", name="Accept All Cookies").click()
+            page.locator("div").filter(has_text=re.compile(r"^NWSL x La Liga Summer Cup$")).click()
+            page.get_by_text("Regular Season 2024").click()
+            # The NWSL page uses React and it needs a few seconds to load.
+            print('React components loading...')
+            time.sleep(5)
 
             # Get the page content
             html_content = page.content()
