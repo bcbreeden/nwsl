@@ -51,10 +51,12 @@ def _get_player_first_last_names(table):
                 cell_data.append(first_name.get_text(strip=True))
                 cell_data.append(last_name.get_text(strip=True))
                 name_data.append(cell_data)
+                break
             if not first_name and last_name:
                 cell_data.append(last_name.get_text(strip=True))
                 cell_data.append(None)
                 name_data.append(cell_data)
+                break
     df = pd.DataFrame(name_data, columns=['First Name', 'Last Name'])
     return(df)
 
@@ -105,5 +107,3 @@ def scrape_nwsl_players():
 
     print('Player data scrapping complete...')
     return full_data
-
-scrape_nwsl_players()
