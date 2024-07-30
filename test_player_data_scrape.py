@@ -1,6 +1,6 @@
 import unittest
 from bs4 import BeautifulSoup
-from scrape import _scrape_dynamic_player_content, scrape_nwsl_players
+from scrape_player_data import scrape_nwsl_players
 
 class TestFetchAndParse(unittest.TestCase):
     def test_player_content_scrape(self):
