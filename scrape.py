@@ -9,7 +9,7 @@ Content on the NWSL website is dynamically generated. In order to scrape the dat
 
 Then the soup object can be returned.
 '''
-def _scrape_dynamic_content(url):
+def _scrape_dynamic_player_content(url, season):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -19,8 +19,9 @@ def _scrape_dynamic_content(url):
             page.goto(url)
             page.wait_for_load_state('networkidle')
             page.get_by_role("button", name="Accept All Cookies").click()
-            page.locator("div").filter(has_text=re.compile(r"^NWSL x La Liga Summer Cup$")).click()
-            page.get_by_text("Regular Season 2024").click()
+            listbox_div = page.locator('[role="listbox"]').first
+            listbox_div.click()
+            page.get_by_text(season).click()
             # The NWSL page uses React and it needs a few seconds to load.
             print('React components loading...')
             time.sleep(5)
@@ -33,9 +34,11 @@ def _scrape_dynamic_content(url):
             print('Building HTML content...')
             soup = BeautifulSoup(html_content, 'html.parser')
             return soup
-        except:
-            print('Failed to navigate to the url:', url)
-            print('Verify the url is correct and try again.')
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            print('Debugging URL:', url)
+            print('Debugging Season:', season)
+            print('Verify the url and season is correct and try again.')
             return 0
 
 def _get_player_first_last_names(table):
@@ -94,16 +97,19 @@ The NWSL player page has a table that contains all of the data required for the 
 
 This function will scrape the site and return a list of lists containing the player data.
 '''
-def scrape_nwsl_players():
+def scrape_nwsl_players(season):
     url = 'https://www.nwslsoccer.com/stats/players/all'
-    soup = _scrape_dynamic_content(url)
+    soup = _scrape_dynamic_player_content(url, season)
 
-    # Find the table
-    print('Locating player table...')
-    table = soup.find('table')
-    names_df = _get_player_first_last_names(table)
-    data_df = _get_player_data(table)
-    full_data = pd.concat([names_df, data_df], axis=1)
+    if soup == 0:
+        return soup
+    else:
+        # Find the table
+        print('Locating player table...')
+        table = soup.find('table')
+        names_df = _get_player_first_last_names(table)
+        data_df = _get_player_data(table)
+        full_data = pd.concat([names_df, data_df], axis=1)
 
-    print('Player data scrapping complete...')
-    return full_data
+        print('Player data scrapping complete...')
+        return full_data
