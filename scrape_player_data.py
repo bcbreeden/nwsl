@@ -1,6 +1,5 @@
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
-import re
 import time
 import pandas as pd
 
@@ -41,6 +40,10 @@ def _scrape_dynamic_player_content(url, season):
             print('Verify the url and season is correct and try again.')
             return 0
 
+
+'''
+Player names are contained within the same cell and require special handling.
+'''
 def _get_player_first_last_names(table):
     name_data = []
     rows = table.find_all('tr')
@@ -63,6 +66,9 @@ def _get_player_first_last_names(table):
     df = pd.DataFrame(name_data, columns=['First Name', 'Last Name'])
     return(df)
 
+'''
+Cleans player data and returns it as a DF.
+'''
 def _get_player_data(table):
     data = []
     rows = table.find_all('tr')
