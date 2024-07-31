@@ -17,9 +17,16 @@ def create_tables():
         primary_broad_position TEXT,
         primary_general_position TEXT,
         secondary_broad_position TEXT,
-        secondary_general_position TEXT,
-        season_name TEXT
+        secondary_general_position TEXT
     )
+    ''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS player_seasons (
+        season_player_id TEXT PRIMARY KEY,
+        player_id TEXT,
+        year INTEGER
+    )              
     ''')
 
     # Commit the changes and close the connection
