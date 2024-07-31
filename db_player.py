@@ -2,6 +2,7 @@ from api import make_api_call
 import sqlite3
 
 def insert_all_players_info():
+    print('Attempting  to insert all players info...')
     players_data = make_api_call('nwsl/players')[1]
     conn = sqlite3.connect('nwsl.db')
     cursor = conn.cursor()
@@ -37,14 +38,15 @@ def insert_all_players_info():
         ))
         conn.commit()
     conn.close()
-    
+    print('All players info successfully entered into the database.')
+
+def get_all_players_info():
+    print('Fetching all players info from the database...')
     conn = sqlite3.connect('nwsl.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_info')
     rows = cursor.fetchall()
-    
-    for row in rows:
-        print(row)
-    
     conn.commit()
     conn.close()
+    print('All players info returned.')
+    return rows
