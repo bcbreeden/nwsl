@@ -57,6 +57,7 @@ def get_all_players_info():
 def get_all_player_seasons():
     print('Fetching all player seasons from the database...')
     conn = sqlite3.connect('nwsl.db')
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_seasons')
     rows = cursor.fetchall()
@@ -68,13 +69,26 @@ def get_all_player_seasons():
 def get_player_seasons(player_id):
     print('Fetching seasons for:', player_id)
     conn = sqlite3.connect('nwsl.db')
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_seasons WHERE player_id = ?', (player_id,))
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('All players info returned.')
+    print('Player seasons info returned.')
     return rows
+
+def get_player_info_by_id(player_id):
+    print('Fetching player info for:', player_id)
+    conn = sqlite3.connect('nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM player_info WHERE player_id = ?', (player_id,))
+    row = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    print('Players info returned.')
+    return row
 
 def insert_player_season_entry(player_id, season, cursor):
     season_int = int(season)
@@ -86,4 +100,3 @@ def insert_player_season_entry(player_id, season, cursor):
         ''', (
             season_player_id, player_id, season_int
         ))
-    
