@@ -43,6 +43,17 @@ def insert_all_players_info():
     conn.close()
     print('All players info successfully entered into the database.')
 
+def insert_player_season_entry(player_id, season, cursor):
+    season_int = int(season)
+    season_player_id = '{}{}'.format(player_id, season)
+    cursor.execute('''
+        INSERT OR REPLACE INTO player_seasons (
+            season_player_id, player_id, year
+        ) VALUES (?, ?, ?)
+        ''', (
+            season_player_id, player_id, season_int
+        ))
+
 def get_all_players_info():
     print('Fetching all players info from the database...')
     conn = sqlite3.connect('db/nwsl.db')
@@ -89,14 +100,3 @@ def get_player_info_by_id(player_id):
     conn.close()
     print('Players info returned.')
     return row
-
-def insert_player_season_entry(player_id, season, cursor):
-    season_int = int(season)
-    season_player_id = '{}{}'.format(player_id, season)
-    cursor.execute('''
-        INSERT OR REPLACE INTO player_seasons (
-            season_player_id, player_id, year
-        ) VALUES (?, ?, ?)
-        ''', (
-            season_player_id, player_id, season_int
-        ))
