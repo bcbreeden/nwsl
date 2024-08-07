@@ -1,6 +1,6 @@
 import unittest
-from db_player_info import *
-from db_setup import create_tables
+from .db_player_info import *
+from .db_setup import create_tables
 
 class TestPlayerInfoDB(unittest.TestCase):
     # Test Setup

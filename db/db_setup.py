@@ -2,7 +2,7 @@ import sqlite3
 
 def create_tables():
     # Connect to SQLite database (or create it if it doesn't exist)
-    conn = sqlite3.connect('nwsl.db')
+    conn = sqlite3.connect('db/nwsl.db')
     cursor = conn.cursor()
 
     # Create the players table
@@ -34,13 +34,11 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS player_seasons (
         season_player_id TEXT PRIMARY KEY,
         player_id TEXT,
-        year INTEGER
+        year INTEGER,
+        FOREIGN KEY (player_id) REFERENCES player_info(player_id)
     )              
     ''')
 
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
-
-if __name__ == '__main__':
-    create_tables()
