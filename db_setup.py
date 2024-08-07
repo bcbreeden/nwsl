@@ -22,6 +22,15 @@ def create_tables():
     ''')
 
     cursor.execute('''
+    CREATE TABLE IF NOT EXISTS team_info (
+        team_id TEXT PRIMARY KEY,
+        team_name TEXT,
+        team_short_name TEXT,
+        team_abbreviation TEXT
+    )              
+    ''')
+
+    cursor.execute('''
     CREATE TABLE IF NOT EXISTS player_seasons (
         season_player_id TEXT PRIMARY KEY,
         player_id TEXT,
