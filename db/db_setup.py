@@ -5,7 +5,7 @@ def create_tables():
     conn = sqlite3.connect('db/nwsl.db')
     cursor = conn.cursor()
 
-    # Create the players table
+    print('Starting to build tables...')
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS player_info (
         player_id TEXT PRIMARY KEY,
@@ -39,6 +39,30 @@ def create_tables():
     )              
     ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS players_xgoals (
+        player_id TEXT PRIMARY KEY,
+        team_id TEXT,
+        general_position TEXT,
+        minutes_played INTEGER,
+        shots INTEGER,
+        shots_on_target INTEGER,
+        goals INTEGER,
+        xgoals REAL,
+        xplace REAL,
+        goals_minus_xgoals REAL,
+        key_passes INTEGER,
+        primary_assists INTEGER,
+        xassists REAL,
+        primary_assists_minus_xassists REAL,
+        xgoals_plus_xassists REAL,
+        points_added REAL,
+        xpoints_added REAL,
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+    )
+    ''')
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
+    print('Tables built.')
