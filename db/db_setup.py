@@ -40,7 +40,7 @@ def create_tables():
     ''')
 
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS players_xgoals (
+    CREATE TABLE IF NOT EXISTS player_xgoals (
         player_id TEXT PRIMARY KEY,
         team_id TEXT,
         general_position TEXT,
