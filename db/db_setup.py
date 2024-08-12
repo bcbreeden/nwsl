@@ -58,6 +58,7 @@ def create_tables():
         xgoals_plus_xassists REAL,
         points_added REAL,
         xpoints_added REAL,
+        season INTEGER,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id)
     )
     ''')

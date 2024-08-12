@@ -7,8 +7,13 @@ class TestPlayerXGoalsDB(unittest.TestCase):
     create_tables()
     insert_player_xgoals_by_season('2024')
 
-    def test_insert_player_xgoals_by_season(self):
-        pass
+    def test_get_player_xgoals_by_season(self):
+        player_data = get_player_xgoals('0Oq6243Pq6', 2024)
+        self.assertTrue(len(player_data) > 1, "The query should return more than 1 row.")
+    
+    def test_get_all_players_xgoals_by_season(self):
+        players_data = get_all_player_xgoals(2024)
+        self.assertTrue(len(players_data) > 1, "The query should return more than 1 row.")
 
 if __name__ == '__main__':
     unittest.main()

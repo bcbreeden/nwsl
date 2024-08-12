@@ -32,21 +32,44 @@ def insert_player_xgoals_by_season(season):
             pass
         else:
             print('No team associated with player:', player_id)
-        print(player_id, team_id)
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
                 player_id, team_id, general_position, minutes_played, shots, 
                 shots_on_target, goals, xgoals, xplace, goals_minus_xgoals, 
                 key_passes, primary_assists, xassists, primary_assists_minus_xassists, 
-                xgoals_plus_xassists, points_added, xpoints_added
+                xgoals_plus_xassists, points_added, xpoints_added, season
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         ''', (
             player_id, team_id, general_position, minutes_played, shots, shots_on_target,
             goals, xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists, xassists,
-            primary_assists_minus_xassists, xgoals_plus_xassists, points_added, xpoints_added
+            primary_assists_minus_xassists, xgoals_plus_xassists, points_added, xpoints_added, int(season)
         ))
         conn.commit()
     conn.close()
+
+def get_player_xgoals(player_id, season):
+    print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM player_xgoals WHERE player_id = ? AND season = ?', (player_id, season))
+    row = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    print('Player xgoal returned.')
+    return row
+
+def get_all_player_xgoals(season):
+    print('Fetching players xgoals for season: {}'.format(season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM player_xgoals WHERE season = ?', (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('Player xgoal returned.')
+    return rows
