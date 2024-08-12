@@ -13,7 +13,6 @@ class TestPlayerXGoalsDB(unittest.TestCase):
     
     def test_get_all_players_xgoals_by_season(self):
         players_data = get_all_player_xpass(2024)
-        for player in players_data:
         self.assertTrue(len(players_data) > 1, "The query should return more than 1 row.")
 
 if __name__ == '__main__':
