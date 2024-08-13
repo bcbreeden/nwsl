@@ -71,8 +71,9 @@ def insert_player_goals_added_by_season(season):
                 receiving_count_actions,
                 shooting_goals_added_raw,
                 shooting_goals_added_above_avg,
-                shooting_count_actions
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                shooting_count_actions,
+                season
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             player_id,
             team_id,
@@ -95,8 +96,21 @@ def insert_player_goals_added_by_season(season):
             receiving_count_actions,
             shooting_goals_added_raw,
             shooting_goals_added_above_avg,
-            shooting_count_actions
+            shooting_count_actions,
+            int(season)
         ))
         conn.commit()
     cursor.close()
     conn.close()
+
+def get_player_goals_added_by_season(player_id, season):
+    print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM player_goals_added WHERE player_id = ? AND season = ?', (player_id, season))
+    row = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    print('Player goals added returned.')
+    return row
