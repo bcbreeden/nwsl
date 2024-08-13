@@ -63,7 +63,7 @@ def get_player_xgoals(player_id, season):
     return row
 
 def get_all_player_xgoals(season):
-    print('Fetching players xgoals for season: {}'.format(season))
+    print('Fetching all players xgoals for season: {}'.format(season))
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -71,5 +71,5 @@ def get_all_player_xgoals(season):
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('Player xgoal returned.')
+    print('All players xgoals returned.')
     return rows

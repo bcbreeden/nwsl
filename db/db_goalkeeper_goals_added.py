@@ -110,5 +110,5 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     row = cursor.fetchone()
     conn.commit()
     conn.close()
-    print('Player goals added returned.')
+    print('Goalkeeper goals added returned.')
     return row

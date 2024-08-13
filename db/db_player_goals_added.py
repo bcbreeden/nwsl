@@ -48,7 +48,7 @@ def insert_player_goals_added_by_season(season):
             pass
         else:
             print('No team associated with player:', player_id)
-            
+
         cursor.execute('''
             INSERT OR REPLACE INTO player_goals_added (
                 player_id,
@@ -105,7 +105,7 @@ def insert_player_goals_added_by_season(season):
     conn.close()
 
 def get_player_goals_added_by_season(player_id, season):
-    print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
+    print('Fetching player goals added for:{}, Season: {}'.format(player_id, season))
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()

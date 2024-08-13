@@ -48,7 +48,7 @@ def insert_player_xpass_by_season(season):
     conn.close()
 
 def get_player_xpass(player_id, season):
-    print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
+    print('Fetching player xpass for:{}, Season: {}'.format(player_id, season))
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -56,11 +56,11 @@ def get_player_xpass(player_id, season):
     row = cursor.fetchone()
     conn.commit()
     conn.close()
-    print('Player xgoal returned.')
+    print('Player xpass returned.')
     return row
 
 def get_all_player_xpass(season):
-    print('Fetching players xgoals for season: {}'.format(season))
+    print('Fetching all players xpass for season: {}'.format(season))
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -68,5 +68,5 @@ def get_all_player_xpass(season):
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('Player xgoal returned.')
+    print('Player xpass returned.')
     return rows
