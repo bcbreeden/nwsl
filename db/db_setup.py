@@ -129,6 +129,34 @@ def create_tables():
     )
     ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS goalkeeper_goals_added (
+        player_id TEXT PRIMARY KEY,
+        team_id TEXT,
+        minutes_played INTEGER,
+        claiming_goals_added_raw REAL,
+        claiming_goals_added_above_avg REAL,
+        claiming_count_actions INTEGER,
+        fielding_goals_added_raw REAL,
+        fielding_goals_added_above_avg REAL,
+        fielding_count_actions INTEGER,
+        handling_goals_added_raw REAL,
+        handling_goals_added_above_avg REAL,
+        handling_count_actions INTEGER,
+        passing_goals_added_raw REAL,
+        passing_goals_added_above_avg REAL,
+        passing_count_actions INTEGER,
+        shotstopping_goals_added_raw REAL,
+        shotstopping_goals_added_above_avg REAL,
+        shotstopping_count_actions INTEGER,
+        sweeping_goals_added_raw REAL,
+        sweeping_goals_added_above_avg REAL,
+        sweeping_count_actions INTEGER,
+        season INTEGER,
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+    )
+    ''')
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()

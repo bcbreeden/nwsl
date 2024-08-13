@@ -48,6 +48,7 @@ def insert_player_goals_added_by_season(season):
             pass
         else:
             print('No team associated with player:', player_id)
+            
         cursor.execute('''
             INSERT OR REPLACE INTO player_goals_added (
                 player_id,
