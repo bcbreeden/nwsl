@@ -19,6 +19,13 @@ def insert_goalkeeper_xgoals_by_season(season):
         goals_minus_xgoals_gk = player.get('goals_minus_xgoals_gk', 0.0)
         goals_divided_by_xgoals_gk = player.get('goals_divided_by_xgoals_gk', 0.0)
 
+        if isinstance(team_id, list):
+            team_id = team_id[-1]
+        elif isinstance(team_id, str):
+            pass
+        else:
+            print('No team associated with player:', player_id)
+
         cursor.execute('''
             INSERT OR REPLACE INTO goalkeeper_xgoals (
                 player_id, team_id, minutes_played, shots_faced, goals_conceded, 
