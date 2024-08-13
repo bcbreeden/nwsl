@@ -2,7 +2,7 @@ import unittest
 from .db_player_xpass import *
 from .db_setup import create_tables
 
-class TestPlayerXGoalsDB(unittest.TestCase):
+class TestPlayerXPassDB(unittest.TestCase):
     # Test Setup
     create_tables()
     insert_player_xpass_by_season('2024')
