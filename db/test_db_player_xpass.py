@@ -9,11 +9,11 @@ class TestPlayerXPassDB(unittest.TestCase):
 
     def test_get_player_xgoals_by_season(self):
         player_data = get_player_xpass('0Oq6243Pq6', 2024)
-        self.assertTrue(len(player_data) > 1, "The query should return more than 1 row.")
+        self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
     
     def test_get_all_players_xgoals_by_season(self):
         players_data = get_all_player_xpass(2024)
-        self.assertTrue(len(players_data) > 1, "The query should return more than 1 row.")
+        self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
 
 if __name__ == '__main__':
     unittest.main()

@@ -7,10 +7,10 @@ def insert_team_info():
     conn = sqlite3.connect('db/nwsl.db')
     cursor = conn.cursor()
     for team in teams_data:
-        team_id = team.get("team_id", "Unknown ID")
-        team_name = team.get("team_name", "Unknown Name")
-        team_short_name = team.get("team_short_name", "Unknown Short Name")
-        team_abbreviation = team.get("team_abbreviation", "Unknown Abbreviation")
+        team_id = team.get('team_id', 'Unknown ID')
+        team_name = team.get('team_name', 'Unknown Name')
+        team_short_name = team.get('team_short_name', 'Unknown Short Name')
+        team_abbreviation = team.get('team_abbreviation', 'Unknown Abbreviation')
 
         cursor.execute('''
         INSERT OR REPLACE INTO team_info (
