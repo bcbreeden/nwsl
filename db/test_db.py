@@ -6,18 +6,22 @@ from .db_player_info import *
 from .db_player_xgoals import *
 from .db_player_xpass import *
 from .db_team_info import *
+from .db_team_xgoals import *
 from .db_setup import create_tables
 
 class TestDB(unittest.TestCase):
     # Test Setup
     SEASON = '2024'
     create_tables()
+    insert_team_info()
+    insert_all_players_info()
     insert_goalkeeper_goals_added_by_season(SEASON)
     insert_goalkeeper_xgoals_by_season(SEASON)
     insert_player_goals_added_by_season(SEASON)
     insert_player_xgoals_by_season(SEASON)
     insert_player_xpass_by_season(SEASON)
-    insert_team_info()
+    insert_teams_xgoals_by_season(SEASON)
+    
 
     # Goalkeeper Goals Added
     def test_get_goalkeeper_goals_added_by_season(self):
@@ -89,6 +93,12 @@ class TestDB(unittest.TestCase):
         self.assertEqual(data['team_name'], 'Bay FC')
         self.assertEqual(data['team_short_name'], 'Bay FC')
         self.assertEqual(data['team_abbreviation'], 'BAY')
+
+    # Team XGoals
+    def test_get_team_xgoals(self):
+        team_id = '315VnJ759x'
+        team_xgoal_data = get_team_xgoals(team_id, 2024)
+        self.assertGreater(len(team_xgoal_data), 5)
 
 if __name__ == '__main__':
     unittest.main()
