@@ -200,6 +200,43 @@ def create_tables():
     )
     ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS team_goals_added (
+        team_id TEXT PRIMARY KEY,
+        minutes INTEGER,
+        dribbling_num_actions_for REAL,          
+        dribbling_goals_added_for REAL,
+        dribbling_num_actions_against INTEGER,
+        dribbling_goals_added_against REAL,
+        shooting_num_actions_for REAL,          
+        shooting_goals_added_for REAL,
+        shooting_num_actions_against INTEGER,
+        shooting_goals_added_against REAL,
+        passing_num_actions_for REAL,          
+        passing_goals_added_for REAL,
+        passing_num_actions_against INTEGER,
+        passing_goals_added_against REAL,
+        interrupting_num_actions_for REAL,          
+        interrupting_goals_added_for REAL,
+        interrupting_num_actions_against INTEGER,
+        interrupting_goals_added_against REAL,
+        receiving_num_actions_for REAL,          
+        receiving_goals_added_for REAL,
+        receiving_num_actions_against INTEGER,
+        receiving_goals_added_against REAL,   
+        claiming_num_actions_for REAL,          
+        claiming_goals_added_for REAL,
+        claiming_num_actions_against INTEGER,
+        claiming_goals_added_against REAL,
+        fouling_num_actions_for REAL,          
+        fouling_goals_added_for REAL,
+        fouling_num_actions_against INTEGER,
+        fouling_goals_added_against REAL,
+        season INTEGER,
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+    )
+    ''')
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()

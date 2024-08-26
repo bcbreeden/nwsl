@@ -8,6 +8,7 @@ from .db_player_xpass import *
 from .db_team_info import *
 from .db_team_xgoals import *
 from .db_team_xpass import *
+from .db_team_goals_added import *
 from .db_setup import create_tables
 
 class TestDB(unittest.TestCase):
@@ -23,6 +24,7 @@ class TestDB(unittest.TestCase):
     insert_player_xpass_by_season(SEASON)
     insert_teams_xgoals_by_season(SEASON)
     insert_teams_xpass_by_season(SEASON)
+    insert_team_goals_added_by_season(SEASON)
     
 
     # Goalkeeper Goals Added
@@ -107,6 +109,11 @@ class TestDB(unittest.TestCase):
         team_id = '315VnJ759x'
         team_xgoal_data = get_team_xpass(team_id, 2024)
         self.assertGreater(len(team_xgoal_data), 5)
+    
+    # Team Goals Added
+    def test_get_team_goals_added_by_season(self):
+        team_data = get_team_goals_added_by_season('315VnJ759x', 2024)
+        self.assertTrue(len(team_data) > 1, 'The query should return more than 1 row.')
 
 if __name__ == '__main__':
     unittest.main()
