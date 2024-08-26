@@ -177,6 +177,29 @@ def create_tables():
     )
     ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS team_xpass (
+        team_id TEXT PRIMARY KEY,
+        count_games INTEGER,
+        attempted_passes_for INTEGER,
+        pass_completion_percentage_for REAL,
+        xpass_completion_percentage_for REAL,
+        passes_completed_over_expected_for REAL,
+        passes_completed_over_expected_p100_for REAL,
+        avg_vertical_distance_for REAL,
+        attempted_passes_against INTEGER,
+        pass_completion_percentage_against REAL,
+        xpass_completion_percentage_against REAL,
+        passes_completed_over_expected_against REAL,
+        passes_completed_over_expected_p100_against REAL,
+        avg_vertical_distance_against REAL,
+        passes_completed_over_expected_difference REAL,
+        avg_vertical_distance_difference REAL,
+        season INTEGER,
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+    )
+    ''')
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
