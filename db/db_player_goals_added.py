@@ -16,29 +16,29 @@ def insert_player_goals_added_by_season(season):
         for action in player.get('data', []):
             match (action.get('action_type')):
                 case 'Dribbling':
-                    dribbling_goals_added_raw = action.get('goals_added_raw')
-                    dribbling_goals_added_above_avg = action.get('goals_added_above_avg')
-                    dribbling_count_actions = action.get('count_actions')
+                    dribbling_goals_added_raw = action.get('goals_added_raw', 0)
+                    dribbling_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    dribbling_count_actions = action.get('count_actions', 0)
                 case 'Fouling':
-                    fouling_goals_added_raw = action.get('goals_added_raw')
-                    fouling_goals_added_above_avg = action.get('goals_added_above_avg')
-                    fouling_count_actions = action.get('count_actions')
+                    fouling_goals_added_raw = action.get('goals_added_raw', 0)
+                    fouling_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    fouling_count_actions = action.get('count_actions', 0)
                 case 'Interrupting':
-                    interrupting_goals_added_raw = action.get('goals_added_raw')
-                    interrupting_goals_added_above_avg = action.get('goals_added_above_avg')
-                    interrupting_count_actions = action.get('count_actions')
+                    interrupting_goals_added_raw = action.get('goals_added_raw', 0)
+                    interrupting_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    interrupting_count_actions = action.get('count_actions', 0)
                 case 'Passing':
-                    passing_goals_added_raw = action.get('goals_added_raw')
-                    passing_goals_added_above_avg = action.get('goals_added_above_avg')
-                    passing_count_actions = action.get('count_actions')
+                    passing_goals_added_raw = action.get('goals_added_raw', 0)
+                    passing_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    passing_count_actions = action.get('count_actions', 0)
                 case 'Receiving':
-                    receiving_goals_added_raw = action.get('goals_added_raw')
-                    receiving_goals_added_above_avg = action.get('goals_added_above_avg')
-                    receiving_count_actions = action.get('count_actions')
+                    receiving_goals_added_raw = action.get('goals_added_raw', 0)
+                    receiving_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    receiving_count_actions = action.get('count_actions', 0)
                 case 'Shooting':
-                    shooting_goals_added_raw = action.get('goals_added_raw')
-                    shooting_goals_added_above_avg = action.get('goals_added_above_avg')
-                    shooting_count_actions = action.get('count_actions')
+                    shooting_goals_added_raw = action.get('goals_added_raw', 0)
+                    shooting_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    shooting_count_actions = action.get('count_actions', 0)
                 case _:
                     print('No action found!')
         
