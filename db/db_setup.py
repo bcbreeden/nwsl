@@ -237,6 +237,30 @@ def create_tables():
     )
     ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS games (
+        game_id TEXT PRIMARY KEY,
+        date_time_utc TEXT,
+        home_score INTEGER,
+        away_score INTEGER,
+        home_team_id TEXT,
+        away_team_id TEXT,
+        referee_id TEXT,
+        stadium_id TEXT,
+        home_manager_id TEXT,
+        away_manager_id TEXT,
+        expanded_minutes INTEGER,
+        season_name TEXT,
+        matchday INTEGER,
+        attendance INTEGER,
+        knockout_game BOOLEAN,
+        last_updated_utc TEXT,
+        season INTEGER,
+        FOREIGN KEY (home_team_id) REFERENCES team_info(team_id)
+        FOREIGN KEY (away_team_id) REFERENCES team_info(team_id)
+    )
+    ''')
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
