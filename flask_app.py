@@ -12,5 +12,17 @@ Renders the index template.
 def index():
     return render_template('index.html')
 
+@app.route('/teams')
+def teams():
+    return render_template('teams.html')
+
+@app.route('/games')
+def games():
+    return render_template('games.html')
+
+@app.route('/players')
+def players():
+    return render_template('players.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

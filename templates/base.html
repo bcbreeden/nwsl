@@ -15,10 +15,10 @@
         <h1>NWSL Insights</h1>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Players</a></li>
-                <li><a href="#">Teams</a></li>
-                <li><a href="#">Games</a></li>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('players') }}">Players</a></li>
+                <li><a href="{{ url_for('teams') }}">Teams</a></li>
+                <li><a href="{{ url_for('games') }}">Games</a></li>
             </ul>
         </nav>
     </header>
