@@ -10,6 +10,7 @@ from .db_team_xgoals import *
 from .db_team_xpass import *
 from .db_team_goals_added import *
 from .db_games import *
+from .db_games_xgoals import *
 from .db_setup import create_tables
 
 class TestDB(unittest.TestCase):
@@ -27,6 +28,7 @@ class TestDB(unittest.TestCase):
     insert_teams_xpass_by_season(SEASON)
     insert_team_goals_added_by_season(SEASON)
     insert_all_games_by_season(SEASON)
+    insert_all_games_xgoals_by_season(SEASON)
     
 
     # Goalkeeper Goals Added
@@ -120,6 +122,11 @@ class TestDB(unittest.TestCase):
     # Games
     def test_get_games_by_season(self):
         games_data = get_all_games_by_season(2024)
+        self.assertGreater(len(games_data), 5)
+    
+    # Games XGoals
+    def test_get_games_xgoals_by_season(self):
+        games_data = get_all_games_xgoals_by_season(2024)
         self.assertGreater(len(games_data), 5)
 
 if __name__ == '__main__':

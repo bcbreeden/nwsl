@@ -26,7 +26,7 @@ def insert_all_games_by_season(season):
         last_updated_utc = game.get('last_updated_utc', 'Unknown Last Updated Time')
 
         cursor.execute('''
-        INSERT INTO games (
+        INSERT OR REPLACE INTO games (
             game_id, date_time_utc, home_score, away_score, 
             home_team_id, away_team_id, referee_id, stadium_id, 
             home_manager_id, away_manager_id, expanded_minutes, 
