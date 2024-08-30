@@ -9,6 +9,7 @@ def insert_player_goals_added_by_season(season):
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
+        obj_id = player_id + str(season)
         team_id = player.get('team_id', 'Unknown Team ID')
         general_position =  player.get('general_position', 'Unknown Position')
         minutes_played = player.get('minutes_played', 0)
@@ -51,6 +52,7 @@ def insert_player_goals_added_by_season(season):
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_goals_added (
+                id,
                 player_id,
                 team_id,
                 general_position,
@@ -74,8 +76,9 @@ def insert_player_goals_added_by_season(season):
                 shooting_goals_added_above_avg,
                 shooting_count_actions,
                 season
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
+            obj_id,
             player_id,
             team_id,
             general_position,
@@ -106,10 +109,11 @@ def insert_player_goals_added_by_season(season):
 
 def get_player_goals_added_by_season(player_id, season):
     print('Fetching player goals added for:{}, Season: {}'.format(player_id, season))
+    obj_id = player_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM player_goals_added WHERE player_id = ? AND season = ?', (player_id, season))
+    cursor.execute('SELECT * FROM player_goals_added WHERE id = ?', (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

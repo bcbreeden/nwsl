@@ -41,7 +41,8 @@ def create_tables():
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS player_xgoals (
-        player_id TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        player_id TEXT,
         team_id TEXT,
         general_position TEXT,
         minutes_played INTEGER,
@@ -59,13 +60,15 @@ def create_tables():
         points_added REAL,
         xpoints_added REAL,
         season INTEGER,
-        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id),
+        FOREIGN KEY (player_id) REFERENCES player_info(player_id)
     )
     ''')
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS player_xpass (
-        player_id TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        player_id TEXT,
         team_id TEXT,
         general_position TEXT,
         minutes_played INTEGER,
@@ -79,13 +82,15 @@ def create_tables():
         share_team_touches REAL,
         count_games INTEGER,
         season INTEGER,
-        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id),
+        FOREIGN KEY (player_id) REFERENCES player_info(player_id)
     )
     ''')
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS player_goals_added (
-        player_id TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        player_id TEXT,
         team_id TEXT,
         general_position TEXT,
         minutes_played INTEGER,
@@ -108,13 +113,15 @@ def create_tables():
         shooting_goals_added_above_avg REAL,
         shooting_count_actions INTEGER,
         season INTEGER,
-        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id),
+        FOREIGN KEY (player_id) REFERENCES player_info(player_id)
     )
     ''')
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS goalkeeper_xgoals (
-        player_id TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        player_id TEXT,
         team_id TEXT,
         minutes_played INTEGER,
         shots_faced INTEGER,
@@ -125,13 +132,15 @@ def create_tables():
         goals_minus_xgoals_gk REAL,
         goals_divided_by_xgoals_gk  REAL,
         season INTEGER,
-        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id),
+        FOREIGN KEY (player_id) REFERENCES player_info(player_id)
     )
     ''')
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS goalkeeper_goals_added (
-        player_id TEXT PRIMARY KEY,
+        id PRIMARY KEY, 
+        player_id TEXT,
         team_id TEXT,
         minutes_played INTEGER,
         claiming_goals_added_raw REAL,
@@ -159,7 +168,8 @@ def create_tables():
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS team_xgoals (
-        team_id TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        team_id TEXT,
         count_games INTEGER,
         shots_for INTEGER,
         shots_against INTEGER,
@@ -179,7 +189,8 @@ def create_tables():
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS team_xpass (
-        team_id TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        team_id TEXT,
         count_games INTEGER,
         attempted_passes_for INTEGER,
         pass_completion_percentage_for REAL,
@@ -202,7 +213,8 @@ def create_tables():
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS team_goals_added (
-        team_id TEXT PRIMARY KEY,
+        id TEXT PRIMARY KEY,
+        team_id TEXT,
         minutes INTEGER,
         dribbling_num_actions_for REAL,          
         dribbling_goals_added_for REAL,

@@ -9,6 +9,7 @@ def insert_player_xgoals_by_season(season):
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
+        obj_id = player_id + str(season)
         team_id = player.get('team_id', [])
         general_position = player.get('general_position', 'Unknown General Position')
         minutes_played = player.get('minutes_played', 0)
@@ -35,15 +36,15 @@ def insert_player_xgoals_by_season(season):
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
-                player_id, team_id, general_position, minutes_played, shots, 
+                id, player_id, team_id, general_position, minutes_played, shots, 
                 shots_on_target, goals, xgoals, xplace, goals_minus_xgoals, 
                 key_passes, primary_assists, xassists, primary_assists_minus_xassists, 
                 xgoals_plus_xassists, points_added, xpoints_added, season
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         ''', (
-            player_id, team_id, general_position, minutes_played, shots, shots_on_target,
+            obj_id, player_id, team_id, general_position, minutes_played, shots, shots_on_target,
             goals, xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists, xassists,
             primary_assists_minus_xassists, xgoals_plus_xassists, points_added, xpoints_added, int(season)
         ))
@@ -52,10 +53,11 @@ def insert_player_xgoals_by_season(season):
 
 def get_player_xgoals(player_id, season):
     print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
+    obj_id = player_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM player_xgoals WHERE player_id = ? AND season = ?', (player_id, season))
+    cursor.execute('SELECT * FROM player_xgoals WHERE id = ?', (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

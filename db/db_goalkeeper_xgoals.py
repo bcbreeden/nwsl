@@ -9,6 +9,7 @@ def insert_goalkeeper_xgoals_by_season(season):
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
+        obj_id = player_id + str(season)
         team_id = player.get('team_id', 'Unknown Team ID')
         minutes_played = player.get('minutes_played', 0)
         shots_faced = player.get('shots_faced', 0)
@@ -28,11 +29,12 @@ def insert_goalkeeper_xgoals_by_season(season):
 
         cursor.execute('''
             INSERT OR REPLACE INTO goalkeeper_xgoals (
-                player_id, team_id, minutes_played, shots_faced, goals_conceded, 
+                id, player_id, team_id, minutes_played, shots_faced, goals_conceded, 
                 saves, share_headed_shots, xgoals_gk_faced, goals_minus_xgoals_gk, 
                 goals_divided_by_xgoals_gk, season
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
+            obj_id,
             player_id,
             team_id,
             minutes_played,
@@ -63,10 +65,11 @@ def get_all_goalkeepers_xgoals_by_season(season):
 
 def get_goalkeeper_xgoals_by_season(player_id, season):
     print('Fetching goalkeeper xgoals for season: {}'.format(season))
+    obj_id = player_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM goalkeeper_xgoals WHERE season = ? and player_id = ?', (season, player_id))
+    cursor.execute('SELECT * FROM goalkeeper_xgoals WHERE id = ?', (obj_id,))
     rows = cursor.fetchone()
     conn.commit()
     conn.close()

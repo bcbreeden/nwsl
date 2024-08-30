@@ -9,6 +9,7 @@ def insert_player_xpass_by_season(season):
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
+        obj_id = player_id + str(season)
         team_id = player.get('team_id', [])
         general_position = player.get('general_position', 'Unknown General Position')
         minutes_played = player.get('minutes_played', 0)
@@ -32,15 +33,15 @@ def insert_player_xpass_by_season(season):
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_xpass (
-                player_id, team_id, general_position, minutes_played, attempted_passes,
+                id, player_id, team_id, general_position, minutes_played, attempted_passes,
                 pass_completion_percentage, xpass_completion_percentage, passes_completed_over_expected,
                 passes_completed_over_expected_p100, avg_distance_yds, avg_vertical_distance_yds,
                 share_team_touches, count_games, season
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?
             )
         ''', (
-            player_id, team_id, general_position, minutes_played, attempted_passes, pass_completion_percentage,
+            obj_id, player_id, team_id, general_position, minutes_played, attempted_passes, pass_completion_percentage,
             xpass_completion_percentage, passes_completed_over_expected, passes_completed_over_expected_p100,
             avg_distance_yds, avg_vertical_distance_yds, share_team_touches, count_games, int(season)
         ))
@@ -49,10 +50,11 @@ def insert_player_xpass_by_season(season):
 
 def get_player_xpass(player_id, season):
     print('Fetching player xpass for:{}, Season: {}'.format(player_id, season))
+    obj_id = player_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM player_xpass WHERE player_id = ? AND season = ?', (player_id, season))
+    cursor.execute('SELECT * FROM player_xpass WHERE id = ?', (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

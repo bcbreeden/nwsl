@@ -9,6 +9,7 @@ def insert_teams_xpass_by_season(season):
     cursor = conn.cursor()
     for team in teams_data:
         team_id = team.get('team_id', 'Unknown Team ID')
+        obj_id = team_id + str(season)
         count_games = team.get('count_games', 0)
         attempted_passes_for = team.get('attempted_passes_for', 0)
         pass_completion_percentage_for = team.get('pass_completion_percentage_for', 0.0)
@@ -27,7 +28,7 @@ def insert_teams_xpass_by_season(season):
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xpass (
-                team_id, count_games, attempted_passes_for, pass_completion_percentage_for, 
+                id, team_id, count_games, attempted_passes_for, pass_completion_percentage_for, 
                 xpass_completion_percentage_for, passes_completed_over_expected_for, 
                 passes_completed_over_expected_p100_for, avg_vertical_distance_for, 
                 attempted_passes_against, pass_completion_percentage_against, 
@@ -35,9 +36,9 @@ def insert_teams_xpass_by_season(season):
                 passes_completed_over_expected_p100_against, avg_vertical_distance_against, 
                 passes_completed_over_expected_difference, avg_vertical_distance_difference,
                 season
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            team_id, count_games, attempted_passes_for, pass_completion_percentage_for,
+            obj_id, team_id, count_games, attempted_passes_for, pass_completion_percentage_for,
             xpass_completion_percentage_for, passes_completed_over_expected_for,
             passes_completed_over_expected_p100_for, avg_vertical_distance_for,
             attempted_passes_against, pass_completion_percentage_against,
@@ -52,10 +53,11 @@ def insert_teams_xpass_by_season(season):
 
 def get_team_xpass(team_id, season):
     print('Fetching team xpasses for:{}, Season: {}'.format(team_id, season))
+    obj_id = team_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM team_xpass WHERE team_id = ? AND season = ?', (team_id, season))
+    cursor.execute('SELECT * FROM team_xpass WHERE id = ?', (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

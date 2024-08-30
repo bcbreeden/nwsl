@@ -9,6 +9,7 @@ def insert_teams_xgoals_by_season(season):
     cursor = conn.cursor()
     for team in teams_data:
         team_id = team.get('team_id', 'Unknown Team ID')
+        obj_id = team_id + str(season)
         count_games = team.get('count_games', 0)
         shots_for = team.get('shots_for', 0)
         shots_against = team.get('shots_against', 0)
@@ -24,13 +25,13 @@ def insert_teams_xgoals_by_season(season):
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xgoals (
-                team_id, count_games, shots_for, shots_against, goals_for, 
+                id, team_id, count_games, shots_for, shots_against, goals_for, 
                 goals_against, goal_difference, xgoals_for, xgoals_against, 
                 xgoal_difference, goal_difference_minus_xgoal_difference, 
                 points, xpoints, season
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                team_id, count_games, shots_for, shots_against, goals_for,
+                obj_id, team_id, count_games, shots_for, shots_against, goals_for,
                 goals_against, goal_difference, xgoals_for, xgoals_against,
                 xgoal_difference, goal_difference_minus_xgoal_difference,
                 points, xpoints, int(season)
@@ -40,10 +41,11 @@ def insert_teams_xgoals_by_season(season):
 
 def get_team_xgoals(team_id, season):
     print('Fetching team xgoals for:{}, Season: {}'.format(team_id, season))
+    obj_id = team_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM team_xgoals WHERE team_id = ? AND season = ?', (team_id, season))
+    cursor.execute('SELECT * FROM team_xgoals WHERE id = ?', (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

@@ -9,6 +9,7 @@ def insert_team_goals_added_by_season(season):
     cursor = conn.cursor()
     for team in teams_data:
         team_id = team.get('team_id', 'Unknown Team ID')
+        obj_id = team_id + str(season)
         minutes = team.get('minutes', 0)
 
         for action in team.get('data', []):
@@ -53,7 +54,7 @@ def insert_team_goals_added_by_season(season):
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_goals_added (
-                team_id, minutes, 
+                id, team_id, minutes, 
                 dribbling_num_actions_for, dribbling_goals_added_for, dribbling_num_actions_against, dribbling_goals_added_against, 
                 shooting_num_actions_for, shooting_goals_added_for, shooting_num_actions_against, shooting_goals_added_against, 
                 passing_num_actions_for, passing_goals_added_for, passing_num_actions_against, passing_goals_added_against, 
@@ -61,9 +62,9 @@ def insert_team_goals_added_by_season(season):
                 receiving_num_actions_for, receiving_goals_added_for, receiving_num_actions_against, receiving_goals_added_against, 
                 claiming_num_actions_for, claiming_goals_added_for, claiming_num_actions_against, claiming_goals_added_against, 
                 fouling_num_actions_for, fouling_goals_added_for, fouling_num_actions_against, fouling_goals_added_against, season
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            team_id, minutes, 
+            obj_id, team_id, minutes, 
             dribbling_num_actions_for, dribbling_goals_added_for, dribbling_num_actions_against, dribbling_goals_added_against, 
             shooting_num_actions_for, shooting_goals_added_for, shooting_num_actions_against, shooting_goals_added_against, 
             passing_num_actions_for, passing_goals_added_for, passing_num_actions_against, passing_goals_added_against, 
@@ -78,10 +79,11 @@ def insert_team_goals_added_by_season(season):
 
 def get_team_goals_added_by_season(team_id, season):
     print('Fetching team goals added for:{}, Season: {}'.format(team_id, season))
+    obj_id = team_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM team_goals_added WHERE team_id = ? AND season = ?', (team_id, season))
+    cursor.execute('SELECT * FROM team_goals_added WHERE id = ?', (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()
