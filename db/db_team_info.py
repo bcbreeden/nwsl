@@ -27,6 +27,7 @@ def insert_team_info():
 def get_all_teams_info():
     print('Fetching all teams info from the database...')
     conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM team_info')
     rows = cursor.fetchall()
