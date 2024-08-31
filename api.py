@@ -1,4 +1,6 @@
 import requests
+import os
+from dotenv import load_dotenv
 
 def make_asa_api_call(endpoint):
     # Documentation: https://app.americansocceranalysis.com/api/v1/__docs__/#/
