@@ -13,9 +13,10 @@ from .db_games import *
 from .db_games_xgoals import *
 from .db_setup import create_tables
 
+SEASON = 2024
+
 class TestDB(unittest.TestCase):
     # Test Setup
-    SEASON = '2024'
     create_tables()
     insert_team_info()
     insert_all_players_info()
@@ -33,21 +34,21 @@ class TestDB(unittest.TestCase):
 
     # Goalkeeper Goals Added
     def test_get_goalkeeper_goals_added_by_season(self):
-        player_data = get_goalkeeper_goals_added_by_season('0x5gJ0LXM7', 2024)
+        player_data = get_goalkeeper_goals_added_by_season('0x5gJ0LXM7', SEASON)
         self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
     
     def test_get_all_goalkeeper_xgoal_data_by_season(self):
-        players_data = get_all_goalkeepers_xgoals_by_season(2024)
+        players_data = get_all_goalkeepers_xgoals_by_season(SEASON)
         self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
     
     # Goalkeeper XGoals
     def test_get_goalkeeper_xgoal_data_by_season(self):
-        player_data = get_goalkeeper_xgoals_by_season('0x5gJ0LXM7', 2024)
+        player_data = get_goalkeeper_xgoals_by_season('0x5gJ0LXM7', SEASON)
         self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
     
     # Player Goals Added
     def test_get_player_goals_added_by_season(self):
-        player_data = get_player_goals_added_by_season('0Oq6243Pq6', 2024)
+        player_data = get_player_goals_added_by_season('0Oq6243Pq6', SEASON)
         self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
     
     # Player Info
@@ -74,20 +75,20 @@ class TestDB(unittest.TestCase):
     
     # Player XGoals
     def test_get_player_xgoals_by_season(self):
-        player_data = get_player_xgoals('0Oq6243Pq6', 2024)
+        player_data = get_player_xgoals('0Oq6243Pq6', SEASON)
         self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
     
     def test_get_all_players_xgoals_by_season(self):
-        players_data = get_all_player_xgoals(2024)
+        players_data = get_all_player_xgoals(SEASON)
         self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
 
     # Player XPasses
     def test_get_player_xpasses_by_season(self):
-        player_data = get_player_xpass('0Oq6243Pq6', 2024)
+        player_data = get_player_xpass('0Oq6243Pq6', SEASON)
         self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
     
     def test_get_all_players_xpasses_by_season(self):
-        players_data = get_all_player_xpass(2024)
+        players_data = get_all_player_xpass(SEASON)
         self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
 
     # Team Info
@@ -103,30 +104,36 @@ class TestDB(unittest.TestCase):
         self.assertEqual(data['team_abbreviation'], 'BAY')
 
     # Team XGoals
-    def test_get_team_xgoals(self):
+    def test_get_team_xgoals_by_season(self):
         team_id = '315VnJ759x'
-        team_xgoal_data = get_team_xgoals(team_id, 2024)
+        team_xgoal_data = get_team_xgoals_by_season(team_id, SEASON)
         self.assertGreater(len(team_xgoal_data), 5)
     
+    def test_get_all_teams_xgoals_by_season(self):
+        teams_xgoals_data = get_all_teams_xgoals_by_season(SEASON)
+        for row in teams_xgoals_data:
+            self.assertEqual(row['season'], SEASON)
+        self.assertGreater(len(teams_xgoals_data), 5)
+
     # Team XPasses
     def test_get_team_xpasses(self):
         team_id = '315VnJ759x'
-        team_xgoal_data = get_team_xpass(team_id, 2024)
+        team_xgoal_data = get_team_xpass(team_id, SEASON)
         self.assertGreater(len(team_xgoal_data), 5)
     
     # Team Goals Added
     def test_get_team_goals_added_by_season(self):
-        team_data = get_team_goals_added_by_season('315VnJ759x', 2024)
+        team_data = get_team_goals_added_by_season('315VnJ759x', SEASON)
         self.assertTrue(len(team_data) > 1, 'The query should return more than 1 row.')
     
     # Games
     def test_get_games_by_season(self):
-        games_data = get_all_games_by_season(2024)
+        games_data = get_all_games_by_season(SEASON)
         self.assertGreater(len(games_data), 5)
     
     # Games XGoals
     def test_get_games_xgoals_by_season(self):
-        games_data = get_all_games_xgoals_by_season(2024)
+        games_data = get_all_games_xgoals_by_season(SEASON)
         self.assertGreater(len(games_data), 5)
 
 if __name__ == '__main__':

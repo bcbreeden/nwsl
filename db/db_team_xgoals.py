@@ -39,15 +39,53 @@ def insert_teams_xgoals_by_season(season):
         conn.commit()
     conn.close()
 
-def get_team_xgoals(team_id, season):
+def get_team_xgoals_by_season(team_id, season):
     print('Fetching team xgoals for:{}, Season: {}'.format(team_id, season))
     obj_id = team_id + str(season)
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM team_xgoals WHERE id = ?', (obj_id,))
+    query = '''
+        SELECT 
+            tx.*,
+            ti.team_name
+            FROM 
+                team_xgoals AS tx
+            JOIN 
+                team_info AS ti
+            ON 
+                tx.team_id = ti.team_id
+            WHERE
+                tx.id = ?;
+        '''
+    cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()
     print('Team xgoal returned.')
     return row
+
+def get_all_teams_xgoals_by_season(season):
+    print('Fetching team xgoals for {} Season.'.format(season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT 
+            tx.*,
+            ti.team_name
+            FROM 
+                team_xgoals AS tx
+            JOIN 
+                team_info AS ti
+            ON 
+                tx.team_id = ti.team_id
+            WHERE
+                tx.season = ?;
+        '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('All teams xgoals returned.')
+    return rows
