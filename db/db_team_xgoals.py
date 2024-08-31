@@ -1,10 +1,10 @@
-from api import make_api_call
+from api import make_asa_api_call
 import sqlite3
 
 def insert_teams_xgoals_by_season(season):
     print('Inserting teams data (xgoals) for season:', season)
     api_string = 'nwsl/teams/xgoals?season_name={}'.format(str(season))
-    teams_data = make_api_call(api_string)[1]
+    teams_data = make_asa_api_call(api_string)[1]
     conn = sqlite3.connect('db/nwsl.db')
     cursor = conn.cursor()
     for team in teams_data:

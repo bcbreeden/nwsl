@@ -1,9 +1,9 @@
 import requests
 
-URL_STUB = 'https://app.americansocceranalysis.com/api/v1/'
-
-def make_api_call(endpoint):
-    request_url = '{}{}'.format(URL_STUB, endpoint)
+def make_asa_api_call(endpoint):
+    # Documentation: https://app.americansocceranalysis.com/api/v1/__docs__/#/
+    url_stub = 'https://app.americansocceranalysis.com/api/v1/'
+    request_url = '{}{}'.format(url_stub, endpoint)
     response = requests.get(request_url)
 
     if response.status_code == 200:

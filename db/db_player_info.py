@@ -1,9 +1,9 @@
-from api import make_api_call
+from api import make_asa_api_call
 import sqlite3
 
 def insert_all_players_info():
     print('Attempting  to insert all players info...')
-    players_data = make_api_call('nwsl/players')[1]
+    players_data = make_asa_api_call('nwsl/players')[1]
     conn = sqlite3.connect('db/nwsl.db')
     cursor = conn.cursor()
     for player in players_data:
