@@ -110,7 +110,20 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM goalkeeper_goals_added WHERE id = ?', (obj_id,))
+    query = '''
+        SELECT 
+            gkga.*,
+            pi.player_name
+            FROM 
+                goalkeeper_goals_added AS gkga
+            JOIN 
+                player_info AS pi
+            ON 
+                gkga.player_id = pi.player_id
+            WHERE
+                gkga.id = ?;
+    '''
+    cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()
