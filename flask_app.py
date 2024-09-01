@@ -28,7 +28,9 @@ def games():
 
 @app.route('/players')
 def players():
-    return render_template('players.html')
+    player_data = db_player_xgoals.get_all_player_xgoals(2024)
+    return render_template('players.html',
+                           players = player_data)
 
 @app.route('/goalkeepers')
 def goalkeepers():

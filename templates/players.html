@@ -1,5 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Players</h1>
+    <h1>Players</h1>
+
+    <table id='players'>
+        <thead>
+            <tr>
+                <th>Player Name</th>
+                <th>Team</th>
+                <th>Position</th>
+                <th>Shots</th>
+                <th>Shots on Target</th>
+                <th>Goals</th>
+                <th>Primary Assists</th>
+                <th>Minutes Played</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player['player_name'] }}</td>
+                <td>{{ player['team_name'] }}</td>
+                <td>{{ player['general_position'] }}</td>
+                <td>{{ player['shots'] }}</td>
+                <td>{{ player['shots_on_target'] }}</td>
+                <td>{{ player['goals'] }}</td>
+                <td>{{ player['primary_assists'] }}</td>
+                <td>{{ player['minutes_played'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
+            <script>
+                $(document).ready( function () {
+                    $('#players').DataTable();
+                } );
+    </script>
 {% endblock %}

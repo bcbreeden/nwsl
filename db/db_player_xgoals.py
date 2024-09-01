@@ -72,13 +72,18 @@ def get_all_player_xgoals(season):
     query = '''
         SELECT 
             px.*,
-            pi.player_name
+            pi.player_name,
+            ti.team_name
             FROM 
                 player_xgoals AS px
             JOIN 
                 player_info AS pi
             ON 
                 px.player_id = pi.player_id
+            JOIN
+                team_info AS ti
+            ON
+                px.team_id = ti.team_id   
             WHERE
                 px.season = ?
             ORDER BY
