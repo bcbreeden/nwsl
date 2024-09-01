@@ -7,12 +7,32 @@
         <thead>
             <tr>
                 <th>Team</th>
+                <th>Points</th>
+                <th>xPoints</th>
+                <th>SF</th>
+                <th>SA</th>
+                <th>GF</th>
+                <th>GA</th>
+                <th>xGF</th>
+                <th>xGA</th>
+                <th>xGD</th>
+                <th>GDif/xGDif</th>
             </tr>
         </thead>
         <tbody>
             {% for team in teams %}
             <tr>
                 <td>{{ team['team_name'] }}</td>
+                <td>{{ team['points'] }}</td>
+                <td>{{ team['xpoints'] }}</td>
+                <td>{{ team['shots_for'] }}</td>
+                <td>{{ team['shots_against'] }}</td>
+                <td>{{ team['goals_for'] }}</td>
+                <td>{{ team['goals_against'] }}</td>
+                <td>{{ team['xgoals_for'] }}</td>
+                <td>{{ team['xgoals_against'] }}</td>
+                <td>{{ team['xgoal_difference'] }}</td>
+                <td>{{ team['goal_difference_minus_xgoal_difference'] }}</td>
             </tr>
             {% endfor %}
         </tbody>

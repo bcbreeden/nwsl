@@ -14,9 +14,9 @@ def index():
 
 @app.route('/teams')
 def teams():
-    team_info_data = db_team_info.get_all_teams_info()
+    team_data = db_team_xgoals.get_all_teams_xgoals_by_season(2024)
     return render_template('teams.html',
-                           teams = team_info_data)
+                           teams = team_data)
 
 @app.route('/games')
 def games():
