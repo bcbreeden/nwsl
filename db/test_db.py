@@ -60,7 +60,7 @@ class TestDB(unittest.TestCase):
         id = '0Oq6243Pq6'
         data_row_1 = get_player_seasons(id)[0]
         self.assertEqual(data_row_1['player_id'], id)
-        self.assertAlmostEqual(data_row_1['year'], 2023)
+        self.assertEqual(data_row_1['year'], 2023)
     
     def test_get_player_info(self):
         id = '0Oq6243Pq6'
@@ -80,6 +80,8 @@ class TestDB(unittest.TestCase):
     
     def test_get_all_players_xgoals_by_season(self):
         players_data = get_all_player_xgoals(SEASON)
+        for player in players_data:
+            self.assertEqual(player['season'], SEASON)
         self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
 
     # Player XPasses

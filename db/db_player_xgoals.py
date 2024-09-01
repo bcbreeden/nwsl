@@ -69,7 +69,22 @@ def get_all_player_xgoals(season):
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM player_xgoals WHERE season = ?', (season,))
+    query = '''
+        SELECT 
+            px.*,
+            pi.player_name
+            FROM 
+                player_xgoals AS px
+            JOIN 
+                player_info AS pi
+            ON 
+                px.player_id = pi.player_id
+            WHERE
+                px.season = ?
+            ORDER BY
+                px.goals;
+        '''
+    cursor.execute(query, (season,))
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
