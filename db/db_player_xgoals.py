@@ -90,3 +90,31 @@ def get_all_player_xgoals(season):
     conn.close()
     print('All players xgoals returned.')
     return rows
+
+def get_top_5_players_goals_scored(season):
+    print('Fetching top 5 goal scorers for: {}'.format(season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT 
+            px.*,
+            pi.player_name
+            FROM 
+                player_xgoals AS px
+            JOIN 
+                player_info AS pi
+            ON 
+                px.player_id = pi.player_id
+            WHERE
+                px.season = ?
+            ORDER BY
+                px.goals DESC
+            LIMIT 5;
+        '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('All players xgoals returned.')
+    return rows

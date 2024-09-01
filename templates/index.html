@@ -4,8 +4,7 @@
 <h1>Index</h1>
 <section id="team_standings">
     <h2>Standings</h2>
-    <table id='standings'>
-        <table id='players'>         
+    <table id='standings'>        
             <thead>
                 <tr>
                     <th>Team</th>
@@ -17,6 +16,26 @@
             <tr>
                 <td>{{ team['team_name'] }}</td>
                 <td>{{ team['points'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section id="golden_boot_standings">
+    <h2>Golden Boot Race</h2>
+    <table id='golden_boot_table'>       
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Goals</th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for player in top_scorers %}
+            <tr>
+                <td>{{ player['player_name'] }}</td>
+                <td>{{ player['goals'] }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -84,6 +84,10 @@ class TestDB(unittest.TestCase):
             self.assertEqual(player['season'], SEASON)
         self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
 
+    def test_top_5_goal_scorers(self):
+        players_data = get_top_5_players_goals_scored(SEASON)
+        self.assertEqual(len(players_data), 5)
+
     # Player XPasses
     def test_get_player_xpasses_by_season(self):
         player_data = get_player_xpass('0Oq6243Pq6', SEASON)
