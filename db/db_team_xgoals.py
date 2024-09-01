@@ -81,7 +81,9 @@ def get_all_teams_xgoals_by_season(season):
             ON 
                 tx.team_id = ti.team_id
             WHERE
-                tx.season = ?;
+                tx.season = ?
+            ORDER BY
+                tx.points DESC;
         '''
     cursor.execute(query, (season,))
     rows = cursor.fetchall()

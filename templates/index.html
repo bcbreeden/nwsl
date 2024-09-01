@@ -2,4 +2,24 @@
 
 {% block content %}
 <h1>Index</h1>
+<section id="team_standings">
+    <h2>Standings</h2>
+    <table id='standings'>
+        <table id='players'>         
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for team in teams %}
+            <tr>
+                <td>{{ team['team_name'] }}</td>
+                <td>{{ team['points'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
 {% endblock %}

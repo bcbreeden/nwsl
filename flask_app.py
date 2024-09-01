@@ -10,7 +10,9 @@ Renders the index template.
 '''
 @app.route('/')
 def index():
-    return render_template('index.html')
+    team_data = db_team_xgoals.get_all_teams_xgoals_by_season(2024)
+    return render_template('index.html',
+                           teams = team_data)
 
 @app.route('/teams')
 def teams():
@@ -25,6 +27,10 @@ def games():
 @app.route('/players')
 def players():
     return render_template('players.html')
+
+@app.route('/goalkeepers')
+def goalkeepers():
+    return render_template('goalkeepers.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
