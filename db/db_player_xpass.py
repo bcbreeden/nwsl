@@ -3,7 +3,7 @@ import sqlite3
 
 def insert_player_xpass_by_season(season):
     print('Inserting data for players (xpass) for season:', season)
-    api_string = 'nwsl/players/xpass?season_name={}'.format(str(season))
+    api_string = 'nwsl/players/xpass?season_name={}&stage_name=Regular Season'.format(str(season))
     players_data = make_asa_api_call(api_string)[1]
     conn = sqlite3.connect('db/nwsl.db')
     cursor = conn.cursor()
