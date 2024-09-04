@@ -9,3 +9,11 @@ a, p, td, label, select .dt-info {
     font-weight: 300;
     font-style: normal;
 }
+
+p, a {
+    font-size: medium;
+}
+
+.footer-text {
+    font-size: small;
+}
