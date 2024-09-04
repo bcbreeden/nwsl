@@ -1,0 +1,11 @@
+h1, h2, h3, th {
+    font-family: "Merriweather", serif;
+    font-weight: 900;
+    font-style: normal;
+}
+
+a, p, td, label, select .dt-info {
+    font-family: "Merriweather", serif;
+    font-weight: 300;
+    font-style: normal;
+}
