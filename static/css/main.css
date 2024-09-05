@@ -11,7 +11,7 @@ h1, h2, h3, th {
 
 header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: flex-end;
 }
 
@@ -19,6 +19,11 @@ a, p, td, label, select .dt-info {
     font-family: "Merriweather", serif;
     font-weight: 300;
     font-style: normal;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
 }
 
 nav {
@@ -35,11 +40,16 @@ ul {
     padding-left: 0;
     margin-left: 0; 
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 li {
     padding: 7px;
+}
+
+#content {
+    display: flex;
+    flex-direction: row;
 }
 
 .footer-text {
