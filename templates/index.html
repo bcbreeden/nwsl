@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section id="team_standings" class="index-metric index-metric-tall">
+<section class="index-metric index-metric-tall">
     <h2 class="index-metric-heading">Standings</h2>
     <table id='standings'>        
             <thead>
@@ -21,8 +21,8 @@
     </table>
 </section>
 
-<section id="golden_boot_standings" class="index-metric index-metric-normal">
-    <h2 class="index-metric-heading">Goal Leaders</h2>
+<section class="index-metric index-metric-normal">
+    <h2 class="index-metric-heading">Goals</h2>
     <table id='golden_boot_table'>       
             <thead>
                 <tr>
@@ -40,4 +40,44 @@
         </tbody>
     </table>
 </section>
+
+<section class="index-metric index-metric-normal">
+    <h2 class="index-metric-heading">Assists</h2>
+    <table id='golden_boot_table'>       
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Assists</th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for player in top_assists %}
+            <tr>
+                <td>{{ player['player_name'] }}</td>
+                <td>{{ player['primary_assists'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<script>
+    // Array of colors to choose from
+    const colors = ['#ffffff', '#8AC6D0', '#63768D', '#554971', '#36213E'];
+
+    // Get all elements with the class 'index-metric'
+    const metrics = document.querySelectorAll('.index-metric');
+
+    // Iterate over each element and set a random background color
+    metrics.forEach(metric => {
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        metric.style.backgroundColor = randomColor;
+
+        if (randomColor === '#554971' || randomColor === '#36213E') {
+                metric.style.color = 'white';
+        } else {
+                metric.style.color = 'black'; // Set default text color for other backgrounds
+        }
+    });
+</script>
 {% endblock %}

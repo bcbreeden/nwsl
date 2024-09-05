@@ -121,5 +121,33 @@ def get_top_5_players_goals_scored(season):
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('All players xgoals returned.')
+    print('Top 5 goal players returned.')
+    return rows
+
+def get_top_5_players_primary_assists(season):
+    print('Fetching top 5 in primary assists for: {}'.format(season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT 
+            px.*,
+            pi.player_name
+            FROM 
+                player_xgoals AS px
+            JOIN 
+                player_info AS pi
+            ON 
+                px.player_id = pi.player_id
+            WHERE
+                px.season = ?
+            ORDER BY
+                px.primary_assists DESC
+            LIMIT 5;
+        '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('Top 5 players primary assists returned.')
     return rows
