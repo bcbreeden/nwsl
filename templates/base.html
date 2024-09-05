@@ -20,14 +20,14 @@
 <body>
     <section id="content">
         <header>
-            <h1>NWSL Insights</h1>
+            <h1 id="nav-header">NWSL<br />Insights</h1>
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('players') }}">Players</a></li>
-                    <li><a href="{{ url_for('goalkeepers') }}">Goalkeepers</a></li>
-                    <li><a href="{{ url_for('teams') }}">Teams</a></li>
-                    <li><a href="{{ url_for('games') }}">Games</a></li>
+                    <li><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                    <li><a class="nav-link" href="{{ url_for('players') }}">Players</a></li>
+                    <li><a class="nav-link" href="{{ url_for('goalkeepers') }}">Goalkeepers</a></li>
+                    <li><a class="nav-link" href="{{ url_for('teams') }}">Teams</a></li>
+                    <li><a class="nav-link" href="{{ url_for('games') }}">Games</a></li>
                 </ul>
             </nav>
         </header>
@@ -38,7 +38,6 @@
     </section> 
     <script src="script.js"></script>
     <footer>
-        <p class="footer-text">Made with ❤️ using Python and Flask</p>
     </footer>
 </body>
 
