@@ -18,9 +18,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <section id="content">
+    <section id="all-content">
         <header>
-            <h1 id="nav-header">NWSL<br />Insights</h1>
+            <img id="menu-icon" src="{{ url_for('static', filename='img/logo.png') }}">
             <nav>
                 <ul>
                     <li><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
@@ -31,9 +31,13 @@
                 </ul>
             </nav>
         </header>
-
         <main>
-            {% block content %} {% endblock %}
+            <section id="Title">
+                <h1>NWSL Insights</h1>
+            </section>
+            <section id="block-content">
+                {% block content %} {% endblock %}
+            </section>
         </main>
     </section> 
     <script src="script.js"></script>

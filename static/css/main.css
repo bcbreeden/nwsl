@@ -1,6 +1,15 @@
 :root {
     --primary-dark: #36213E;
+    --secondary-light: #B8F3FF;
   }
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--secondary-light);
+}
 
 html, body{
     height: 100%;
@@ -14,7 +23,7 @@ body {
     flex-direction: column;
 }
 
-h1, h2, h3, th {
+a, h1, h2, h3, th {
     font-family: "Merriweather", serif;
     font-weight: 900;
     font-style: normal;
@@ -28,7 +37,7 @@ header {
     padding: 15px;
 }
 
-a, p, td, label, select .dt-info {
+p, td, label, select .dt-info {
     font-family: "Merriweather", serif;
     font-weight: 300;
     font-style: normal;
@@ -36,7 +45,7 @@ a, p, td, label, select .dt-info {
 
 main {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 p, a {
@@ -55,13 +64,24 @@ li {
     padding: 7px;
 }
 
-#content {
+#all-content {
     display: flex;
     flex-direction: row;
     height: 100%;
 }
 
-#nav-header, .nav-link {
+#block-content {
+    display: flex;
+    flex-direction: row;
+}
+
+#menu-icon {
+    height: 175px;
+    width: 124px;
+    align-self: center;
+}
+
+.nav-link {
     color: white;
 }
 
