@@ -114,16 +114,9 @@ class TestDB(unittest.TestCase):
         self.assertEqual(data['team_abbreviation'], 'BAY')
 
     # Team XGoals
-    def test_get_team_xgoals_by_season(self):
-        team_id = 'aDQ0lzvQEv'
-        team_xgoal_data = get_team_xgoals_by_season(team_id, SEASON)
-        self.assertGreater(len(team_xgoal_data), 5)
-    
-    def test_get_all_teams_xgoals_by_season(self):
-        teams_xgoals_data = get_all_teams_xgoals_by_season(SEASON)
-        for row in teams_xgoals_data:
-            self.assertEqual(row['season'], SEASON)
-        self.assertGreater(len(teams_xgoals_data), 5)
+    def test_top_team_xgoals(self):
+        data = get_top_team_xgoals_stat(SEASON, 'goals_for')
+        self.assertGreater(len(data), 5)
 
     # Team XPasses
     def test_get_team_xpasses(self):

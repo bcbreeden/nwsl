@@ -10,11 +10,11 @@ Renders the index template.
 '''
 @app.route('/')
 def index():
-    team_data = db_team_xgoals.get_all_teams_xgoals_by_season(2024)
+    team_points_data = db_team_xgoals.get_top_team_xgoals_stat(2024, 'points')
     top_5_goalscorers = db_player_xgoals.get_top_player_xgoals(2024, 'goals', 5)
     top_5_assists = db_player_xgoals.get_top_player_xgoals(2024, 'primary_assists', 5)
     return render_template('index.html',
-                           teams = team_data,
+                           team_points_data = team_points_data,
                            top_scorers = top_5_goalscorers,
                            top_assists = top_5_assists)
 
