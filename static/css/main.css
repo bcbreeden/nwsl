@@ -30,7 +30,7 @@ body {
     flex-direction: column;
 }
 
-a, h1, h2, h3, th {
+a, h1, h2, h3, th{
     font-family: "Merriweather", serif;
     font-weight: 900;
     font-style: normal;
@@ -76,7 +76,7 @@ p, a {
 
 td, th {
     font-size: small;
-    padding: 7px;
+    padding: 4px;
 }
 
 th {
@@ -141,7 +141,7 @@ ul {
     height: fit-content;
     color: white;
     background-color: var(--primary-dark);
-    max-width: 250px;
+    max-width: 300px;
 }
 
 .nav-link {
@@ -162,6 +162,11 @@ ul {
     font-size: large;
 }
 
+.name-table{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .right-table, .right-table-standings {
     text-align: right;
 }
@@ -177,8 +182,14 @@ ul {
 .special-stat-container {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .stat-icon {
     padding: 15px;
+}
+
+.team-icon {
+    height: 40px;
+    width: auto;
 }

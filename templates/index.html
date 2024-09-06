@@ -5,16 +5,18 @@
 <section class="index-metric">
     <h2 class="index-metric-heading">Standings</h2>
     <table id='standings'>        
-            <thead>
+            <!-- <thead>
                 <tr>
-                    <th>Team</th>
+                    <th></th>
+                    <th>Club</th>
                     <th>Points</th>
                 </tr>
-            </thead>
+            </thead> -->
         <tbody>
             {% for team in team_points_data %}
             <tr>
-                <td><span class="player_first_name">{{ team['team_name'] }}</span></td>
+                <td><img class="team-icon" src="{{ url_for('static', filename='img/' + team['team_abbreviation'] + '.png') }}"></td>
+                <td class="name-table"><span class="player_first_name">{{ team['team_name'] }}</span></td>
                 <td class="right-table-standings player_first_name">{{ team['points'] }}</td>
             </tr>
             {% endfor %}
@@ -25,17 +27,19 @@
 <!-- Goals -->
 <section class="index-metric">
     <h2 class="index-metric-heading">Goals</h2>
-    <table id='golden_boot_table'>       
-            <thead>
+    <table>   
+            <!-- <thead>
                 <tr>
+                    <th></th>
                     <th>Player</th>
                     <th>Goals</th>
                 </tr>
-            </thead>
+            </thead> -->
         <tbody>
             {% for player in top_scorers %}
             <tr>
-                <td>
+                <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                <td class="name-table">
                     <span class="player_first_name">{{player['player_first_name'] }}</span>
                     <br/><span class="player_last_name">{{player['player_last_name'] }}</span>
                 </td>
@@ -49,17 +53,19 @@
 <!-- Assists -->
 <section class="index-metric">
     <h2 class="index-metric-heading">Assists</h2>
-    <table id='golden_boot_table'>       
-            <thead>
+    <table>       
+            <!-- <thead>
                 <tr>
+                    <th></th>
                     <th>Player</th>
                     <th>Assists</th>
                 </tr>
-            </thead>
+            </thead> -->
         <tbody>
             {% for player in top_assists %}
             <tr>
-                <td>
+                <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                <td class="name-table">
                     <span class="player_first_name">{{player['player_first_name'] }}</span>
                     <br/><span class="player_last_name">{{player['player_last_name'] }}</span>
                 </td>
@@ -76,7 +82,8 @@
     <img class="stat-icon" src="{{ url_for('static', filename='img/hot-shot-sml.png') }}">
     {% for player in hot_shot %}
     <div class="special-stat-container">
-        <div class="special-stat">
+        <img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}">
+        <div class="special-stat name-table">
             <span class="player_first_name">{{player['player_first_name'] }}</span>
             <br/><span class="player_last_name">{{player['player_last_name'] }}</span>
         </div>
