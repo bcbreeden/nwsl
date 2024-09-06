@@ -10,6 +10,8 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS player_info (
         player_id TEXT PRIMARY KEY,
         player_name TEXT,
+        player_first_name TEXT,
+        player_last_name TEXT,
         birth_date TEXT,
         height_ft INTEGER,
         height_in INTEGER,

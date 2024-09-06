@@ -13,7 +13,7 @@
         <tbody>
             {% for team in team_points_data %}
             <tr>
-                <td>{{ team['team_name'] }}</td>
+                <td><span class="player_last_name">{{ team['team_short_name'] }}</span></td>
                 <td class="right-table">{{ team['points'] }}</td>
             </tr>
             {% endfor %}
@@ -33,7 +33,10 @@
         <tbody>
             {% for player in top_scorers %}
             <tr>
-                <td>{{ player['player_name'] }} - {{ player['team_name'] }}</td>
+                <td>
+                    <span class="player_first_name">{{player['player_first_name'] }}</span>
+                    <br/><span class="player_last_name">{{player['player_last_name'] }}</span>
+                </td>
                 <td class="right-table">{{ player['goals'] }}</td>
             </tr>
             {% endfor %}
@@ -53,7 +56,10 @@
         <tbody>
             {% for player in top_assists %}
             <tr>
-                <td>{{ player['player_name'] }} - {{ player['team_name'] }}</td>
+                <td>
+                    <span class="player_first_name">{{player['player_first_name'] }}</span>
+                    <br/><span class="player_last_name">{{player['player_last_name'] }}</span>
+                </td>
                 <td class="right-table">{{ player['primary_assists'] }}</td>
             </tr>
             {% endfor %}

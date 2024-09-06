@@ -81,6 +81,7 @@ td, th {
 
 th {
     text-align: left;
+    font-size: large;
 }
 
 ul {
@@ -121,6 +122,12 @@ ul {
 
 .index-metric-heading {
     margin-bottom: 15px;
+    width: 100%;
+    background-color: white;
+    color: var(--primary-dark);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    text-align: center;
 }
 
 .index-metric {
@@ -138,6 +145,10 @@ ul {
 
 .nav-link {
     color: white;
+}
+
+.player_last_name, .right-table {
+    font-size: x-large;
 }
 
 .right-table {

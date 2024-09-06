@@ -9,6 +9,8 @@ def insert_all_players_info():
     for player in players_data:
         player_id = player.get('player_id', 'Unknown ID')
         player_name = player.get('player_name', 'Unknown Name')
+        player_first_name = _split_player_name(player_name)[0]
+        player_last_name = _split_player_name(player_name)[1]
         nationality = player.get('nationality', 'Unknown Nationality')
         birth_date = player.get('birth_date', 'Unknown Birth Date')
         height_ft = player.get('height_ft', 'Unknown Height (ft)')
@@ -22,20 +24,20 @@ def insert_all_players_info():
         # If the season is empty, it is returned as a dict. Otherwise it is a list.
         if isinstance(season_names, list):
             for season in season_names:
-                insert_player_season_entry(player_id, season, cursor)
+                _insert_player_season_entry(player_id, season, cursor)
         elif isinstance(season_names, str):
-            insert_player_season_entry(player_id, season_names, cursor)
+            _insert_player_season_entry(player_id, season_names, cursor)
         else:
             print('No season associated with player:', player_id)
         
         cursor.execute('''
         INSERT OR REPLACE INTO player_info (
-            player_id, player_name, birth_date, height_ft, height_in, nationality,
+            player_id, player_name, player_first_name, player_last_name, birth_date, height_ft, height_in, nationality,
             primary_broad_position, primary_general_position, secondary_broad_position,
             secondary_general_position
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            player_id, player_name, birth_date, height_ft, height_in, nationality,
+            player_id, player_name, player_first_name, player_last_name, birth_date, height_ft, height_in, nationality,
             primary_broad_position, primary_general_position, secondary_broad_position,
             secondary_general_position
         ))
@@ -43,7 +45,7 @@ def insert_all_players_info():
     conn.close()
     print('All players info successfully entered into the database.')
 
-def insert_player_season_entry(player_id, season, cursor):
+def _insert_player_season_entry(player_id, season, cursor):
     season_int = int(season)
     season_player_id = '{}{}'.format(player_id, season)
     cursor.execute('''
@@ -53,6 +55,17 @@ def insert_player_season_entry(player_id, season, cursor):
         ''', (
             season_player_id, player_id, season_int
         ))
+
+def _split_player_name(name):
+    words = name.split(' ', 1)  # Split at the first space
+    if len(words) > 1:
+        first_name = words[0]
+        last_name = words[1]
+    else:
+        first_name = words[0]
+        last_name = ''
+    
+    return [first_name, last_name]
 
 def get_all_players_info():
     print('Fetching all players info from the database...')
