@@ -50,6 +50,7 @@ def create_tables():
         minutes_played INTEGER,
         shots INTEGER,
         shots_on_target INTEGER,
+        shots_on_target_perc INTEGER,
         goals INTEGER,
         xgoals REAL,
         xplace REAL,

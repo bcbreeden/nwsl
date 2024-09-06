@@ -15,6 +15,10 @@ def insert_player_xgoals_by_season(season):
         minutes_played = player.get('minutes_played', 0)
         shots = player.get('shots', 0)
         shots_on_target = player.get('shots_on_target', 0)
+        if shots==0:
+            shots_on_target_perc = 0
+        else:
+            shots_on_target_perc = int((shots_on_target/shots)*100)
         goals = player.get('goals', 0)
         xgoals = player.get('xgoals', 0)
         xplace = player.get('xplace', 0)
@@ -37,14 +41,14 @@ def insert_player_xgoals_by_season(season):
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
                 id, player_id, team_id, general_position, minutes_played, shots, 
-                shots_on_target, goals, xgoals, xplace, goals_minus_xgoals, 
+                shots_on_target, shots_on_target_perc, goals, xgoals, xplace, goals_minus_xgoals, 
                 key_passes, primary_assists, xassists, primary_assists_minus_xassists, 
                 xgoals_plus_xassists, points_added, xpoints_added, season
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         ''', (
-            obj_id, player_id, team_id, general_position, minutes_played, shots, shots_on_target,
+            obj_id, player_id, team_id, general_position, minutes_played, shots, shots_on_target, shots_on_target_perc,
             goals, xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists, xassists,
             primary_assists_minus_xassists, xgoals_plus_xassists, points_added, xpoints_added, int(season)
         ))
@@ -107,7 +111,7 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
         SELECT 
             px.*,
             pi.*,
-            ti.team_name
+            ti.*
         FROM 
             player_xgoals AS px
         JOIN 
@@ -120,6 +124,40 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
             px.team_id  = ti.team_id
         WHERE
             px.season = ?
+        ORDER BY
+            px.{sorting_stat} DESC
+        LIMIT {limit};
+    '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('Top {} sorted by {} for: {} returned'.format(limit, sorting_stat, season))
+    return rows
+
+def player_xgoals_get_sniper(season, sorting_stat, limit, shots_condition):
+    print('Players - Fetching top {} sorted by {} for: {}.'.format(limit, sorting_stat, season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = f'''
+        SELECT 
+            px.*,
+            pi.*,
+            ti.*
+        FROM 
+            player_xgoals AS px
+        JOIN 
+            player_info AS pi
+        ON 
+            px.player_id = pi.player_id
+        JOIN
+            team_info AS ti
+        ON
+            px.team_id  = ti.team_id
+        WHERE
+            px.season = ?
+            AND px.shots > {shots_condition}
         ORDER BY
             px.{sorting_stat} DESC
         LIMIT {limit};

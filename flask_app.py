@@ -17,12 +17,14 @@ def index():
     team_points_data = db_team_xgoals.get_top_team_xgoals_stat(2024, 'points')
     top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(2024, 'goals', 5)
     top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(2024, 'primary_assists', 5)
+    hot_shot = db_player_xgoals.player_xgoals_get_sniper(2024, 'shots_on_target_perc', 1, 10)
     plt_team_goals_points = plot_team_goals_points()
     plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
     return render_template('index.html',
                            team_points_data = team_points_data,
                            top_scorers = top_5_goalscorers,
                            top_assists = top_5_assists,
+                           hot_shot = hot_shot,
                            team_goal_point_plot = plt_team_goals_points_html)
 
 @app.route('/teams')

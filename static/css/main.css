@@ -141,10 +141,17 @@ ul {
     height: fit-content;
     color: white;
     background-color: var(--primary-dark);
+    max-width: 250px;
 }
 
 .nav-link {
     color: white;
+}
+
+.notation{
+    text-align: center;
+    font-weight: 300;
+    font-size: small;
 }
 
 .player_last_name, .right-table {
@@ -153,4 +160,8 @@ ul {
 
 .right-table {
     text-align: right;
+}
+
+.stat-icon {
+    padding: 15px;
 }
