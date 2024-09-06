@@ -33,7 +33,7 @@
         <tbody>
             {% for player in top_scorers %}
             <tr>
-                <td>{{ player['player_name'] }}</td>
+                <td>{{ player['player_name'] }} - {{ player['team_name'] }}</td>
                 <td class="right-table">{{ player['goals'] }}</td>
             </tr>
             {% endfor %}
@@ -53,7 +53,7 @@
         <tbody>
             {% for player in top_assists %}
             <tr>
-                <td>{{ player['player_name'] }}</td>
+                <td>{{ player['player_name'] }} - {{ player['team_name'] }}</td>
                 <td class="right-table">{{ player['primary_assists'] }}</td>
             </tr>
             {% endfor %}

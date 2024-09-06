@@ -96,58 +96,35 @@ def get_all_player_xgoals(season):
     print('All players xgoals returned.')
     return rows
 
-def get_top_5_players_goals_scored(season):
-    print('Fetching top 5 goal scorers for: {}'.format(season))
+def get_top_player_xgoals(season, stat, limit):
+    print('Fetching top {} in {} for: {}.'.format(limit, stat, season))
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    query = '''
+    query = f'''
         SELECT 
             px.*,
-            pi.player_name
-            FROM 
-                player_xgoals AS px
-            JOIN 
-                player_info AS pi
-            ON 
-                px.player_id = pi.player_id
-            WHERE
-                px.season = ?
-            ORDER BY
-                px.goals DESC
-            LIMIT 5;
-        '''
+            pi.*,
+            ti.team_name
+        FROM 
+            player_xgoals AS px
+        JOIN 
+            player_info AS pi
+        ON 
+            px.player_id = pi.player_id
+        JOIN
+            team_info AS ti
+        ON
+            px.team_id  = ti.team_id
+        WHERE
+            px.season = ?
+        ORDER BY
+            px.{stat} DESC
+        LIMIT {limit};
+    '''
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('Top 5 goal players returned.')
-    return rows
-
-def get_top_5_players_primary_assists(season):
-    print('Fetching top 5 in primary assists for: {}'.format(season))
-    conn = sqlite3.connect('db/nwsl.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    query = '''
-        SELECT 
-            px.*,
-            pi.player_name
-            FROM 
-                player_xgoals AS px
-            JOIN 
-                player_info AS pi
-            ON 
-                px.player_id = pi.player_id
-            WHERE
-                px.season = ?
-            ORDER BY
-                px.primary_assists DESC
-            LIMIT 5;
-        '''
-    cursor.execute(query, (season,))
-    rows = cursor.fetchall()
-    conn.commit()
-    conn.close()
-    print('Top 5 players primary assists returned.')
+    print('Top {} in {} for: {} returned'.format(limit, stat, season))
     return rows
