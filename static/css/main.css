@@ -1,5 +1,6 @@
 :root {
     --primary-dark: #36213E;
+    --secondary-dark: #554971;
     --secondary-light: #B8F3FF;
     --secondary-medium: #8AC6D0;
     --gray: #E2E9EB;
@@ -70,8 +71,9 @@ p, a {
     font-size: medium;
 }
 
-td {
+td, th {
     font-size: small;
+    padding: 7px;
 }
 
 th {
@@ -126,18 +128,14 @@ ul {
     align-items: center;
     justify-content: center;
     height: fit-content;
-}
-
-.index-metric-tall {
-    background-color: white;
-    /* height: 400px; */
-}
-
-.index-metric-normal {
-    background-color: var(--secondary-medium);
-    /* height: 200px; */
+    color: white;
+    background-color: var(--primary-dark);
 }
 
 .nav-link {
     color: white;
+}
+
+.right-table {
+    text-align: right;
 }
