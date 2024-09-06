@@ -154,12 +154,29 @@ ul {
     font-size: small;
 }
 
-.player_last_name, .right-table {
-    font-size: x-large;
+.player_first_name {
+    font-size: small;
 }
 
-.right-table {
+.player_last_name, .right-table {
+    font-size: large;
+}
+
+.right-table, .right-table-standings {
     text-align: right;
+}
+
+.special-stat {
+    margin: 10px;
+    vertical-align: middle;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.special-stat-container {
+    display: flex;
+    flex-direction: row;
 }
 
 .stat-icon {

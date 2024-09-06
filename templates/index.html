@@ -14,8 +14,8 @@
         <tbody>
             {% for team in team_points_data %}
             <tr>
-                <td><span class="player_last_name">{{ team['team_short_name'] }}</span></td>
-                <td class="right-table">{{ team['points'] }}</td>
+                <td><span class="player_first_name">{{ team['team_name'] }}</span></td>
+                <td class="right-table-standings player_first_name">{{ team['points'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -75,9 +75,15 @@
     <h2 class="index-metric-heading">Hot Shot</h2>
     <img class="stat-icon" src="{{ url_for('static', filename='img/hot-shot-sml.png') }}">
     {% for player in hot_shot %}
-        <span class="player_first_name">{{player['player_first_name'] }}</span>
-        <br/><span class="player_last_name">{{player['player_last_name'] }}</span>
-        <br/><span class="player_last_name">{{player['shots_on_target_perc'] }}%</span>
+    <div class="special-stat-container">
+        <div class="special-stat">
+            <span class="player_first_name">{{player['player_first_name'] }}</span>
+            <br/><span class="player_last_name">{{player['player_last_name'] }}</span>
+        </div>
+        <div class="special-stat">
+            <span class="player_last_name">{{player['shots_on_target_perc'] }}%</span>
+        </div>
+    </div>
     {% endfor %}
     <h4 class="notation">* Highest percentage of shots on target with at least 10 total shots.</h4>
 </section>
