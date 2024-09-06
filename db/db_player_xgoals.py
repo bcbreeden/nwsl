@@ -96,8 +96,8 @@ def get_all_player_xgoals(season):
     print('All players xgoals returned.')
     return rows
 
-def get_top_player_xgoals(season, stat, limit):
-    print('Players - Fetching top {} in {} for: {}.'.format(limit, stat, season))
+def get_top_player_xgoals_stat(season, sorting_stat, limit):
+    print('Players - Fetching top {} sorted by {} for: {}.'.format(limit, sorting_stat, season))
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -119,12 +119,12 @@ def get_top_player_xgoals(season, stat, limit):
         WHERE
             px.season = ?
         ORDER BY
-            px.{stat} DESC
+            px.{sorting_stat} DESC
         LIMIT {limit};
     '''
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('Top {} in {} for: {} returned'.format(limit, stat, season))
+    print('Top {} sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
