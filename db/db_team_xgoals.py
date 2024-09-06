@@ -47,7 +47,7 @@ def get_top_team_xgoals_stat(season, sorting_stat):
     query = f'''
         SELECT 
             tx.*,
-            ti.team_name
+            ti.*
         FROM 
             team_xgoals AS tx
         JOIN 
