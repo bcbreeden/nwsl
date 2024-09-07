@@ -135,8 +135,8 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
     print('Top {} sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-def player_xgoals_get_sniper(season, sorting_stat, limit, shots_condition):
-    print('Players - Fetching top {} sorted by {} for: {}.'.format(limit, sorting_stat, season))
+def player_xgoals_get_shots_on_target(season, sorting_stat, limit, shots_condition):
+    print('Players - Fetching {} shots on target% sorted by {} for: {}.'.format(limit, sorting_stat, season))
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -166,5 +166,76 @@ def player_xgoals_get_sniper(season, sorting_stat, limit, shots_condition):
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('Top {} sorted by {} for: {} returned'.format(limit, sorting_stat, season))
+    print('Top {} shots on target% sorted by {} for: {} returned'.format(limit, sorting_stat, season))
+    return rows
+
+# needs unit test
+def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
+    print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = f'''
+        SELECT 
+            px.*,
+            pi.*,
+            ti.*
+        FROM 
+            player_xgoals AS px
+        JOIN 
+            player_info AS pi
+        ON 
+            px.player_id = pi.player_id
+        JOIN
+            team_info AS ti
+        ON
+            px.team_id  = ti.team_id
+        WHERE
+            px.season = ?
+            AND pi.primary_broad_position == 'DF'
+        ORDER BY
+            px.{sorting_stat} DESC
+        LIMIT {limit};
+    '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('Top {} minutes played sorted by {} for: {} returned'.format(limit, sorting_stat, season))
+    return rows
+
+# needs unit test
+def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
+    print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
+    conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = f'''
+        SELECT 
+            px.*,
+            pi.*,
+            ti.*
+        FROM 
+            player_xgoals AS px
+        JOIN 
+            player_info AS pi
+        ON 
+            px.player_id = pi.player_id
+        JOIN
+            team_info AS ti
+        ON
+            px.team_id  = ti.team_id
+        WHERE
+            px.season = ?
+            AND pi.primary_broad_position != 'DF'
+            AND pi.primary_broad_position != 'GK'
+        ORDER BY
+            px.{sorting_stat} DESC
+        LIMIT {limit};
+    '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('Top {} minutes played sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
