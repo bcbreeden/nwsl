@@ -24,7 +24,14 @@ class TestDB(unittest.TestCase):
         self.assertEqual(player_data['player_name'], 'Shelby Hogan')
         self.assertEqual(player_data['minutes_played'], 95)
         self.assertEqual(player_data['team_id'], 'Pk5LeeNqOW')
-    
+
+    # Goalkeeper XGoals
+    def test_get_goalkeeper_xgoal_data_by_season(self):
+        player_data = get_goalkeeper_xgoals_by_season('0x5gW0mw57', SEASON)
+        self.assertEqual(player_data['player_name'], 'Shelby Hogan')
+        self.assertEqual(player_data['team_id'], 'Pk5LeeNqOW')
+        self.assertEqual(player_data['minutes_played'], 95)
+
     def test_get_all_goalkeeper_xgoal_data_by_season(self):
         players_data = get_all_goalkeepers_xgoals_by_season(SEASON)
         self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
@@ -35,11 +42,6 @@ class TestDB(unittest.TestCase):
             self.assertTrue(player['id'])
             self.assertTrue(player['player_id'])
             self.assertTrue(player['team_id'])
-
-    # Goalkeeper XGoals
-    def test_get_goalkeeper_xgoal_data_by_season(self):
-        player_data = get_goalkeeper_xgoals_by_season('0x5gW0mw57', SEASON)
-        self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
     
     # Player Goals Added
     def test_get_player_goals_added_by_season(self):
