@@ -18,6 +18,7 @@ def index():
     top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(2024, 'goals', 5)
     top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(2024, 'primary_assists', 5)
     shots_on_target = db_player_xgoals.player_xgoals_get_shots_on_target(2024, 'shots_on_target_perc', 5, 10)
+    total_shots = db_player_xgoals.get_top_player_xgoals_stat(2024, 'shots', 5)
     minutes_played_df = db_player_xgoals.player_xgoals_get_minutes_played_defender(2024, 'minutes_played', 5)
     minutes_played_non_df = db_player_xgoals.player_xgoals_get_minutes_played_non_df(2024, 'minutes_played', 5)
     plt_team_goals_points = plot_team_goals_points()
@@ -29,6 +30,7 @@ def index():
                            shots_on_target = shots_on_target,
                            minutes_played_df = minutes_played_df,
                            minutes_played_non_df = minutes_played_non_df,
+                           total_shots = total_shots,
                            team_goal_point_plot = plt_team_goals_points_html)
 
 @app.route('/teams')

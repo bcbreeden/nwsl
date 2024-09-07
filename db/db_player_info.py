@@ -62,8 +62,8 @@ def _split_player_name(name):
         first_name = words[0]
         last_name = words[1]
     else:
-        first_name = words[0]
-        last_name = ''
+        first_name = ''
+        last_name = words[0]
     
     return [first_name, last_name]
 
