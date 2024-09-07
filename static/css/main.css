@@ -141,7 +141,7 @@ ul {
     height: fit-content;
     color: white;
     background-color: var(--primary-dark);
-    max-width: 300px;
+    width: 300px;
 }
 
 .nav-link {
@@ -163,8 +163,8 @@ ul {
 }
 
 .name-table{
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .right-table, .right-table-standings {
