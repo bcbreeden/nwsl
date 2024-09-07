@@ -56,7 +56,29 @@ def get_all_goalkeepers_xgoals_by_season(season):
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM goalkeeper_xgoals WHERE season = ?', (season,))
+    query = '''
+        SELECT 
+            gx.*,
+            pi.player_name,
+            pi.player_first_name,
+            pi.player_last_name,
+            ti.team_name
+            FROM 
+                goalkeeper_xgoals AS gx
+            JOIN 
+                player_info AS pi
+            ON 
+                gx.player_id = pi.player_id
+            JOIN
+                team_info AS ti
+            ON
+                gx.team_id = ti.team_id   
+            WHERE
+                gx.season = ?
+            ORDER BY
+                gx.saves;
+        '''
+    cursor.execute(query, (season,))
     rows = cursor.fetchall()
     conn.commit()
     conn.close()

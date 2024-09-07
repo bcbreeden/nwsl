@@ -1,4 +1,6 @@
 import unittest
+from unittest.mock import patch, MagicMock
+import sqlite3
 from .db_goalkeeper_goals_added import *
 from .db_goalkeeper_xgoals import *
 from .db_player_goals_added import *
@@ -16,22 +18,6 @@ from .db_setup import create_tables
 SEASON = 2023
 
 class TestDB(unittest.TestCase):
-    # Test Setup
-    create_tables()
-    insert_team_info()
-    insert_all_players_info()
-    insert_goalkeeper_goals_added_by_season(SEASON)
-    insert_goalkeeper_xgoals_by_season(SEASON)
-    insert_player_goals_added_by_season(SEASON)
-    insert_player_xgoals_by_season(SEASON)
-    insert_player_xpass_by_season(SEASON)
-    insert_teams_xgoals_by_season(SEASON)
-    insert_teams_xpass_by_season(SEASON)
-    insert_team_goals_added_by_season(SEASON)
-    insert_all_games_by_season(SEASON)
-    insert_all_games_xgoals_by_season(SEASON)
-    
-
     # Goalkeeper Goals Added
     def test_get_goalkeeper_goals_added_by_season(self):
         player_data = get_goalkeeper_goals_added_by_season('0x5gW0mw57', SEASON)
@@ -42,7 +28,14 @@ class TestDB(unittest.TestCase):
     def test_get_all_goalkeeper_xgoal_data_by_season(self):
         players_data = get_all_goalkeepers_xgoals_by_season(SEASON)
         self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
-    
+        for player in players_data:
+            self.assertEqual(player['season'], SEASON)
+            self.assertEqual(type(player['player_name']), str)
+            self.assertGreater(len(player['player_name']), 1)
+            self.assertTrue(player['id'])
+            self.assertTrue(player['player_id'])
+            self.assertTrue(player['team_id'])
+
     # Goalkeeper XGoals
     def test_get_goalkeeper_xgoal_data_by_season(self):
         player_data = get_goalkeeper_xgoals_by_season('0x5gW0mw57', SEASON)
@@ -138,6 +131,7 @@ class TestDB(unittest.TestCase):
     def test_get_games_xgoals_by_season(self):
         games_data = get_all_games_xgoals_by_season(SEASON)
         self.assertGreater(len(games_data), 5)
+
 
 if __name__ == '__main__':
     unittest.main()
