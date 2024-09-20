@@ -86,7 +86,27 @@ def get_all_player_xpass(season):
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM player_xpass WHERE season = ?', (season,))
+    query = '''
+        SELECT 
+            pxp.*,
+            pi.player_name,
+            pi.player_first_name,
+            pi.player_last_name,
+            ti.team_name
+            FROM 
+                player_xpass AS pxp
+            JOIN 
+                player_info AS pi
+            ON 
+                pxp.player_id = pi.player_id
+            JOIN
+                team_info AS ti
+            ON
+                pxp.team_id = ti.team_id   
+            WHERE
+                pxp.season = ?;
+        '''
+    cursor.execute(query, (season,))
     rows = cursor.fetchall()
     conn.commit()
     conn.close()

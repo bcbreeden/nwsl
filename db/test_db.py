@@ -109,7 +109,10 @@ class TestDB(unittest.TestCase):
     
     def test_get_all_players_xpasses_by_season(self):
         players_data = get_all_player_xpass(SEASON)
-        self.assertTrue(len(players_data) > 1, 'The query should return more than 1 row.')
+        for player in players_data:
+            self.assertEqual(player['season'], SEASON)
+            self.assertNotEqual(player['player_id'], 'Unknown Player ID')
+        self.assertGreater(len(players_data), 25)
 
     # Team Info
     def test_all_team_info_insert(self):
