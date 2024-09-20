@@ -113,13 +113,20 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     query = '''
         SELECT 
             gkga.*,
-            pi.player_name
+            pi.player_name,
+            pi.player_first_name,
+            pi.player_last_name,
+            ti.team_name
             FROM 
                 goalkeeper_goals_added AS gkga
             JOIN 
                 player_info AS pi
             ON 
                 gkga.player_id = pi.player_id
+            JOIN
+                team_info AS ti
+            ON
+                gkga.team_id = ti.team_id
             WHERE
                 gkga.id = ?;
     '''

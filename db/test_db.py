@@ -22,6 +22,8 @@ class TestDB(unittest.TestCase):
         self.assertEqual(player_data['player_name'], 'Shelby Hogan')
         self.assertEqual(player_data['minutes_played'], 95)
         self.assertEqual(player_data['team_id'], 'Pk5LeeNqOW')
+        self.assertEqual(player_data['team_name'], 'Portland Thorns FC')
+        
 
     # Goalkeeper XGoals
     def test_get_goalkeeper_xgoal_data_by_season(self):
@@ -48,6 +50,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(player_data['season'], SEASON)
         self.assertEqual(player_data['player_name'], 'Lena Silano')
         self.assertEqual(player_data['minutes_played'], 369)
+        self.assertEqual(player_data['team_name'], 'Washington Spirit')
     
     # Player Info
     def test_all_player_info_insert(self):

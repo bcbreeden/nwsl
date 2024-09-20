@@ -110,9 +110,7 @@ def get_goalkeeper_xgoals_by_season(player_id, season):
             ON
                 gx.team_id = ti.team_id   
             WHERE
-                gx.id = ?
-            ORDER BY
-                gx.saves;
+                gx.id = ?;
         '''
     cursor.execute(query, (obj_id,))
     rows = cursor.fetchone()
