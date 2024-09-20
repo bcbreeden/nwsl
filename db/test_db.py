@@ -82,8 +82,11 @@ class TestDB(unittest.TestCase):
     
     # Player XGoals
     def test_get_player_xgoals_by_season(self):
-        player_data = get_player_xgoals('0Oq6243Pq6', SEASON)
-        self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
+        data = get_player_xgoals('0Oq6243Pq6', SEASON)
+        self.assertEqual(data['player_name'], 'Lena Silano')
+        self.assertEqual(data['team_name'], 'Washington Spirit')
+        self.assertEqual(data['minutes_played'], 369)
+        self.assertEqual(data['shots_on_target'], 1)
     
     def test_get_all_players_xgoals_by_season(self):
         players_data = get_all_player_xgoals(SEASON)
