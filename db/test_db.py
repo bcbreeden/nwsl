@@ -95,7 +95,7 @@ class TestDB(unittest.TestCase):
             self.assertNotEqual(player['player_id'], 'Unknown Player ID')
         self.assertGreater(len(players_data), 25)
 
-    def test_top_xgoals(self):
+    def test_top_xgoals_return_length(self):
         players_data = get_top_player_xgoals_stat(SEASON, 'goals', 5)
         self.assertEqual(len(players_data), 5)
         players_data = get_top_player_xgoals_stat(SEASON, 'primary_assists', 3)
