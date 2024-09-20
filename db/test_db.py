@@ -12,7 +12,6 @@ from .db_team_goals_added import *
 from .db_games import *
 from .db_games_xgoals import *
 
-
 SEASON = 2023
 
 class TestDB(unittest.TestCase):
@@ -23,7 +22,6 @@ class TestDB(unittest.TestCase):
         self.assertEqual(player_data['minutes_played'], 95)
         self.assertEqual(player_data['team_id'], 'Pk5LeeNqOW')
         self.assertEqual(player_data['team_name'], 'Portland Thorns FC')
-        
 
     # Goalkeeper XGoals
     def test_get_goalkeeper_xgoal_data_by_season(self):
@@ -104,7 +102,10 @@ class TestDB(unittest.TestCase):
     # Player XPasses
     def test_get_player_xpasses_by_season(self):
         player_data = get_player_xpass('0Oq6243Pq6', SEASON)
-        self.assertTrue(len(player_data) > 1, 'The query should return more than 1 row.')
+        self.assertEqual(player_data['player_name'], 'Lena Silano')
+        self.assertEqual(player_data['team_name'], 'Washington Spirit')
+        self.assertEqual(player_data['attempted_passes'], 64)
+        self.assertEqual(player_data['count_games'], 12)
     
     def test_get_all_players_xpasses_by_season(self):
         players_data = get_all_player_xpass(SEASON)
