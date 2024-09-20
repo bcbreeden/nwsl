@@ -62,9 +62,12 @@ class TestDB(unittest.TestCase):
     
     def test_get_player_seasons(self):
         id = '0Oq6243Pq6'
-        data_row_1 = get_player_seasons(id)[0]
-        self.assertEqual(data_row_1['player_id'], id)
-        self.assertEqual(data_row_1['year'], 2023)
+        player_seasons_data = get_player_seasons(id)
+        player_row_1 = player_seasons_data[0]
+        self.assertEqual(player_row_1['player_id'], id)
+        self.assertEqual(player_row_1['year'], 2023)
+        for row in player_seasons_data:
+            self.assertEqual(type(row['year']), int)
     
     def test_get_player_info(self):
         id = '0Oq6243Pq6'
