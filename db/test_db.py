@@ -55,6 +55,9 @@ class TestDB(unittest.TestCase):
     # Player Info
     def test_all_player_info_insert(self):
         players_info_data = get_all_players_info()
+        for player in players_info_data:
+            self.assertNotEqual(player['player_name'], 'Unknown Name')
+            self.assertNotEqual(player['player_id'], 'Unknown ID')
         self.assertGreater(len(players_info_data), 25)
     
     def test_get_player_seasons(self):

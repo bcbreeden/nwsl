@@ -70,6 +70,7 @@ def _split_player_name(name):
 def get_all_players_info():
     print('Fetching all players info from the database...')
     conn = sqlite3.connect('db/nwsl.db')
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_info')
     rows = cursor.fetchall()
