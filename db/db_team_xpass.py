@@ -57,7 +57,20 @@ def get_team_xpass(team_id, season):
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM team_xpass WHERE id = ?', (obj_id,))
+    query = f'''
+        SELECT 
+            txp.*,
+            ti.*
+        FROM 
+            team_xpass AS txp
+        JOIN 
+            team_info AS ti
+        ON 
+            txp.team_id = ti.team_id
+        WHERE
+            txp.id = ?;
+    '''
+    cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

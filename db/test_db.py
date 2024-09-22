@@ -117,6 +117,11 @@ class TestDB(unittest.TestCase):
     # Team Info
     def test_all_team_info_insert(self):
         teams_info_data = get_all_teams_info()
+        for team in teams_info_data:
+            self.assertNotEqual(team['team_id'], 'Unknown ID')
+            self.assertNotEqual(team['team_name'], 'Unknown Name')
+            self.assertNotEqual(team['team_short_name'], 'Unknown Short Name')
+            self.assertNotEqual(team['team_abbreviation'], 'Unknown Abbreviation')
         self.assertGreater(len(teams_info_data), 10)
     
     def test_get_team_by_id(self):
@@ -128,14 +133,26 @@ class TestDB(unittest.TestCase):
 
     # Team XGoals
     def test_top_team_xgoals(self):
-        data = get_top_team_xgoals_stat(SEASON, 'goals_for')
-        self.assertGreater(len(data), 5)
+        team_data = get_top_team_xgoals_stat(SEASON, 'goals_for')
+        for team in team_data:
+            self.assertNotEqual(team['team_id'], 'Unknown ID')
+            self.assertNotEqual(team['team_name'], 'Unknown Name')
+            self.assertNotEqual(team['team_short_name'], 'Unknown Short Name')
+            self.assertNotEqual(team['team_abbreviation'], 'Unknown Abbreviation')
+            self.assertGreater(team['goals_for'], 0)
+        self.assertGreater(len(team_data), 5)
 
     # Team XPasses
     def test_get_team_xpasses(self):
         team_id = 'aDQ0lzvQEv'
-        team_xgoal_data = get_team_xpass(team_id, SEASON)
-        self.assertGreater(len(team_xgoal_data), 5)
+        team_xpass_data = get_team_xpass(team_id, SEASON)
+        self.assertNotEqual(team_xpass_data['team_id'], 'Unknown ID')
+        self.assertEqual(team_xpass_data['team_name'], 'Washington Spirit')
+        self.assertEqual(team_xpass_data['team_short_name'], 'Washington')
+        self.assertEqual(team_xpass_data['team_abbreviation'], 'WAS')
+        self.assertEqual(team_xpass_data['count_games'], 22)
+        self.assertEqual(team_xpass_data['avg_vertical_distance_difference'], 1.0292)
+        self.assertEqual(team_xpass_data['attempted_passes_against'], 9650)
     
     # Team Goals Added
     def test_get_team_goals_added_by_season(self):
