@@ -22,19 +22,21 @@ def insert_teams_xgoals_by_season(season):
         goal_difference_minus_xgoal_difference = team.get('goal_difference_minus_xgoal_difference', 0)
         points = team.get('points', 0)
         xpoints = team.get('xpoints', 0)
+        predicted_points = round(_calc_predicted_points(count_games, goals_for, goals_against), 3)
+        point_diff = (predicted_points - points)
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xgoals (
                 id, team_id, count_games, shots_for, shots_against, goals_for, 
                 goals_against, goal_difference, xgoals_for, xgoals_against, 
                 xgoal_difference, goal_difference_minus_xgoal_difference, 
-                points, xpoints, season
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                points, xpoints, season, predicted_points, point_diff
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 obj_id, team_id, count_games, shots_for, shots_against, goals_for,
                 goals_against, goal_difference, xgoals_for, xgoals_against,
                 xgoal_difference, goal_difference_minus_xgoal_difference,
-                points, xpoints, int(season)
+                points, xpoints, int(season), predicted_points, point_diff
             ))
         conn.commit()
     conn.close()
@@ -65,3 +67,10 @@ def get_top_team_xgoals_stat(season, sorting_stat):
     conn.close()
     print('Team XGoals sorted by {} for: {} returned'.format(sorting_stat, season))
     return rows
+
+def _calc_predicted_points(count_games, goals_for, goals_against):
+    perc_points_prediction = (goals_for**1.2)/((goals_for**1.2) + (goals_against**1.2))
+    available_points = count_games * 3
+    predicted_points = perc_points_prediction * available_points
+    return(predicted_points)
+
