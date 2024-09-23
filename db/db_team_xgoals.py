@@ -23,7 +23,7 @@ def insert_teams_xgoals_by_season(season):
         points = team.get('points', 0)
         xpoints = team.get('xpoints', 0)
         predicted_points = round(_calc_predicted_points(count_games, goals_for, goals_against), 3)
-        point_diff = (predicted_points - points)
+        point_diff = round((predicted_points - points), 3)
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xgoals (
@@ -69,7 +69,7 @@ def get_top_team_xgoals_stat(season, sorting_stat):
     return rows
 
 def _calc_predicted_points(count_games, goals_for, goals_against):
-    perc_points_prediction = (goals_for**1.2)/((goals_for**1.2) + (goals_against**1.2))
+    perc_points_prediction = (goals_for**1.35)/((goals_for**1.35) + (goals_against**1.35))
     available_points = count_games * 3
     predicted_points = perc_points_prediction * available_points
     return(predicted_points)

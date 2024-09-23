@@ -7,17 +7,12 @@
         <thead>
             <tr>
                 <th>Team</th>
-                <th>M</th>
+                <th>Matches</th>
                 <th>Points</th>
-                <th>xPoints</th>
-                <th>SF</th>
-                <th>SA</th>
+                <th>Predicted Points</th>
+                <th>Points Diff</th>
                 <th>GF</th>
                 <th>GA</th>
-                <th>xGF</th>
-                <th>xGA</th>
-                <th>xGD</th>
-                <th>GDif/xGDif</th>
             </tr>
         </thead>
         <tbody>
@@ -26,15 +21,10 @@
                 <td>{{ team['team_name'] }}</td>
                 <td>{{ team['count_games'] }}</td>
                 <td>{{ team['points'] }}</td>
-                <td>{{ team['xpoints'] }}</td>
-                <td>{{ team['shots_for'] }}</td>
-                <td>{{ team['shots_against'] }}</td>
+                <td>{{ team['predicted_points'] }}</td>
+                <td>{{ team['point_diff'] }}</td>
                 <td>{{ team['goals_for'] }}</td>
                 <td>{{ team['goals_against'] }}</td>
-                <td>{{ team['xgoals_for'] }}</td>
-                <td>{{ team['xgoals_against'] }}</td>
-                <td>{{ team['xgoal_difference'] }}</td>
-                <td>{{ team['goal_difference_minus_xgoal_difference'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -42,7 +32,18 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
         <script>
             $(document).ready( function () {
-                $('#teams').DataTable();
+                $('#teams').DataTable(
+                    {
+                        paging: false,
+                        order: [
+                            [3, 'dsc']
+                        ],
+                        info: false
+                    });
             } );
+
+            $.extend( $.fn.dataTable.defaults, {
+                 searching: false
+                } );
     </script>
 {% endblock %}
