@@ -83,7 +83,20 @@ def get_team_goals_added_by_season(team_id, season):
     conn = sqlite3.connect('db/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM team_goals_added WHERE id = ?', (obj_id,))
+    query = f'''
+        SELECT 
+            tga.*,
+            ti.*
+        FROM 
+            team_goals_added AS tga
+        JOIN 
+            team_info AS ti
+        ON 
+            tga.team_id = ti.team_id
+        WHERE
+            tga.id = ?;
+    '''
+    cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
     conn.commit()
     conn.close()

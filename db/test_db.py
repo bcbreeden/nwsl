@@ -157,18 +157,27 @@ class TestDB(unittest.TestCase):
     # Team Goals Added
     def test_get_team_goals_added_by_season(self):
         team_data = get_team_goals_added_by_season('aDQ0lzvQEv', SEASON)
-        self.assertTrue(len(team_data) > 1, 'The query should return more than 1 row.')
+        self.assertNotEqual(team_data['team_id'], 'Unknown ID')
+        self.assertEqual(team_data['team_name'], 'Washington Spirit')
+        self.assertEqual(team_data['team_short_name'], 'Washington')
+        self.assertEqual(team_data['team_abbreviation'], 'WAS')
+        self.assertEqual(team_data['minutes'], 2235)
+        self.assertEqual(team_data['fouling_num_actions_against'], 259)
     
     # Games
     def test_get_games_by_season(self):
         games_data = get_all_games_by_season(SEASON)
         self.assertGreater(len(games_data), 5)
+        for game in games_data:
+            self.assertNotEqual(game['game_id'], 'Unknown Game ID')
     
     # Games XGoals
     def test_get_games_xgoals_by_season(self):
         games_data = get_all_games_xgoals_by_season(SEASON)
         self.assertGreater(len(games_data), 5)
-
+        for game in games_data:
+            self.assertNotEqual(game['game_id'], 'Unknown Game ID')
 
 if __name__ == '__main__':
     unittest.main()
+    
