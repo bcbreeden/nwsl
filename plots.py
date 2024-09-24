@@ -112,7 +112,7 @@ def plot_goal_vs_xgoal():
     fig.add_trace(go.Scatter(
         x=xgoals_for, y=team_abbr, 
         mode='markers',
-        marker=dict(color='orange', size=25),
+        marker=dict(color='darkorange', size=25),
         name='Expected Goals'
     ))
 

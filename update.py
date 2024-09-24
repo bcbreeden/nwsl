@@ -10,6 +10,8 @@ Requires tables to be setup, if setup.py has not been run, run that first.
 '''
 if __name__ == '__main__':
     season = datetime.now().year
+    db_player_info.insert_all_players_info()
+    db_team_info.insert_team_info()
     db_games_xgoals.insert_all_games_xgoals_by_season(season)
     db_games.insert_all_games_by_season(season)
     db_goalkeeper_goals_added.insert_goalkeeper_goals_added_by_season(season)
@@ -20,5 +22,3 @@ if __name__ == '__main__':
     db_team_goals_added.insert_team_goals_added_by_season(season)
     db_team_xgoals.insert_teams_xgoals_by_season(season)
     db_team_xpass.insert_teams_xpass_by_season(season)
-    db_player_info.insert_all_players_info()
-    db_team_info.insert_team_info()
