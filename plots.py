@@ -30,8 +30,6 @@ def plot_team_goals_points():
                                     line=dict(width=3, 
                                         color='darkviolet')
                                     ))
-
-    # Customize the layout
     fig.update_layout(
         title='Goals/Points for NWSL Teams',
         xaxis_title='Points',
@@ -45,4 +43,39 @@ def plot_team_goals_points():
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
 
+    return fig
+
+def plot_team_points_diff():
+    rows = db_team_xgoals.get_top_team_xgoals_stat(2024, 'point_diff')
+    point_diff_data = [row['point_diff'] for row in rows]
+    team_labels = [row['team_name'] for row in rows]
+    team_abbr = [row['team_abbreviation'] for row in rows]
+    hover_text = [f'{label}<br>Point_Diff: {x}' for label, x in zip(team_labels, point_diff_data)]
+    fig = go.Figure(
+            data=[
+                go.Bar(
+                        x=team_abbr,
+                        y=point_diff_data,
+                        text=team_abbr,
+                        hovertext=hover_text,
+                        hoverinfo='text',
+                        marker=dict(
+                            color=point_diff_data,
+                            colorscale='sunsetdark'
+                        )
+                )
+            ]
+        )
+    fig.update_layout(
+        title='Point Difference for NWSL Teams',
+        yaxis_title='Point Diff',
+        xaxis=dict(showticklabels=False),
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=0, r=0, t=40, b=0),
+        width=1600,
+        height=800
+    )
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
     return fig

@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from db import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
-from plots import plot_team_goals_points
+from plots import plot_team_goals_points, plot_team_points_diff
 import plotly.graph_objects as go
 import plotly.io as pio
 
@@ -21,8 +21,6 @@ def index():
     total_shots = db_player_xgoals.get_top_player_xgoals_stat(2024, 'shots', 5)
     minutes_played_df = db_player_xgoals.player_xgoals_get_minutes_played_defender(2024, 'minutes_played', 5)
     minutes_played_non_df = db_player_xgoals.player_xgoals_get_minutes_played_non_df(2024, 'minutes_played', 5)
-    plt_team_goals_points = plot_team_goals_points()
-    plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
     return render_template('index.html',
                            team_points_data = team_points_data,
                            top_scorers = top_5_goalscorers,
@@ -30,14 +28,19 @@ def index():
                            shots_on_target = shots_on_target,
                            minutes_played_df = minutes_played_df,
                            minutes_played_non_df = minutes_played_non_df,
-                           total_shots = total_shots,
-                           team_goal_point_plot = plt_team_goals_points_html)
+                           total_shots = total_shots)
 
 @app.route('/teams')
 def teams():
     team_data = db_team_xgoals.get_top_team_xgoals_stat(2024, 'points')
+    plt_team_goals_points = plot_team_goals_points()
+    plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
+    plt_team_points_diff = plot_team_points_diff()
+    plt_team_points_diff_html = pio.to_html(plt_team_points_diff, full_html=False)
     return render_template('teams.html',
-                           teams = team_data)
+                           teams = team_data,
+                           team_goal_point_plot = plt_team_goals_points_html,
+                           team_points_dif_plot = plt_team_points_diff_html)
 
 @app.route('/games')
 def games():

@@ -3,6 +3,7 @@
 {% block content %}
     <h1>Teams</h1>
 
+    <!-- DATA TABLE -->
     <table id='teams'>
         <thead>
             <tr>
@@ -13,6 +14,11 @@
                 <th>Points Diff</th>
                 <th>GF</th>
                 <th>GA</th>
+                <th>Goal Diff</th>
+                <th>xGF</th>
+                <th>xGA</th>
+                <th>xGoal Diff</th>
+                <th>Goal|XGoal Diff</th>
             </tr>
         </thead>
         <tbody>
@@ -25,10 +31,27 @@
                 <td>{{ team['point_diff'] }}</td>
                 <td>{{ team['goals_for'] }}</td>
                 <td>{{ team['goals_against'] }}</td>
+                <td>{{ team['goal_difference'] }}</td>
+                <td>{{ team['xgoals_for'] }}</td>
+                <td>{{ team['xgoals_against'] }}</td>
+                <td>{{ team['xgoal_difference'] }}</td>
+                <td>{{ team['goal_difference_minus_xgoal_difference'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+
+
+    <!-- PLOTS -->
+    <div class="plot_container">
+        {{ team_goal_point_plot | safe }}
+    </div>
+
+    <div class="plot_container">
+        {{ team_points_dif_plot | safe }}
+    </div>
+
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
         <script>
             $(document).ready( function () {
