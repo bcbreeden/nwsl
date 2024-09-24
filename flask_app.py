@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from db import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
-from plots import plot_team_goals_points, plot_team_points_diff
+from plots import plot_team_goals_points, plot_team_points_diff, plot_goal_vs_xgoal
 import plotly.graph_objects as go
 import plotly.io as pio
 
@@ -37,10 +37,13 @@ def teams():
     plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
     plt_team_points_diff = plot_team_points_diff()
     plt_team_points_diff_html = pio.to_html(plt_team_points_diff, full_html=False)
+    plt_team_goal_xgoal_diff = plot_goal_vs_xgoal()
+    plt_team_goal_xgoal_diff_html =  pio.to_html(plt_team_goal_xgoal_diff, full_html=False)
     return render_template('teams.html',
                            teams = team_data,
                            team_goal_point_plot = plt_team_goals_points_html,
-                           team_points_dif_plot = plt_team_points_diff_html)
+                           team_points_dif_plot = plt_team_points_diff_html,
+                           team_goal_xgoal_diff_plot = plt_team_goal_xgoal_diff_html)
 
 @app.route('/games')
 def games():

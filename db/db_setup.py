@@ -188,6 +188,7 @@ def create_tables():
         season INTEGER,
         predicted_points REAL,
         point_diff REAL,
+        goalfor_xgoalfor_diff REAL,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id)
     )
     ''')

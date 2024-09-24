@@ -16,27 +16,28 @@ def insert_teams_xgoals_by_season(season):
         goals_for = team.get('goals_for', 0)
         goals_against = team.get('goals_against', 0)
         goal_difference = team.get('goal_difference', 0)
-        xgoals_for = team.get('xgoals_for', 0)
-        xgoals_against = team.get('xgoals_against', 0)
-        xgoal_difference = team.get('xgoal_difference', 0)
-        goal_difference_minus_xgoal_difference = team.get('goal_difference_minus_xgoal_difference', 0)
+        xgoals_for = round(team.get('xgoals_for', 0), 1)
+        xgoals_against = round(team.get('xgoals_against', 0), 1)
+        xgoal_difference = round(team.get('xgoal_difference', 0), 1)
+        goal_difference_minus_xgoal_difference = round(team.get('goal_difference_minus_xgoal_difference', 0), 1)
         points = team.get('points', 0)
         xpoints = team.get('xpoints', 0)
         predicted_points = round(_calc_predicted_points(count_games, goals_for, goals_against), 3)
         point_diff = round((predicted_points - points), 3)
+        goalfor_xgoalfor_diff = round(goals_for - xgoals_for, 3)
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xgoals (
                 id, team_id, count_games, shots_for, shots_against, goals_for, 
                 goals_against, goal_difference, xgoals_for, xgoals_against, 
                 xgoal_difference, goal_difference_minus_xgoal_difference, 
-                points, xpoints, season, predicted_points, point_diff
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 obj_id, team_id, count_games, shots_for, shots_against, goals_for,
                 goals_against, goal_difference, xgoals_for, xgoals_against,
                 xgoal_difference, goal_difference_minus_xgoal_difference,
-                points, xpoints, int(season), predicted_points, point_diff
+                points, xpoints, int(season), predicted_points, point_diff, goalfor_xgoalfor_diff
             ))
         conn.commit()
     conn.close()
