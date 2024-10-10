@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from db import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
@@ -54,6 +54,20 @@ def players():
     player_data = db_player_xgoals.get_all_player_xgoals(2024)
     return render_template('players.html',
                            players = player_data)
+
+@app.route('/player', methods=['GET', 'POST'])
+def player():
+    if request.method == 'POST':
+        player_id = request.form.get('player_id')
+        obj_id = request.form.get('obj_id')
+        return render_template('player.html',
+                               player_id = player_id,
+                               obj_id = obj_id)
+    player_data = db_player_xgoals.get_all_player_xgoals(2024)
+    return render_template('players.html',
+                           players = player_data)
+
+    
 
 @app.route('/goalkeepers')
 def goalkeepers():

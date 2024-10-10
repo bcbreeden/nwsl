@@ -44,7 +44,6 @@ class TestDB(unittest.TestCase):
     # Player Goals Added
     def test_get_player_goals_added_by_season(self):
         player_data = get_player_goals_added_by_season('0Oq6243Pq6', SEASON)
-        print(player_data['dribbling_goals_added_raw'], 'HERE')
         self.assertEqual(player_data['season'], SEASON)
         self.assertEqual(player_data['player_name'], 'Lena Silano')
         self.assertEqual(player_data['minutes_played'], 369)
