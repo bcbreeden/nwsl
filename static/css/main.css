@@ -1,6 +1,5 @@
 :root {
-    --dark-blue: #0d0221;
-    --medium-blue: #261447;
+    --dark-blue: #070221;
     --yellow: #f9c80e;
     --pink: #f706cf;
     --gray: #e4e4e4;
@@ -110,7 +109,7 @@ ul {
     display: flex;
     flex-direction: row;
     height: 100%;
-    background-color: var(--medium-blue);
+    background-color: var(--dark-blue);
     flex-wrap: wrap;
 }
 
@@ -129,7 +128,7 @@ ul {
 }
 
 .grid_button {
-    background-color: var(--medium-blue);
+    background-color: var(--dark-blue);
     border: 0;
     color: var(--pink);
     cursor: pointer;
