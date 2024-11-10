@@ -23,7 +23,7 @@
                     <form action="/player" method="POST">
                         <input type="hidden" id="player_id" name="player_id" value="{{ player['player_id'] }}">
                         <input type="hidden" id="obj_id" name="obj_id" value="{{ player['id'] }}">
-                        <input type="submit" value="{{ player['player_name'] }}">
+                        <input type="submit" class="grid_button" value="{{ player['player_name'] }}">
                     </form> 
                 </td>
                 <td>{{ player['team_name'] }}</td>

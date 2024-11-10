@@ -1,18 +1,20 @@
 :root {
-    --primary-dark: #0C0438;
-    --secondary-dark: #554971;
-    --secondary-light: #B8F3FF;
-    --secondary-medium: #8AC6D0;
-    --gray: #E2E9EB;
+    --dark-blue: #0d0221;
+    --medium-blue: #261447;
+    --yellow: #f9c80e;
+    --pink: #f706cf;
+    --gray: #e4e4e4;
+    --orange: #FF6c11;
     --padding-left: 35px;
   }
 
 a {
     text-decoration: none;
+    color: var(--pink);
 }
 
 a:hover {
-    color: var(--secondary-light);
+    color: var(--orange);
 }
 
 html, body{
@@ -30,9 +32,9 @@ body {
     flex-direction: column;
 }
 
-a, h1, h2, h3, th{
-    font-family: "Merriweather", serif;
-    font-weight: 900;
+a, h2, h3, th{
+    font-family: "Montserrat", serif;
+    font-weight: 700;
     font-style: normal;
     padding: 0;
     margin: 0;
@@ -40,6 +42,10 @@ a, h1, h2, h3, th{
 
 h1 {
     font-size: xx-large;
+    color: var(--yellow);
+    font-family: "Audiowide", serif;
+    padding: 0;
+    margin: 0;
 }
 
 h2 {
@@ -49,7 +55,7 @@ h2 {
 header {
     display: flex;
     flex-direction: column;
-    background-color: var(--primary-dark);
+    background-color: var(--dark-blue);
     padding: 15px;
 }
 
@@ -58,8 +64,8 @@ li {
 }
 
 p, td, label, select .dt-info {
-    font-family: "Merriweather", serif;
-    font-weight: 300;
+    font-family: "Montserrat", serif;
+    font-weight: 400;
     font-style: normal;
 }
 
@@ -77,11 +83,13 @@ p, a {
 td, th {
     font-size: small;
     padding: 4px;
+    color: white;
 }
 
 th {
     text-align: left;
     font-size: large;
+    color: var(--yellow);
 }
 
 ul {
@@ -102,7 +110,7 @@ ul {
     display: flex;
     flex-direction: row;
     height: 100%;
-    background-color: var(--gray);
+    background-color: var(--medium-blue);
     flex-wrap: wrap;
 }
 
@@ -120,11 +128,22 @@ ul {
     font-size: small;
 }
 
+.grid_button {
+    background-color: var(--medium-blue);
+    border: 0;
+    color: var(--pink);
+    cursor: pointer;
+}
+
+.grid_button:hover {
+    color: var(--orange);
+}
+
 .index-metric-heading {
     margin-bottom: 15px;
     width: 100%;
     background-color: white;
-    color: var(--primary-dark);
+    color: var(--dark-blue);
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     text-align: center;
@@ -140,12 +159,8 @@ ul {
     justify-content: center;
     height: fit-content;
     color: white;
-    background-color: var(--primary-dark);
+    background-color: var(--dark-blue);
     width: 300px;
-}
-
-.nav-link {
-    color: white;
 }
 
 .notation{
