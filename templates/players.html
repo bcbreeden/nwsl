@@ -1,40 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <table id='players'>
-        <thead>
-            <tr>
-                <th>Player Name</th>
-                <th>Team</th>
-                <th>Position</th>
-                <th>Shots</th>
-                <th>Shots on Target</th>
-                <th>Goals</th>
-                <th>Primary Assists</th>
-                <th>Minutes Played</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for player in players %}
-            <tr>
-                <td>
-                    <form action="/player" method="POST">
-                        <input type="hidden" id="player_id" name="player_id" value="{{ player['player_id'] }}">
-                        <input type="hidden" id="obj_id" name="obj_id" value="{{ player['id'] }}">
-                        <input type="submit" class="grid_button" value="{{ player['player_name'] }}">
-                    </form> 
-                </td>
-                <td>{{ player['team_name'] }}</td>
-                <td>{{ player['general_position'] }}</td>
-                <td>{{ player['shots'] }}</td>
-                <td>{{ player['shots_on_target'] }}</td>
-                <td>{{ player['goals'] }}</td>
-                <td>{{ player['primary_assists'] }}</td>
-                <td>{{ player['minutes_played'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="stat-table-container">
+        <h1>Position Players</h1>
+        <table id='players'>
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                    <th>Team</th>
+                    <th>Position</th>
+                    <th>Shots</th>
+                    <th>Shots on Target</th>
+                    <th>Goals</th>
+                    <th>Primary Assists</th>
+                    <th>Minutes Played</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                <tr>
+                    <td>
+                        <form action="/player" method="POST">
+                            <input type="hidden" id="player_id" name="player_id" value="{{ player['player_id'] }}">
+                            <input type="hidden" id="obj_id" name="obj_id" value="{{ player['id'] }}">
+                            <input type="submit" class="grid_button" value="{{ player['player_name'] }}">
+                            <p class="hidden">{{ player['player_name'] }}</p>
+                        </form> 
+                    </td>
+                    <td>{{ player['team_name'] }}</td>
+                    <td class="stat">{{ player['general_position'] }}</td>
+                    <td class="stat">{{ player['shots'] }}</td>
+                    <td class="stat">{{ player['shots_on_target'] }}</td>
+                    <td class="stat">{{ player['goals'] }}</td>
+                    <td class="stat">{{ player['primary_assists'] }}</td>
+                    <td class="stat">{{ player['minutes_played'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
             <script>
                 $(document).ready( function () {

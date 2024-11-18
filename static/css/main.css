@@ -138,6 +138,10 @@ ul {
     color: var(--orange);
 }
 
+.hidden {
+    display: none;
+}
+
 .index-metric-heading {
     margin-bottom: 15px;
     width: 100%;
@@ -185,6 +189,10 @@ ul {
     text-align: right;
 }
 
+.stat {
+    text-align: center !important;
+}
+
 .special-stat {
     margin: 10px;
     vertical-align: middle;
@@ -197,6 +205,11 @@ ul {
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.stat-table-container {
+    display: flex;
+    flex-direction: column;
 }
 
 .stat-icon {
