@@ -207,3 +207,17 @@ ul {
     height: 40px;
     width: auto;
 }
+
+/* DATA TABLE STLYING */
+.dt-length, .dt-layout-cell {
+    color: var(--gray) !important;
+}
+
+.dt-paging-button {
+    color: var(--pink) !important;
+}
+
+.current {
+    background: transparent !important;
+    border: 1px solid var(--pink) !important;
+}
