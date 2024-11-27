@@ -20,15 +20,18 @@ def plot_team_goals_points():
                                     hovertext=hover_text,
                                     hoverinfo='text',
                                     marker=dict(
-                                        size=goals_data,
+                                        size=points_data,
                                         sizemode='diameter',
-                                        sizeref=max(goals_data)/85, 
+                                        sizeref=max(points_data)/85, 
                                         sizemin=5 ,
-                                        color=goals_data,
-                                        colorscale='sunsetdark'
+                                        color=points_data,
+                                        colorscale=[
+                                            [0, '#c1121f'],
+                                            [1, '#003049']
+                                        ],
+                                        cmin=min(points_data),
+                                        cmax=max(points_data)
                                     ),
-                                    line=dict(width=3, 
-                                        color='darkviolet')
                                     ))
     fig.update_layout(
         title='Goals/Points for NWSL Teams',
@@ -61,8 +64,13 @@ def plot_team_points_diff():
                         hoverinfo='text',
                         marker=dict(
                             color=point_diff_data,
-                            colorscale='sunsetdark'
-                        )
+                            colorscale=[
+                                    [0, '#c1121f'],
+                                    [1, '#003049']
+                        ],
+                        cmin=min(point_diff_data),
+                        cmax=max(point_diff_data)
+                    )
                 )
             ]
         )
@@ -104,7 +112,7 @@ def plot_goal_vs_xgoal():
     fig.add_trace(go.Scatter(
         x=goals_for, y=team_abbr, 
         mode='markers',
-        marker=dict(color='purple', size=25),
+        marker=dict(color='#003049', size=25),
         name='Goals'
     ))
 
@@ -112,7 +120,7 @@ def plot_goal_vs_xgoal():
     fig.add_trace(go.Scatter(
         x=xgoals_for, y=team_abbr, 
         mode='markers',
-        marker=dict(color='darkorange', size=25),
+        marker=dict(color='#c1121f', size=25),
         name='Expected Goals'
     ))
 
