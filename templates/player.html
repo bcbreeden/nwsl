@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <img class="team-icon" src="{{ url_for('static', filename='img/' + player_data['team_abbreviation'] + '.png') }}">
     Player Name: {{player_data['player_name']}}<br/>
     Position: {{player_data['general_position']}}<br/>
     Minutes: {{player_data['minutes_played']}}<br/>

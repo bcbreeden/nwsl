@@ -67,7 +67,8 @@ def get_player_xgoals(player_id, season):
             pi.player_name,
             pi.player_first_name,
             pi.player_last_name,
-            ti.team_name
+            ti.team_name,
+            ti.team_abbreviation
             FROM 
                 player_xgoals AS px
             JOIN 

@@ -82,6 +82,7 @@ class TestDB(unittest.TestCase):
         data = get_player_xgoals('0Oq6243Pq6', SEASON)
         self.assertEqual(data['player_name'], 'Lena Silano')
         self.assertEqual(data['team_name'], 'Washington Spirit')
+        self.assertEqual(data['team_abbreviation'], 'WAS')
         self.assertEqual(data['minutes_played'], 369)
         self.assertEqual(data['shots_on_target'], 1)
     
