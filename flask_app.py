@@ -60,9 +60,11 @@ def player():
     if request.method == 'POST':
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
+        player_xgoals_data = db_player_xgoals.get_player_xgoals(player_id, 2024)
         return render_template('player.html',
                                player_id = player_id,
-                               obj_id = obj_id)
+                               obj_id = obj_id,
+                               player_data = player_xgoals_data)
     player_data = db_player_xgoals.get_all_player_xgoals(2024)
     return render_template('players.html',
                            players = player_data)
