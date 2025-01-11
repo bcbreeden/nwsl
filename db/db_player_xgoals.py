@@ -64,9 +64,7 @@ def get_player_xgoals(player_id, season):
     query = '''
         SELECT 
             px.*,
-            pi.player_name,
-            pi.player_first_name,
-            pi.player_last_name,
+            pi.*,
             ti.team_name,
             ti.team_abbreviation
             FROM 

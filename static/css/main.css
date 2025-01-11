@@ -218,6 +218,11 @@ ul {
     padding: 15px;
 }
 
+.team_logo {
+    height: 150px;
+    width: auto;
+}
+
 .team-icon {
     height: 40px;
     width: auto;
