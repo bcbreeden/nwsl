@@ -1,7 +1,7 @@
 XGOAL_WEIGHTS = {
     "minutes_played": 0.05,
     "shots": 0.1,
-    "shots_on_target": 0.1,
+    "shots_on_target": 0.125,
     "shots_on_target_perc": 0.05,
     "goals": 0.2,
     "xgoals": 0.15,
@@ -22,7 +22,8 @@ EXCLUDED_METRICS = {
     "height_in",
     "minutes_played",
     "primary_assists_minus_xassists",
-    "goals_minus_xgoals"
+    "goals_minus_xgoals",
+    "shots_on_target_perc"
 }
 
 MIN_PLAYING_TIME_THRESHOLD = 400  # Minimum minutes played to calculate meaningful xGoal strength
