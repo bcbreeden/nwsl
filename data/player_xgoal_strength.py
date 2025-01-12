@@ -61,7 +61,7 @@ def calculate_player_xgoal_strength(normalized_player_stats, xgoals_weight=None)
         for stat in xgoals_weight
     )
 
-    return round(player_strength, 3)
+    return round((player_strength * 100), 3)
 
 def calculate_xgoals_xassists(player_stats):
     """
