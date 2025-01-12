@@ -74,4 +74,3 @@ def _calc_predicted_points(count_games, goals_for, goals_against):
     available_points = count_games * 3
     predicted_points = perc_points_prediction * available_points
     return(predicted_points)
-

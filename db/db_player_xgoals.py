@@ -256,3 +256,71 @@ def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
     conn.close()
     print('Top {} minutes played sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
+
+def get_stat_ranges():
+    conn = sqlite3.connect('db/nwsl.db')
+    cursor = conn.cursor()
+    
+    query = """
+    SELECT 
+        MIN(minutes_played), MAX(minutes_played),
+        MIN(shots), MAX(shots),
+        MIN(shots_on_target), MAX(shots_on_target),
+        MIN(shots_on_target_perc), MAX(shots_on_target_perc),
+        MIN(goals), MAX(goals),
+        MIN(xgoals), MAX(xgoals),
+        MIN(xplace), MAX(xplace),
+        MIN(goals_minus_xgoals), MAX(goals_minus_xgoals),
+        MIN(key_passes), MAX(key_passes),
+        MIN(primary_assists), MAX(primary_assists),
+        MIN(xassists), MAX(xassists),
+        MIN(primary_assists_minus_xassists), MAX(primary_assists_minus_xassists),
+        MIN(xgoals_plus_xassists), MAX(xgoals_plus_xassists),
+        MIN(points_added), MAX(points_added),
+        MIN(xpoints_added), MAX(xpoints_added)
+    FROM player_xgoals;
+    """
+    
+    cursor.execute(query)
+    result = cursor.fetchone()
+    
+    stat_names = [
+        "minutes_played", "shots", "shots_on_target", "shots_on_target_perc", 
+        "goals", "xgoals", "xplace", "goals_minus_xgoals", 
+        "key_passes", "primary_assists", "xassists", 
+        "primary_assists_minus_xassists", "xgoals_plus_xassists", 
+        "points_added", "xpoints_added"
+    ]
+    
+    stat_ranges = {stat_names[i]: (result[i*2], result[i*2+1]) for i in range(len(stat_names))}
+    
+    conn.close()
+    return stat_ranges
+
+def calculate_player_strength(normalized_player_stats):
+    weights = {
+    "minutes_played": 0.05,
+    "shots": 0.1,
+    "shots_on_target": 0.1,
+    "shots_on_target_perc": 0.05,
+    "goals": 0.2,
+    "xgoals": 0.15,
+    "xplace": 0.05,
+    "goals_minus_xgoals": 0.05,
+    "key_passes": 0.1,
+    "primary_assists": 0.1,
+    "xassists": 0.1,
+    "primary_assists_minus_xassists": 0.05,
+    "xgoals_plus_xassists": 0.1,
+    "points_added": 0.1,
+    "xpoints_added": 0.05
+}
+    
+    # Calculate weighted score
+    player_strength = sum(
+    normalized_player_stats[stat] * weights[stat]
+    for stat in normalized_player_stats
+    if stat not in {'season', 'height_ft', 'height_in'}  # Exclude unwanted keys
+    )
+    
+    return player_strength
