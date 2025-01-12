@@ -155,7 +155,7 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
     print('Top {} sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-def player_xgoals_get_shots_on_target(season, sorting_stat, limit, shots_condition):
+def player_xgoals_get_shots_on_target(season, sorting_stat, limit, minimum_shots):
     print('Players - Fetching {} shots on target% sorted by {} for: {}.'.format(limit, sorting_stat, season))
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
@@ -177,7 +177,7 @@ def player_xgoals_get_shots_on_target(season, sorting_stat, limit, shots_conditi
             px.team_id  = ti.team_id
         WHERE
             px.season = ?
-            AND px.shots > {shots_condition}
+            AND px.shots > {minimum_shots}
         ORDER BY
             px.{sorting_stat} DESC
         LIMIT {limit};
@@ -191,6 +191,36 @@ def player_xgoals_get_shots_on_target(season, sorting_stat, limit, shots_conditi
 
 # needs unit test
 def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
+    """
+    Retrieve the minutes played for defender (DF) players, sorted by a specified stat.
+
+    This function queries the database to fetch player data for a given season, filtering
+    only defenders (players with `primary_broad_position` of 'DF') and sorting the results
+    based on the specified statistic. The results are limited to a specified number of players.
+
+    Args:
+        season (int): The season year to filter the data (e.g., 2023).
+        sorting_stat (str): The player_xgoals column by which to sort the results 
+                            (e.g., "minutes_played", "goals").
+        limit (int): The maximum number of players to return in the result.
+
+    Process:
+        1. Establish a connection to the SQLite database and set the row factory.
+        2. Execute an SQL query to:
+            - Select data from `player_xgoals`, `player_info`, and `team_info`.
+            - Filter by season and include only players with `primary_broad_position` of 'DF'.
+            - Sort results by the specified stat in descending order.
+            - Limit the results to the specified number of players.
+        3. Fetch and return the results.
+
+    Returns:
+        list: A list of rows (SQLite Row objects) containing defender player data 
+              that matches the query.
+
+    Example Usage:
+        rows = player_xgoals_get_minutes_played_defender(2023, "minutes_played", 10)
+
+    """
     print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
@@ -226,6 +256,35 @@ def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
 
 # needs unit test
 def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
+    """
+    Retrieve the minutes played for players who are not defenders (DF) or goalkeepers (GK),
+    sorted by a specified stat.
+
+    This function queries the database to fetch player data for a given season, excluding
+    defenders and goalkeepers, and sorts the results based on the specified statistic. 
+    The results are limited to a specified number of players.
+
+    Args:
+        season (int): The season year to filter the data (e.g., 2023).
+        sorting_stat (str): The player_xgoals column by which to sort the results 
+                            (e.g., "minutes_played", "goals").
+        limit (int): The maximum number of players to return in the result.
+
+    Process:
+        1. Establish a connection to the SQLite database and set the row factory.
+        2. Execute an SQL query to:
+            - Select data from `player_xgoals`, `player_info`, and `team_info`.
+            - Filter by season and exclude players with `primary_broad_position` of DF or GK.
+            - Sort results by the specified stat in descending order.
+            - Limit the results to the specified number of players.
+        3. Fetch and return the results.
+
+    Returns:
+        list: A list of rows (SQLite Row objects) containing player data that matches the query.
+
+    Example Usage:
+        rows = player_xgoals_get_minutes_played_non_df(2023, "minutes_played", 10)
+    """
     print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
@@ -261,6 +320,34 @@ def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
     return rows
 
 def get_stat_ranges():
+    """
+    Retrieve the minimum and maximum values for key player statistics from the database.
+
+    This function queries the `player_xgoals` table to calculate the min and max values
+    for various player stats. The results are returned as a dictionary with each stat's
+    name as the key and a tuple of (min, max) values as the value.
+
+    Args:
+        None
+
+    Process:
+        1. Establish a connection to the SQLite database.
+        2. Execute an SQL query to calculate the minimum and maximum values for key stats.
+        3. Map the query results to a dictionary using stat names as keys.
+        4. Close the database connection and return the dictionary.
+
+    Returns:
+        dict: A dictionary containing the min and max values for each stat. 
+              Format: { "stat_name": (min_value, max_value), ... }
+
+    Example Output:
+        {
+            "minutes_played": (0, 3000),
+            "shots": (0, 150),
+            "goals": (0, 25),
+            ...
+        }
+    """
     conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     
