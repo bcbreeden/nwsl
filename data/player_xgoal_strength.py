@@ -105,17 +105,7 @@ def generate_player_stat_weights():
     ]
 
     primary_metric = "xgoals_xassists_per_90"
-    conn = sqlite3.connect('data/nwsl.db')
-    query = '''
-        SELECT 
-            minutes_played, shots, shots_on_target, shots_on_target_perc, goals,
-            xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists,
-            xassists, primary_assists_minus_xassists, xgoals_plus_xassists,
-            points_added, xpoints_added, xgoals_xassists_per_90
-        FROM player_xgoals
-        WHERE minutes_played >= 400;
-    '''
-    data = pd.read_sql_query(query, conn)
+    data = _get_player_xgoal_data()
 
     # Filter data to include only the relevant stats and the primary metric
     filtered_data = data[relevant_stats + [primary_metric]]
@@ -135,3 +125,18 @@ def generate_player_stat_weights():
     # print('Calculated stat weights:', weights)
 
     return weights
+
+def _get_player_xgoal_data():
+    conn = sqlite3.connect('data/nwsl.db')
+    query = '''
+        SELECT 
+            minutes_played, shots, shots_on_target, shots_on_target_perc, goals,
+            xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists,
+            xassists, primary_assists_minus_xassists, xgoals_plus_xassists,
+            points_added, xpoints_added, xgoals_xassists_per_90
+        FROM player_xgoals
+        WHERE minutes_played >= 400;
+    '''
+    data = pd.read_sql_query(query, conn)
+    conn.close
+    return data
