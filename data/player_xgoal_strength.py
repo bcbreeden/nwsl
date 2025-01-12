@@ -1,3 +1,7 @@
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+import sqlite3
+
 XGOAL_WEIGHTS = {
     "minutes_played": 0.05,
     "shots": 0.1,
@@ -30,6 +34,7 @@ MIN_PLAYING_TIME_THRESHOLD = 400  # Minimum minutes played to calculate meaningf
 
 def calculate_player_xgoal_strength(normalized_player_stats):
     minutes_played = normalized_player_stats.get("minutes_played", 0)
+    xgoals_weight = generate_player_stat_weights()
 
     # Return 0 if the player hasn't met the minimum minutes threshold
     if minutes_played < MIN_PLAYING_TIME_THRESHOLD:
@@ -46,13 +51,84 @@ def calculate_player_xgoal_strength(normalized_player_stats):
     }
 
     # Debugging: Print per-90 stats to verify
-    print("Per-90 stats:", per_90_stats)
+    # print("Per-90 stats:", per_90_stats)
 
     # Calculate player strength using weighted stats
     player_strength = sum(
-        per_90_stats.get(stat, 0) * XGOAL_WEIGHTS.get(stat, 0)
-        for stat in XGOAL_WEIGHTS
+        per_90_stats.get(stat, 0) * xgoals_weight.get(stat, 0)
+        for stat in xgoals_weight
     )
 
     # Return the rounded player strength
     return round((player_strength * 100), 5)
+
+def calculate_xgoals_xassists(player_stats):
+    """
+    Calculate xGoals + xAssists for a player, normalized per 90 minutes.
+    
+    Args:
+        player_stats (dict): Dictionary containing player stats, including
+                             'xgoals', 'xassists', and 'minutes_played'.
+    
+    Returns:
+        float: xGoals + xAssists per 90 minutes, rounded to two decimals.
+    """
+    xgoals = player_stats.get('xgoals', 0)
+    xassists = player_stats.get('xassists', 0)
+    minutes_played = player_stats.get('minutes_played', 0)
+    
+    # Avoid division by zero and handle players with very low minutes
+    if minutes_played < 400:  # Threshold for meaningful minutes played
+        return 0
+
+    # Calculate per-90 metric
+    xgoals_xassists_per_90 = ((xgoals + xassists) / minutes_played) * 90
+    return round(xgoals_xassists_per_90, 2)
+
+def generate_player_stat_weights():
+    """
+    Generate dynamic weights for player stats based on their correlation
+    with the primary metric (e.g., xGoals + xAssists per 90).
+    
+    Returns:
+        dict: Dictionary of dynamic weights for each player stat.
+    """
+    # List of all stats to include in the analysis
+    relevant_stats = [
+        "minutes_played", "shots", "shots_on_target", "shots_on_target_perc",
+        "goals", "xgoals", "xplace", "goals_minus_xgoals",
+        "key_passes", "primary_assists", "xassists", "primary_assists_minus_xassists",
+        "xgoals_plus_xassists", "points_added", "xpoints_added"
+    ]
+
+    primary_metric = "xgoals_xassists_per_90"
+    conn = sqlite3.connect('data/nwsl.db')
+    query = '''
+        SELECT 
+            minutes_played, shots, shots_on_target, shots_on_target_perc, goals,
+            xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists,
+            xassists, primary_assists_minus_xassists, xgoals_plus_xassists,
+            points_added, xpoints_added, xgoals_xassists_per_90
+        FROM player_xgoals
+        WHERE minutes_played >= 400;
+    '''
+    data = pd.read_sql_query(query, conn)
+
+    # Filter data to include only the relevant stats and the primary metric
+    filtered_data = data[relevant_stats + [primary_metric]]
+
+    # Calculate correlation of each stat with the primary metric
+    correlations = filtered_data.corr()[primary_metric].drop(primary_metric)
+
+    # Normalize correlations to sum to 1
+    scaler = MinMaxScaler()
+    normalized_corr = scaler.fit_transform(correlations.values.reshape(-1, 1)).flatten()
+    normalized_weights = normalized_corr / normalized_corr.sum()
+
+    # Create a dictionary of weights
+    weights = {stat: weight for stat, weight in zip(correlations.index, normalized_weights)}
+
+    # Debugging: Print weights to verify
+    # print('Calculated stat weights:', weights)
+
+    return weights

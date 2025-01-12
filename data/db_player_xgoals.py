@@ -2,6 +2,7 @@ from api import make_asa_api_call
 from .normalize import normalize_player_stats
 from .player_xgoal_strength import calculate_player_xgoal_strength
 import sqlite3
+import pandas as pd
 
 def insert_player_xgoals_by_season(season):
     print('Inserting data for players (xgoal) for season:', season)
@@ -300,6 +301,30 @@ def get_stat_ranges():
     return stat_ranges
 
 def update_player_xgoal_strength(season):
+    """
+    Update the xGoal Strength metric for all players in the specified season.
+
+    This function retrieves all player data for a given season from the database, normalizes 
+    their stats based on historical data ranges, calculates the xGoal Strength metric for each 
+    player, and updates the player_xgoals table with the calculated values.
+
+    Args:
+        season (int): The season year for which the xGoal Strength metric should be updated.
+
+    Process:
+        1. Fetch all player xgoals data for the specified season using the get_all_player_xgoals function.
+        2. Retrieve stat ranges for normalization from the database using the get_stat_ranges function.
+        3. For each player:
+            - Normalize their stats using the retrieved ranges.
+            - Calculate xGoal Strength using the normalized stats.
+        4. Update the player_xgoals table in the database with the calculated metric.
+    
+    Database Table:
+        Updates the `player_xgoals` table, specifically the `xgoal_strength` column.
+
+    Returns:
+        None
+    """
     print(f'Updating xgoal_strength for season: {season}')
     
     # Fetch all player xgoals data for the given season
@@ -333,3 +358,64 @@ def update_player_xgoal_strength(season):
     conn.close()
 
     print(f'xgoal_strength updated for all players in season {season}.')
+
+def update_xgoals_xassists_per_90(season):
+    """
+    Update the xGoals + xAssists per 90 metric for all players in the specified season.
+
+    This function retrieves all player data for a given season from the database, calculates 
+    the xGoals + xAssists per 90 metric for each player, and updates the player_xgoals table 
+    with the calculated values. Players with fewer than 400 minutes played will have their 
+    xGoals + xAssists per 90 metric set to 0.
+
+    Args:
+        season (int): The season year for which the xGoals + xAssists per 90 metric should be updated.
+    
+    Process:
+        1. Fetch all player xgoals data for the specified season using the get_all_player_xgoals function.
+        2. For each player:
+            - Extract xGoals, xAssists, and minutes played.
+            - Calculate xGoals + xAssists per 90 if the player has >= 400 minutes played.
+        3. Update the player_xgoals table in the database with the calculated metric.
+    
+    Database Table:
+        Updates the `player_xgoals` table, specifically the `xgoals_xassists_per_90` column.
+
+    Returns:
+        None
+    """
+    print(f'Updating xGoals + xAssists per 90 for season: {season}')
+    
+    # Fetch all player xgoals data for the given season
+    rows = get_all_player_xgoals(season)
+
+    conn = sqlite3.connect('data/nwsl.db')
+    cursor = conn.cursor()
+
+    for row in rows:
+        # Convert row to a dictionary
+        player_stats = dict(row)
+
+        # Extract relevant stats
+        xgoals = player_stats.get('xgoals', 0)
+        xassists = player_stats.get('xassists', 0)
+        minutes_played = player_stats.get('minutes_played', 0)
+
+        # Calculate xGoals + xAssists per 90
+        if minutes_played >= 400:  # Minimum minutes threshold
+            xgoals_xassists_per_90 = round(((xgoals + xassists) / minutes_played) * 90, 2)
+        else:
+            xgoals_xassists_per_90 = 0
+
+        # Update the row in the database
+        cursor.execute('''
+            UPDATE player_xgoals
+            SET xgoals_xassists_per_90 = ?
+            WHERE id = ?
+        ''', (xgoals_xassists_per_90, player_stats['id']))
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+    print(f'xGoals + xAssists per 90 updated for all players in season {season}.')
