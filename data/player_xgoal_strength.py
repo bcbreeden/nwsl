@@ -32,26 +32,28 @@ EXCLUDED_METRICS = {
 
 MIN_PLAYING_TIME_THRESHOLD = 400  # Minimum minutes played to calculate meaningful xGoal strength
 
-def calculate_player_xgoal_strength(normalized_player_stats):
+def calculate_player_xgoal_strength(normalized_player_stats, xgoals_weight=None):
+    """
+    Calculate a player's xGoal strength, optionally using a custom weight dict.
+    If xgoals_weight is not provided, fall back to dynamic weights.
+    """
+    # Only import and call generate_player_stat_weights if needed
+    if xgoals_weight is None:
+        from .player_xgoal_strength import generate_player_stat_weights
+        xgoals_weight = generate_player_stat_weights()
+
     minutes_played = normalized_player_stats.get("minutes_played", 0)
-    xgoals_weight = generate_player_stat_weights()
 
     # Return 0 if the player hasn't met the minimum minutes threshold
     if minutes_played < MIN_PLAYING_TIME_THRESHOLD:
         return 0
 
-    # Debugging: Print the player's minutes and normalized stats for verification
-    print(f"Calculating xGoal strength for player with {minutes_played} minutes played...")
-
-    # Convert stats to per-90 values
+    # Convert stats to per-90 values (ignore EXCLUDED_METRICS)
     per_90_stats = {
         stat: (value / minutes_played) * 90
         for stat, value in normalized_player_stats.items()
         if stat not in EXCLUDED_METRICS and minutes_played > 0
     }
-
-    # Debugging: Print per-90 stats to verify
-    # print("Per-90 stats:", per_90_stats)
 
     # Calculate player strength using weighted stats
     player_strength = sum(
@@ -59,8 +61,7 @@ def calculate_player_xgoal_strength(normalized_player_stats):
         for stat in xgoals_weight
     )
 
-    # Return the rounded player strength
-    return round((player_strength * 100), 5)
+    return round(player_strength, 3)
 
 def calculate_xgoals_xassists(player_stats):
     """

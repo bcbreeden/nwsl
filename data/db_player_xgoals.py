@@ -155,7 +155,7 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
     print('Top {} sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-def player_xgoals_get_shots_on_target(season, sorting_stat, limit, minimum_shots):
+def player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
     print('Players - Fetching {} shots on target% sorted by {} for: {}.'.format(limit, sorting_stat, season))
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
