@@ -5,7 +5,7 @@ def insert_goalkeeper_goals_added_by_season(season):
     print('Inserting goals added by season for:', season)
     api_string = 'nwsl/goalkeepers/goals-added?season_name={}&stage_name=Regular Season'.format(str(season))
     players_data = make_asa_api_call(api_string)[1]
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
@@ -107,7 +107,7 @@ def insert_goalkeeper_goals_added_by_season(season):
 def get_goalkeeper_goals_added_by_season(player_id, season):
     print('Fetching goalkeeper xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = player_id + str(season)
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''

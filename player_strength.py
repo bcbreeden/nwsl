@@ -1,4 +1,4 @@
-from db import db_player_xgoals, normalize
+from data import db_player_xgoals, normalize
 
 player_stats = db_player_xgoals.get_player_xgoals('BLMv7oZO5x', 2024)
 # Example usage
@@ -13,4 +13,4 @@ for stat, value in normalized_player_stats.items():
         print(f"{stat}: {value}")
 
 print('STRENGTH')
-print(db_player_xgoals.calculate_player_strength(normalized_player_stats))
+print(db_player_xgoals.calculate_player_xgoal_strength(normalized_player_stats))

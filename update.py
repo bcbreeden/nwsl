@@ -1,4 +1,4 @@
-from db import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
+from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
 from datetime import datetime

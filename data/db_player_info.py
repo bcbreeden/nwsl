@@ -4,7 +4,7 @@ import sqlite3
 def insert_all_players_info():
     print('Attempting  to insert all players info...')
     players_data = make_asa_api_call('nwsl/players')[1]
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown ID')
@@ -69,7 +69,7 @@ def _split_player_name(name):
 
 def get_all_players_info():
     print('Fetching all players info from the database...')
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_info')
@@ -81,7 +81,7 @@ def get_all_players_info():
 
 def get_all_player_seasons():
     print('Fetching all player seasons from the database...')
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_seasons')
@@ -93,7 +93,7 @@ def get_all_player_seasons():
 
 def get_player_seasons(player_id):
     print('Fetching seasons for:', player_id)
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_seasons WHERE player_id = ?', (player_id,))
@@ -105,7 +105,7 @@ def get_player_seasons(player_id):
 
 def get_player_info_by_id(player_id):
     print('Fetching player info for:', player_id)
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_info WHERE player_id = ?', (player_id,))

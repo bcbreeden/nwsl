@@ -5,7 +5,7 @@ def insert_player_xgoals_by_season(season):
     print('Inserting data for players (xgoal) for season:', season)
     api_string = 'nwsl/players/xgoals?season_name={}&stage_name=Regular Season'.format(str(season))
     players_data = make_asa_api_call(api_string)[1]
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
@@ -58,7 +58,7 @@ def insert_player_xgoals_by_season(season):
 def get_player_xgoals(player_id, season):
     print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = player_id + str(season)
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -89,7 +89,7 @@ def get_player_xgoals(player_id, season):
 
 def get_all_player_xgoals(season):
     print('Fetching all players xgoals for season: {}'.format(season))
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -121,7 +121,7 @@ def get_all_player_xgoals(season):
 
 def get_top_player_xgoals_stat(season, sorting_stat, limit):
     print('Players - Fetching top {} sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -154,7 +154,7 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
 
 def player_xgoals_get_shots_on_target(season, sorting_stat, limit, shots_condition):
     print('Players - Fetching {} shots on target% sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -189,7 +189,7 @@ def player_xgoals_get_shots_on_target(season, sorting_stat, limit, shots_conditi
 # needs unit test
 def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
     print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -224,7 +224,7 @@ def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
 # needs unit test
 def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
     print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -258,7 +258,7 @@ def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
     return rows
 
 def get_stat_ranges():
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     
     query = """
@@ -297,7 +297,7 @@ def get_stat_ranges():
     conn.close()
     return stat_ranges
 
-def calculate_player_strength(normalized_player_stats):
+def calculate_player_xgoal_strength(normalized_player_stats):
     weights = {
     "minutes_played": 0.05,
     "shots": 0.1,

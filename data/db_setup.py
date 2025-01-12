@@ -2,7 +2,7 @@ import sqlite3
 
 def create_tables():
     # Connect to SQLite database (or create it if it doesn't exist)
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
 
     print('Starting to build tables...')

@@ -5,7 +5,7 @@ def insert_teams_xgoals_by_season(season):
     print('Inserting teams data (xgoals) for season:', season)
     api_string = 'nwsl/teams/xgoals?season_name={}&stage_name=Regular Season'.format(str(season))
     teams_data = make_asa_api_call(api_string)[1]
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     for team in teams_data:
         team_id = team.get('team_id', 'Unknown Team ID')
@@ -44,7 +44,7 @@ def insert_teams_xgoals_by_season(season):
 
 def get_top_team_xgoals_stat(season, sorting_stat):
     print('Teams - Xgoals in {} for: {}.'.format(sorting_stat, season))
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''

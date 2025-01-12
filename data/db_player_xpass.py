@@ -5,7 +5,7 @@ def insert_player_xpass_by_season(season):
     print('Inserting data for players (xpass) for season:', season)
     api_string = 'nwsl/players/xpass?season_name={}&stage_name=Regular Season'.format(str(season))
     players_data = make_asa_api_call(api_string)[1]
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
@@ -51,7 +51,7 @@ def insert_player_xpass_by_season(season):
 def get_player_xpass(player_id, season):
     print('Fetching player xpass for:{}, Season: {}'.format(player_id, season))
     obj_id = player_id + str(season)
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -83,7 +83,7 @@ def get_player_xpass(player_id, season):
 
 def get_all_player_xpass(season):
     print('Fetching all players xpass for season: {}'.format(season))
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''

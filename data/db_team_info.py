@@ -4,7 +4,7 @@ import sqlite3
 def insert_team_info():
     print('Attempting  to insert all teams info...')
     teams_data = make_asa_api_call('nwsl/teams')[1]
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     for team in teams_data:
         team_id = team.get('team_id', 'Unknown ID')
@@ -26,7 +26,7 @@ def insert_team_info():
 
 def get_all_teams_info():
     print('Fetching all teams info from the database...')
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM team_info')
@@ -38,7 +38,7 @@ def get_all_teams_info():
 
 def get_team_info_by_id(team_id):
     print('Fetching team information for team id:', team_id)
-    conn = sqlite3.connect('db/nwsl.db')
+    conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM team_info WHERE team_id = ?', (team_id,))
