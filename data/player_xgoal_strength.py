@@ -2,24 +2,6 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import sqlite3
 
-XGOAL_WEIGHTS = {
-    "minutes_played": 0.05,
-    "shots": 0.1,
-    "shots_on_target": 0.125,
-    "shots_on_target_perc": 0.05,
-    "goals": 0.2,
-    "xgoals": 0.15,
-    "xplace": 0.05,
-    "goals_minus_xgoals": 0.05,
-    "key_passes": 0.1,
-    "primary_assists": 0.1,
-    "xassists": 0.1,
-    "primary_assists_minus_xassists": 0.05,
-    "xgoals_plus_xassists": 0.1,
-    "points_added": 0.1,
-    "xpoints_added": 0.05
-}
-
 EXCLUDED_METRICS = {
     "season",
     "height_ft",
@@ -39,7 +21,6 @@ def calculate_player_xgoal_strength(normalized_player_stats, xgoals_weight=None)
     """
     # Only import and call generate_player_stat_weights if needed
     if xgoals_weight is None:
-        from .player_xgoal_strength import generate_player_stat_weights
         xgoals_weight = generate_player_stat_weights()
 
     minutes_played = normalized_player_stats.get("minutes_played", 0)
