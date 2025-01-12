@@ -16,10 +16,31 @@ MIN_PLAYING_TIME_THRESHOLD = 400  # Minimum minutes played to calculate meaningf
 
 def calculate_player_xgoal_strength(normalized_player_stats, xgoals_weight=None):
     """
-    Calculate a player's xGoal strength, optionally using a custom weight dict.
-    If xgoals_weight is not provided, fall back to dynamic weights.
+    Calculate a player's xGoal strength, optionally using a custom weight dictionary.
+
+    This function computes the xGoal strength for a player by normalizing their stats to 
+    per-90-minute values, applying weights to the normalized stats, and summing the weighted 
+    contributions. If a custom weight dictionary (`xgoals_weight`) is not provided, dynamic 
+    weights are generated. The function also excludes stats from the calculation based on 
+    a predefined exclusion list (`EXCLUDED_METRICS`) and ensures players meet a minimum 
+    playing time threshold.
+
+    Args:
+        normalized_player_stats (dict): 
+            A dictionary containing normalized stats for a player, where keys are 
+            stat names and values are normalized values.
+        
+        xgoals_weight (dict, optional): 
+            A dictionary of weights for each stat, where keys are stat names and 
+            values are their corresponding weights. If not provided, dynamic 
+            weights are generated using `generate_player_stat_weights()`.
+
+    Returns:
+        float: 
+            The calculated xGoal strength for the player, scaled by 100 and rounded 
+            to three decimal places. Returns 0 if the player does not meet the 
+            minimum playing time threshold.
     """
-    # Only import and call generate_player_stat_weights if needed
     if xgoals_weight is None:
         xgoals_weight = generate_player_stat_weights()
 
