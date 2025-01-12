@@ -14,7 +14,7 @@ def normalize_player_stats(player_stats, stat_ranges):
     # Normalize the remaining stats
     normalized_stats = {}
     for stat, value in player_stats.items():
-        if stat in stat_ranges:
+        if stat in stat_ranges and stat != 'minutes_played':
             min_val, max_val = stat_ranges[stat]
             normalized_stats[stat] = normalize(value, min_val, max_val)
         else:
