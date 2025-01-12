@@ -3,6 +3,7 @@
 {% block content %}
     <img class="team_logo" src="{{ url_for('static', filename='img/' + player_xgoals_data['team_abbreviation'] + '.png') }}">
     {{player_xgoals_data['player_id']}}<br/>
+    {{player_xgoals_data['xgoal_strength']}}<br/>
     Player Name: {{player_xgoals_data['player_name']}}<br/>
     Team: {{player_xgoals_data['team_name']}}<br/>
     Games Played: {{player_xpass_data['count_games']}}<br/>

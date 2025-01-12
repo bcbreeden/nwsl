@@ -1,4 +1,6 @@
 from api import make_asa_api_call
+from .normalize import normalize_player_stats
+from .player_xgoal_strength import calculate_player_xgoal_strength
 import sqlite3
 
 def insert_player_xgoals_by_season(season):
@@ -297,30 +299,37 @@ def get_stat_ranges():
     conn.close()
     return stat_ranges
 
-def calculate_player_xgoal_strength(normalized_player_stats):
-    weights = {
-    "minutes_played": 0.05,
-    "shots": 0.1,
-    "shots_on_target": 0.1,
-    "shots_on_target_perc": 0.05,
-    "goals": 0.2,
-    "xgoals": 0.15,
-    "xplace": 0.05,
-    "goals_minus_xgoals": 0.05,
-    "key_passes": 0.1,
-    "primary_assists": 0.1,
-    "xassists": 0.1,
-    "primary_assists_minus_xassists": 0.05,
-    "xgoals_plus_xassists": 0.1,
-    "points_added": 0.1,
-    "xpoints_added": 0.05
-}
+def update_player_xgoal_strength(season):
+    print(f'Updating xgoal_strength for season: {season}')
     
-    # Calculate weighted score
-    player_strength = sum(
-    normalized_player_stats[stat] * weights[stat]
-    for stat in normalized_player_stats
-    if stat not in {'season', 'height_ft', 'height_in'}  # Exclude unwanted keys
-    )
+    # Fetch all player xgoals data for the given season
+    rows = get_all_player_xgoals(season)
     
-    return player_strength
+    # Get stat ranges for normalization
+    stat_ranges = get_stat_ranges()
+
+    conn = sqlite3.connect('data/nwsl.db')
+    cursor = conn.cursor()
+
+    for row in rows:
+        # Convert row to a dictionary
+        player_stats = dict(row)
+
+        # Normalize stats
+        normalized_stats = normalize_player_stats(player_stats, stat_ranges)
+
+        # Calculate xgoal_strength
+        xgoal_strength = calculate_player_xgoal_strength(normalized_stats)
+
+        # Update the row in the database
+        cursor.execute('''
+            UPDATE player_xgoals
+            SET xgoal_strength = ?
+            WHERE id = ?
+        ''', (xgoal_strength, player_stats['id']))
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+    print(f'xgoal_strength updated for all players in season {season}.')

@@ -23,4 +23,4 @@ def calculate_player_xgoal_strength(normalized_player_stats):
     if stat not in {'season', 'height_ft', 'height_in'}  # Exclude unwanted keys
     )
     
-    return player_strength
+    return round(player_strength, 2)
