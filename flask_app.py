@@ -51,9 +51,12 @@ def games():
 
 @app.route('/players')
 def players():
-    player_data = db_player_xgoals.get_all_player_xgoals(2024)
+    players_xgoals_data = db_player_xgoals.get_all_player_xgoals(2024)
+    players_xpass_data = db_player_xpass.get_all_player_xpass(2024)
+
+    combined_data = zip(players_xgoals_data, players_xpass_data)
     return render_template('players.html',
-                           players = player_data)
+                           player_data = combined_data)
 
 @app.route('/player', methods=['GET', 'POST'])
 def player():

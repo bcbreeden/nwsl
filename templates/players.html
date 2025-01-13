@@ -22,28 +22,28 @@
                 </tr>
             </thead>
             <tbody>
-                {% for player in players %}
+                {% for player_xgoal, player_xpass in player_data %}
                 <tr>
                     <td>
                         <form action="/player" method="POST">
-                            <input type="hidden" id="player_id" name="player_id" value="{{ player['player_id'] }}">
-                            <input type="hidden" id="obj_id" name="obj_id" value="{{ player['id'] }}">
-                            <input type="submit" class="grid_button" value="{{ player['player_name'] }}">
-                            <p class="hidden">{{ player['player_name'] }}</p>
+                            <input type="hidden" id="player_id" name="player_id" value="{{ player_xgoal['player_id'] }}">
+                            <input type="hidden" id="obj_id" name="obj_id" value="{{ player_xgoal['id'] }}">
+                            <input type="submit" class="grid_button" value="{{ player_xgoal['player_name'] }}">
+                            <p class="hidden">{{ player_xgoal['player_name'] }}</p>
                         </form> 
                     </td>
-                    <td>{{ player['team_name'] }}</td>
-                    <td class="stat">{{ player['primary_broad_position'] }}</td>
-                    <td class="stat">{{ player['xgoal_strength'] }}</td>
-                    <td class="stat">{{ player['xgoals_xassists_per_90'] }}</td>
-                    <td class="stat">{{ player['shots'] }}</td>
-                    <td class="stat">{{ player['shots_on_target'] }}</td>
-                    <td class="stat">{{ player['goals'] }}</td>
-                    <td class="stat">{{ player['xgoals'] }}</td>
-                    <td class="stat">{{ player['primary_assists'] }}</td>
-                    <td class="stat">{{ player['points_added'] }}</td>
-                    <td class="stat">{{ player['key_passes'] }}</td>
-                    <td class="stat">{{ player['minutes_played'] }}</td>
+                    <td>{{ player_xgoal['team_name'] }}</td>
+                    <td class="stat">{{ player_xgoal['primary_broad_position'] }}</td>
+                    <td class="stat">{{ player_xgoal['xgoal_strength'] }}</td>
+                    <td class="stat">{{ player_xgoal['xgoals_xassists_per_90'] }}</td>
+                    <td class="stat">{{ player_xgoal['shots'] }}</td>
+                    <td class="stat">{{ player_xgoal['shots_on_target'] }}</td>
+                    <td class="stat">{{ player_xgoal['goals'] }}</td>
+                    <td class="stat">{{ player_xgoal['xgoals'] }}</td>
+                    <td class="stat">{{ player_xgoal['primary_assists'] }}</td>
+                    <td class="stat">{{ player_xgoal['points_added'] }}</td>
+                    <td class="stat">{{ player_xgoal['key_passes'] }}</td>
+                    <td class="stat">{{ player_xgoal['minutes_played'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
