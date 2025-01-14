@@ -17,28 +17,28 @@ def insert_player_goals_added_by_season(season):
         for action in player.get('data', []):
             match (action.get('action_type')):
                 case 'Dribbling':
-                    dribbling_goals_added_raw = action.get('goals_added_raw', 0)
-                    dribbling_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    dribbling_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                    dribbling_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
                     dribbling_count_actions = action.get('count_actions', 0)
                 case 'Fouling':
-                    fouling_goals_added_raw = action.get('goals_added_raw', 0)
-                    fouling_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    fouling_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                    fouling_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
                     fouling_count_actions = action.get('count_actions', 0)
                 case 'Interrupting':
-                    interrupting_goals_added_raw = action.get('goals_added_raw', 0)
-                    interrupting_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    interrupting_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                    interrupting_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
                     interrupting_count_actions = action.get('count_actions', 0)
                 case 'Passing':
-                    passing_goals_added_raw = action.get('goals_added_raw', 0)
-                    passing_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    passing_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                    passing_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
                     passing_count_actions = action.get('count_actions', 0)
                 case 'Receiving':
-                    receiving_goals_added_raw = action.get('goals_added_raw', 0)
-                    receiving_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    receiving_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                    receiving_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
                     receiving_count_actions = action.get('count_actions', 0)
                 case 'Shooting':
-                    shooting_goals_added_raw = action.get('goals_added_raw', 0)
-                    shooting_goals_added_above_avg = action.get('goals_added_above_avg', 0)
+                    shooting_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                    shooting_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
                     shooting_count_actions = action.get('count_actions', 0)
                 case _:
                     print('No action found!')
