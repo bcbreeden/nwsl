@@ -2,11 +2,12 @@
 
 {% block content %}
     <img class="team_logo" src="{{ url_for('static', filename='img/' + player_xgoals_data['team_abbreviation'] + '.png') }}">
+    <!-- XGoals -->
+    <h2>XGoals</h2>
     {{player_xgoals_data['player_id']}}<br/>
     {{player_xgoals_data['xgoal_strength']}}<br/>
     Player Name: {{player_xgoals_data['player_name']}}<br/>
     Team: {{player_xgoals_data['team_name']}}<br/>
-    Games Played: {{player_xpass_data['count_games']}}<br/>
     Nationality: {{player_xgoals_data['nationality']}}<br/>
     Position: {{player_xgoals_data['primary_broad_position']}}<br/>
     Minutes: {{player_xgoals_data['minutes_played']}}<br/>
@@ -24,4 +25,16 @@
     XGoals + XAssists {{player_xgoals_data['xgoals_plus_xassists']}}<br/>
     Points Added: {{player_xgoals_data['points_added']}}<br/>
     XPoints Added: {{player_xgoals_data['xpoints_added']}}<br/>
+
+    <!-- XPass -->
+    <h2>XPass</h2>
+    Games Played: {{player_xpass_data['count_games']}}<br/>
+    Attempted Passes: {{player_xpass_data['attempted_passes']}}<br/>
+    Pass Completion Percentage: {{player_xpass_data['pass_completion_percentage']}}%<br/>
+    xPass Completion Percentage: {{player_xpass_data['xpass_completion_percentage']}}%<br/>
+    Passes Completed Over Expected: {{player_xpass_data['passes_completed_over_expected']}}<br/>
+    Passes Completed Over Expected per 100: {{player_xpass_data['passes_completed_over_expected_p100']}}<br/>
+    Average Distance (yds): {{player_xpass_data['avg_distance_yds']}}<br/>
+    Average Vertical Distance (yds): {{player_xpass_data['avg_vertical_distance_yds']}}<br/>
+    Share of Team Touches: {{player_xpass_data['share_team_touches']}}%<br/>
 {% endblock %}

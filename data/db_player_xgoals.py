@@ -23,16 +23,16 @@ def insert_player_xgoals_by_season(season):
         else:
             shots_on_target_perc = int((shots_on_target/shots)*100)
         goals = player.get('goals', 0)
-        xgoals = player.get('xgoals', 0)
-        xplace = player.get('xplace', 0)
-        goals_minus_xgoals = player.get('goals_minus_xgoals', 0)
+        xgoals = round(player.get('xgoals', 0), 2)
+        xplace = round(player.get('xplace', 0), 2)
+        goals_minus_xgoals = round(player.get('goals_minus_xgoals', 0), 2)
         key_passes = player.get('key_passes', 0)
         primary_assists = player.get('primary_assists', 0)
-        xassists = player.get('xassists', 0)
-        primary_assists_minus_xassists = player.get('primary_assists_minus_xassists', 0)
-        xgoals_plus_xassists = player.get('xgoals_plus_xassists', 0)
-        points_added = player.get('points_added', 0)
-        xpoints_added = player.get('xpoints_added', 0)
+        xassists = round(player.get('xassists', 0), 2)
+        primary_assists_minus_xassists = round(player.get('primary_assists_minus_xassists', 0), 2)
+        xgoals_plus_xassists = round(player.get('xgoals_plus_xassists', 0), 2)
+        points_added = round(player.get('points_added', 0), 2)
+        xpoints_added = round(player.get('xpoints_added', 0), 2)
 
         if isinstance(team_id, list):
             team_id = team_id[-1]
