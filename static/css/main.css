@@ -52,6 +52,10 @@ h2 {
     font-size: x-large;
 }
 
+h4 {
+    margin: 0px;
+}
+
 header {
     display: flex;
     flex-direction: column;
@@ -140,7 +144,7 @@ ul {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .index-metric-heading {
@@ -263,6 +267,7 @@ ul {
 .player_report {
     display: flex;
     flex-direction: column;
+    width: 600px;
 }
 
 .player_report_name_subheader{
@@ -283,4 +288,27 @@ ul {
     display: flex;
     flex-direction: column;
     margin-left: 15px;
+}
+
+.player_stat_table{
+    table-layout: fixed;
+    width: 100%;
+}
+
+.stat_block {
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.above_avg {
+    background-color: var(--dark-bg);
+    color: white;
+}
+
+.below_avg {
+    background-color: var(--contrast-alt);
+    color: white;
 }

@@ -64,6 +64,7 @@ def create_tables():
         xpoints_added REAL,
         xgoal_strength REAL,
         xgoals_xassists_per_90 REAL,
+        avg_xgoal_strength REAL,
         season INTEGER,
         avg_minutes_played REAL,
         avg_shots REAL,

@@ -443,30 +443,29 @@ def get_stat_ranges():
 
 def update_player_xgoal_strength(season):
     """
-    Update the xGoal Strength metric for all players in the specified season.
+    Update the xGoal Strength metric and avg_xgoal_strength for all players in the specified season.
 
-    This function retrieves all player data for a given season from the database, normalizes 
-    their stats based on historical data ranges, calculates the xGoal Strength metric for each 
-    player, and updates the player_xgoals table with the calculated values.
+    This function retrieves all player data for a given season from the database, calculates
+    the xGoal Strength metric for each player, and updates the player_xgoals table with the 
+    calculated values. Additionally, it calculates position-specific avg_xgoal_strength and updates it.
 
     Args:
-        season (int): The season year for which the xGoal Strength metric should be updated.
+        season (int): The season year for which the xGoal Strength metrics should be updated.
 
     Process:
         1. Fetch all player xgoals data for the specified season using the get_all_player_xgoals function.
         2. Retrieve stat ranges for normalization from the database using the get_stat_ranges function.
-        3. For each player:
-            - Normalize their stats using the retrieved ranges.
-            - Calculate xGoal Strength using the normalized stats.
-        4. Update the player_xgoals table in the database with the calculated metric.
-    
+        3. For players with sufficient minutes played:
+            - Group players by position and calculate avg_xgoal_strength.
+        4. Update the player_xgoals table with the calculated xgoal_strength and avg_xgoal_strength.
+
     Database Table:
-        Updates the `player_xgoals` table, specifically the `xgoal_strength` column.
+        Updates the `player_xgoals` table, specifically the `xgoal_strength` and `avg_xgoal_strength` columns.
 
     Returns:
         None
     """
-    print(f'Updating xgoal_strength for season: {season}')
+    print(f'Updating xgoal_strength and avg_xgoal_strength for season: {season}')
     
     # Fetch all player xgoals data for the given season
     rows = get_all_player_xgoals(season)
@@ -474,10 +473,18 @@ def update_player_xgoal_strength(season):
     # Get stat ranges for normalization
     stat_ranges = get_stat_ranges()
 
+    # Filter players with sufficient minutes for position-specific averages
+    filtered_rows = [row for row in rows if row['minutes_played'] >= 200]
+
+    # Calculate xgoal_strength for each player
     conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
 
-    for row in rows:
+    position_sums = defaultdict(float)
+    position_counts = defaultdict(int)
+
+    # Step 1: Process each player to calculate xgoal_strength and aggregate position-specific data
+    for row in filtered_rows:
         # Convert row to a dictionary
         player_stats = dict(row)
 
@@ -487,18 +494,42 @@ def update_player_xgoal_strength(season):
         # Calculate xgoal_strength
         xgoal_strength = calculate_player_xgoal_strength(normalized_stats)
 
-        # Update the row in the database
+        # Aggregate xgoal_strength for positions
+        position = player_stats.get('general_position', 'Unknown General Position')
+        position_sums[position] += xgoal_strength
+        position_counts[position] += 1
+
+        # Update the xgoal_strength for the player
         cursor.execute('''
             UPDATE player_xgoals
             SET xgoal_strength = ?
             WHERE id = ?
         ''', (xgoal_strength, player_stats['id']))
 
+    # Step 2: Calculate position-specific avg_xgoal_strength
+    position_averages = {
+        position: round(position_sums[position] / position_counts[position], 2)
+        for position in position_sums
+    }
+
+    # Step 3: Update avg_xgoal_strength for each player based on their position
+    for row in rows:
+        player_stats = dict(row)
+        position = player_stats.get('general_position', 'Unknown General Position')
+        avg_xgoal_strength = position_averages.get(position, 0)
+
+        cursor.execute('''
+            UPDATE player_xgoals
+            SET avg_xgoal_strength = ?
+            WHERE id = ?
+        ''', (avg_xgoal_strength, player_stats['id']))
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
 
-    print(f'xgoal_strength updated for all players in season {season}.')
+    print(f'xgoal_strength and avg_xgoal_strength updated for all players in season {season}.')
+
 
 def update_xgoals_xassists_per_90(season):
     """
