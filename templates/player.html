@@ -26,13 +26,8 @@
         <h2>XGoals</h2>
         <table class="player_stat_table">
             <tr>
-                <td class="stat_block {% if player_xgoals_data['xgoal_strength'] is none %}hidden
-                {% elif player_xgoals_data['xgoal_strength'] > player_xgoals_data['avg_xgoal_strength'] %}above_avg
-                {% else %}below_avg{% endif %}">
-                    <h4>Offensive Strength</h4>
-                    {{ player_xgoals_data['xgoal_strength'] }}
-                    {{ player_xgoals_data['avg_xgoal_strength'] }}
-                </td>
+                Per 90: {{player_xgoals_data['xgoals_xassists_per_90']}}<br/>
+                Avg: {{player_xgoals_data['avg_xgoals_xassists_per_90']}}
             </tr>
 
         </table>

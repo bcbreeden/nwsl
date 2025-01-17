@@ -17,7 +17,6 @@ if __name__ == '__main__':
 
         db_player_xgoals.insert_player_xgoals_by_season(season)
         db_player_xgoals.update_xgoals_xassists_per_90(season)
-        db_player_xgoals.update_player_xgoal_strength(season)
         
         db_player_xpass.insert_player_xpass_by_season(season)
         db_team_goals_added.insert_team_goals_added_by_season(season)
