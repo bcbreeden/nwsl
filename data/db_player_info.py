@@ -2,6 +2,16 @@ from api import make_asa_api_call
 import sqlite3
 
 def insert_all_players_info():
+    """
+    Fetches player data from the NWSL API and inserts it into an SQLite database.
+
+    This function retrieves player information using the `make_asa_api_call` function,
+    processes the data to extract relevant fields, and inserts or updates the data
+    in the `player_info` table of the database.
+
+    Args:
+        None
+    """
     print('Attempting  to insert all players info...')
     players_data = make_asa_api_call('nwsl/players')[1]
     conn = sqlite3.connect('data/nwsl.db')
@@ -46,6 +56,20 @@ def insert_all_players_info():
     print('All players info successfully entered into the database.')
 
 def _insert_player_season_entry(player_id, season, cursor):
+    """
+    Inserts or updates a player's season data into the `player_seasons` table.
+
+    Args:
+        player_id (str): The unique identifier for the player.
+        season (str): The season year as a string.
+        cursor (sqlite3.Cursor): The database cursor to execute SQL commands.
+
+    Notes:
+        - Constructs a unique `season_player_id` by concatenating the `player_id`
+          and the `season`.
+        - The `player_seasons` table is expected to have columns `season_player_id`,
+          `player_id`, and `year`.
+    """
     season_int = int(season)
     season_player_id = '{}{}'.format(player_id, season)
     cursor.execute('''
@@ -57,6 +81,23 @@ def _insert_player_season_entry(player_id, season, cursor):
         ))
 
 def _split_player_name(name):
+    """
+    Splits a player's full name into first and last names.
+
+    Args:
+        name (str): The full name of the player.
+
+    Returns:
+        tuple: A tuple containing the first name and last name as strings. If the 
+               name does not contain a space, the first name will be an empty string 
+               and the last name will contain the full name.
+
+    Example:
+        ("Alex Morgan")
+        ('Alex', 'Morgan')
+        ("Kerolin")
+        ('', 'Kerolin')
+    """
     words = name.split(' ', 1)  # Split at the first space
     if len(words) > 1:
         first_name = words[0]
@@ -68,6 +109,18 @@ def _split_player_name(name):
     return [first_name, last_name]
 
 def get_all_players_info():
+    """
+    Retrieves all player information from the `player_info` table in the SQLite database.
+
+    This function connects to the database, fetches all rows from the `player_info` table,
+    and returns them as a list of SQLite Row objects for easy access to column data.
+
+    Args:
+        None
+
+    Returns:
+        list: A list of SQLite Row objects containing player information.
+    """
     print('Fetching all players info from the database...')
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
@@ -80,6 +133,18 @@ def get_all_players_info():
     return rows
 
 def get_all_player_seasons():
+    """
+    Retrieves all player season data from the `player_seasons` table in the SQLite database.
+
+    This function connects to the database, fetches all rows from the `player_seasons` table,
+    and returns them as a list of SQLite Row objects for easy access to column data.
+
+    Args:
+        None
+
+    Returns:
+        list: A list of SQLite Row objects containing player season data.
+    """
     print('Fetching all player seasons from the database...')
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
@@ -92,6 +157,17 @@ def get_all_player_seasons():
     return rows
 
 def get_player_seasons(player_id):
+    """
+    Retrieves season data for a specific player from the `player_seasons` table 
+    in the SQLite database.
+
+    Args:
+        player_id (str): The unique identifier of the player whose season data 
+                         is to be retrieved.
+
+    Returns:
+        list: A list of SQLite Row objects containing season data for the specified player.
+    """
     print('Fetching seasons for:', player_id)
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
@@ -104,6 +180,18 @@ def get_player_seasons(player_id):
     return rows
 
 def get_player_info_by_id(player_id):
+    """
+    Retrieves information for a specific player from the `player_info` table 
+    in the SQLite database.
+
+    Args:
+        player_id (str): The unique identifier of the player whose information 
+                         is to be retrieved.
+
+    Returns:
+        sqlite3.Row: A Row object containing the player's information, or None 
+                     if no matching record is found.
+    """
     print('Fetching player info for:', player_id)
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
