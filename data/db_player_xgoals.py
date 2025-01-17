@@ -4,6 +4,8 @@ from .player_xgoal_strength import calculate_player_xgoal_strength
 import sqlite3
 from collections import defaultdict
 
+MINUTE_LIMIT = 180
+
 def insert_player_xgoals_by_season(season):
     """
     Inserts player xGoal data into the database for a specific season, calculating 
@@ -441,32 +443,13 @@ def get_stat_ranges():
     conn.close()
     return stat_ranges
 
-def update_avg_xgoals_xassists_per_90_by_position(season):
-    """
-    Update the xGoals + xAssists per 90 metric for all players and insert averages by position.
-
-    This function calculates the xGoals + xAssists per 90 metric for each player with 
-    >= 400 minutes played, updates the player_xgoals table, and calculates the average 
-    per position, storing it in the `avg_xgoals_xassists_per_90` column for each row.
-
-    Args:
-        season (int): The season year for which the data should be updated.
-
-    Database Table:
-        Updates the `player_xgoals` table with:
-        - xgoals_xassists_per_90 (individual player's stat)
-        - avg_xgoals_xassists_per_90 (average per position)
-
-    Returns:
-        None
-    """
 def update_xgoals_xassists_per_90(season):
     """
     Update the xGoals + xAssists per 90 metric for all players in the specified season.
 
     This function retrieves all player data for a given season from the database, calculates 
     the xGoals + xAssists per 90 metric for each player, and updates the player_xgoals table 
-    with the calculated values. Players with fewer than 400 minutes played will have their 
+    with the calculated values. Players with fewer than MINUTE_LIMIT will have their 
     xGoals + xAssists per 90 metric set to 0.
 
     Args:
@@ -476,7 +459,7 @@ def update_xgoals_xassists_per_90(season):
         1. Fetch all player xgoals data for the specified season using the get_all_player_xgoals function.
         2. For each player:
             - Extract xGoals, xAssists, and minutes played.
-            - Calculate xGoals + xAssists per 90 if the player has >= 400 minutes played.
+            - Calculate xGoals + xAssists per 90 if the player has >= MINUTE_LIMIT.
         3. Update the player_xgoals table in the database with the calculated metric.
     
     Database Table:
@@ -506,7 +489,7 @@ def update_xgoals_xassists_per_90(season):
         minutes_played = player_stats.get('minutes_played', 0)
 
         # Calculate xGoals + xAssists per 90
-        if minutes_played >= 400:  # Minimum minutes threshold
+        if minutes_played >= MINUTE_LIMIT:  # Minimum minutes threshold
             xgoals_xassists_per_90 = round(((xgoals + xassists) / minutes_played) * 90, 2)
         else:
             xgoals_xassists_per_90 = 0
