@@ -2,9 +2,22 @@ from api import make_asa_api_call
 from .normalize import normalize_player_stats
 from .player_xgoal_strength import calculate_player_xgoal_strength
 import sqlite3
-import pandas as pd
+from collections import defaultdict
 
 def insert_player_xgoals_by_season(season):
+    """
+    Inserts player xGoal data into the database for a specific season, calculating 
+    position-specific averages for players with sufficient minutes played.
+
+    Args:
+        season (int): The season year for which to insert player xGoal data.
+
+    Functionality:
+    - Fetches player data from the NWSL API.
+    - Excludes goalkeepers and players with less than 200 minutes played for average calculations.
+    - Calculates position-specific averages for stats such as minutes played, goals, xGoals, etc.
+    - Inserts or updates player data into the 'player_xgoals' database table, including position-specific averages.
+    """
     print('Inserting data for players (xgoal) for season:', season)
     api_string = f'nwsl/players/xgoals?season_name={season}&stage_name=Regular Season'
     players_data = make_asa_api_call(api_string)[1]
@@ -17,42 +30,30 @@ def insert_player_xgoals_by_season(season):
     # Filter out players with less than 180 minutes played for averages
     filtered_for_averages = [player for player in players_data if player.get('minutes_played', 0) >= 200]
 
-    total_players = len(filtered_for_averages)
-    if total_players == 0:
-        print(f"No players with sufficient minutes for averages in season {season}.")
-        return
+    # Group players by position and calculate sums and counts
+    position_sums = defaultdict(lambda: defaultdict(float))
+    position_counts = defaultdict(int)
 
-    # Initialize sums for each column
-    column_sums = {
-        'minutes_played': 0,
-        'shots': 0,
-        'shots_on_target': 0,
-        'goals': 0,
-        'xgoals': 0,
-        'key_passes': 0,
-        'primary_assists': 0,
-        'xassists': 0,
-        'xgoals_plus_xassists': 0,
-        'points_added': 0,
-        'xpoints_added': 0
-    }
-
-    # Calculate sums for players with >=180 minutes
     for player in filtered_for_averages:
-        column_sums['minutes_played'] += player.get('minutes_played', 0)
-        column_sums['shots'] += player.get('shots', 0)
-        column_sums['shots_on_target'] += player.get('shots_on_target', 0)
-        column_sums['goals'] += player.get('goals', 0)
-        column_sums['xgoals'] += player.get('xgoals', 0)
-        column_sums['key_passes'] += player.get('key_passes', 0)
-        column_sums['primary_assists'] += player.get('primary_assists', 0)
-        column_sums['xassists'] += player.get('xassists', 0)
-        column_sums['xgoals_plus_xassists'] += player.get('xgoals_plus_xassists', 0)
-        column_sums['points_added'] += player.get('points_added', 0)
-        column_sums['xpoints_added'] += player.get('xpoints_added', 0)
+        position = player.get('general_position', 'Unknown General Position')
+        position_counts[position] += 1
+        position_sums[position]['minutes_played'] += player.get('minutes_played', 0)
+        position_sums[position]['shots'] += player.get('shots', 0)
+        position_sums[position]['shots_on_target'] += player.get('shots_on_target', 0)
+        position_sums[position]['goals'] += player.get('goals', 0)
+        position_sums[position]['xgoals'] += player.get('xgoals', 0)
+        position_sums[position]['key_passes'] += player.get('key_passes', 0)
+        position_sums[position]['primary_assists'] += player.get('primary_assists', 0)
+        position_sums[position]['xassists'] += player.get('xassists', 0)
+        position_sums[position]['xgoals_plus_xassists'] += player.get('xgoals_plus_xassists', 0)
+        position_sums[position]['points_added'] += player.get('points_added', 0)
+        position_sums[position]['xpoints_added'] += player.get('xpoints_added', 0)
 
-    # Calculate averages and round to two decimal places
-    avg_columns = {f"avg_{key}": round(value / total_players, 2) for key, value in column_sums.items()}
+    # Calculate averages for each position
+    position_averages = {
+        position: {f"avg_{key}": round(value / position_counts[position], 2) for key, value in sums.items()}
+        for position, sums in position_sums.items()
+    }
 
     # Insert data for each player
     for player in players_data:
@@ -79,6 +80,11 @@ def insert_player_xgoals_by_season(season):
         if isinstance(team_id, list):
             team_id = team_id[-1]
 
+        # Get position-specific averages or set default values
+        position_avg = position_averages.get(
+            general_position, {f"avg_{key}": 0 for key in position_sums['Unknown General Position'].keys()}
+        )
+
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
                 id, player_id, team_id, general_position, minutes_played, shots, 
@@ -95,15 +101,15 @@ def insert_player_xgoals_by_season(season):
             obj_id, player_id, team_id, general_position, minutes_played, shots, shots_on_target, shots_on_target_perc,
             goals, xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists, xassists,
             primary_assists_minus_xassists, xgoals_plus_xassists, points_added, xpoints_added, int(season),
-            avg_columns['avg_minutes_played'], avg_columns['avg_shots'], avg_columns['avg_shots_on_target'],
-            avg_columns['avg_goals'], avg_columns['avg_xgoals'], avg_columns['avg_key_passes'],
-            avg_columns['avg_primary_assists'], avg_columns['avg_xassists'], avg_columns['avg_xgoals_plus_xassists'],
-            avg_columns['avg_points_added'], avg_columns['avg_xpoints_added']
+            position_avg['avg_minutes_played'], position_avg['avg_shots'], position_avg['avg_shots_on_target'],
+            position_avg['avg_goals'], position_avg['avg_xgoals'], position_avg['avg_key_passes'],
+            position_avg['avg_primary_assists'], position_avg['avg_xassists'], position_avg['avg_xgoals_plus_xassists'],
+            position_avg['avg_points_added'], position_avg['avg_xpoints_added']
         ))
 
     conn.commit()
     conn.close()
-    print(f'Player xgoals data for season {season} inserted with averages, excluding goalkeepers and players with <180 minutes played for averages.')
+    print(f'Player xgoals data for season {season} inserted with position-specific averages, excluding goalkeepers and players with <180 minutes played for averages.')
 
 
 def get_player_xgoals(player_id, season):
