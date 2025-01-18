@@ -19,96 +19,98 @@
                 
             </div>
         </section>
-        
-        <!-- XGoals -->
-        {% for stat, label in [
-            ('xgoals_xassists_per_90', 'XG/XP/90'),
-            ('minutes_played', 'Minutes Played'),
-            ('shots', 'Shots'),
-            ('shots_on_target', 'Shots on Target'),
-            ('shots_on_target_perc', 'Shots on Target %'),
-            ('goals', 'Goals'),
-            ('xgoals', 'Expected Goals (xG)'),
-            ('xplace', 'xPlace'),
-            ('goals_minus_xgoals', 'Goals - xGoals'),
-            ('key_passes', 'Key Passes'),
-            ('primary_assists', 'Primary Assists'),
-            ('xassists', 'Expected Assists (xA)'),
-            ('primary_assists_minus_xassists', 'Primary Assists - xAssists'),
-            ('xgoals_plus_xassists', 'xGoals + xAssists'),
-            ('points_added', 'Points Added'),
-            ('xpoints_added', 'Expected Points Added')
-        ] %}
-            {% if player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}
-            <span class="stat_block above_avg">
-            {% else %}
-            <span class="stat_block below_avg">
-            {% endif %}
-            <h4>{{ label }}</h4>
-            <p class="stat_text">Value: {{ player_xgoals_data[stat] }}</p>
-            <p class="stat_text">Average: {{ player_xgoals_data['avg_' + stat] }}</p>
-            </span>
-        {% endfor %}
-        
-        <!-- XPass -->
-        <h2>XPass</h2>
-        {% for stat, label in [
-            ('count_games', 'Games Played'),
-            ('attempted_passes', 'Attempted Passes'),
-            ('pass_completion_percentage', 'Pass Completion Percentage'),
-            ('xpass_completion_percentage', 'xPass Completion Percentage'),
-            ('passes_completed_over_expected', 'Passes Completed Over Expected'),
-            ('passes_completed_over_expected_p100', 'Passes Completed Over Expected per 100'),
-            ('avg_distance_yds', 'Average Distance (yds)'),
-            ('avg_vertical_distance_yds', 'Average Vertical Distance (yds)'),
-            ('share_team_touches', 'Share of Team Touches')
-        ] %}
-            {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}
-            <span class="stat_block above_avg">
-            {% else %}
-            <span class="stat_block below_avg">
-            {% endif %}
-            <h4>{{ label }}</h4>
-            <p class="stat_text">Value: {{ player_xpass_data[stat] }}</p>
-            <p class="stat_text">Average: {{ player_xpass_data['avg_' + stat] }}</p>
-            </span>
-        {% endfor %}
-        
+        <section class="player_report_stats_container">
+            <!-- XGoals -->
+            <h2>XGoals</h2>
+            <section class="player_report_stats_block">
+                {% for stat, abr,  label in [
+                    ('xgoals_xassists_per_90', 'XG/XA|90', 'XGoals/XAssists Per 90 Minutes'),
+                    ('minutes_played', 'MP', 'Minutes Played'),
+                    ('shots', 'S', 'Shots'),
+                    ('shots_on_target', 'SOT', 'Shots on Target'),
+                    ('shots_on_target_perc', 'SOT %', 'Shots on Target %'),
+                    ('goals', 'G', 'Goals'),
+                    ('xgoals', 'xG', 'Expected Goals'),
+                    ('xplace', 'xP', 'xPlace'),
+                    ('goals_minus_xgoals', 'G-xG', 'Goals - xGoals'),
+                    ('key_passes', 'KP', 'Key Passes'),
+                    ('primary_assists', 'PA', 'Primary Assists'),
+                    ('xassists', 'xA', 'Expected Assists (xA)'),
+                    ('primary_assists_minus_xassists', 'PA-xA', 'Primary Assists - xAssists'),
+                    ('xgoals_plus_xassists', 'xG + xA', 'xGoals + xAssists'),
+                    ('points_added', 'PA', 'Points Added'),
+                    ('xpoints_added', 'xPA', 'Expected Points Added')
+                ] %}
+                    {% if player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}
+                    <span class="stat_block above_avg">
+                    {% else %}
+                    <span class="stat_block below_avg">
+                    {% endif %}
+                    <h4 title="{{ label }}" >{{ abr }}</h4>
+                    <p class="stat_text">{{ player_xgoals_data[stat] }} ({{ player_xgoals_data['avg_' + stat] }})</p>
+                    </span>
+                {% endfor %}
+            </section>
+            <!-- XPass -->
+            <h2>XPass</h2>
+            <section class="player_report_stats_block">
+                {% for stat, abr, label in [
+                    ('count_games','GP', 'Games Played'),
+                    ('attempted_passes', 'AP', 'Attempted Passes'),
+                    ('pass_completion_percentage', 'PC %', 'Pass Completion Percentage'),
+                    ('xpass_completion_percentage', 'xPC %', 'xPass Completion Percentage'),
+                    ('passes_completed_over_expected', 'PCOE', 'Passes Completed Over Expected'),
+                    ('passes_completed_over_expected_p100', 'PCOE 100', 'Passes Completed Over Expected per 100'),
+                    ('avg_distance_yds', 'AvgD',  'Average Distance (yds)'),
+                    ('avg_vertical_distance_yds', 'AvgVD', 'Average Vertical Distance (yds)'),
+                    ('share_team_touches', 'SoTT', 'Share of Team Touches')
+                ] %}
+                    {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}
+                    <span class="stat_block above_avg">
+                    {% else %}
+                    <span class="stat_block below_avg">
+                    {% endif %}
+                    <h4 title="{{ label }}" >{{ abr }}</h4>
+                    <p class="stat_text">{{ player_xpass_data[stat] }} ({{ player_xpass_data['avg_' + stat] }})</p>
+                    </span>
+                {% endfor %}
+            </section>
 
-        <!-- Player Goals Added -->
-        <h2>Goals Added</h2>
-        {% for stat, label in [
-            ('dribbling_goals_added_raw', 'Dribbling Goals Added (Raw)'),
-            ('dribbling_goals_added_above_avg', 'Dribbling Goals Added (Above Avg)'),
-            ('dribbling_count_actions', 'Dribbling Actions'),
-            ('fouling_goals_added_raw', 'Fouling Goals Added (Raw)'),
-            ('fouling_goals_added_above_avg', 'Fouling Goals Added (Above Avg)'),
-            ('fouling_count_actions', 'Fouling Actions'),
-            ('interrupting_goals_added_raw', 'Interrupting Goals Added (Raw)'),
-            ('interrupting_goals_added_above_avg', 'Interrupting Goals Added (Above Avg)'),
-            ('interrupting_count_actions', 'Interrupting Actions'),
-            ('passing_goals_added_raw', 'Passing Goals Added (Raw)'),
-            ('passing_goals_added_above_avg', 'Passing Goals Added (Above Avg)'),
-            ('passing_count_actions', 'Passing Actions'),
-            ('receiving_goals_added_raw', 'Receiving Goals Added (Raw)'),
-            ('receiving_goals_added_above_avg', 'Receiving Goals Added (Above Avg)'),
-            ('receiving_count_actions', 'Receiving Actions'),
-            ('shooting_goals_added_raw', 'Shooting Goals Added (Raw)'),
-            ('shooting_goals_added_above_avg', 'Shooting Goals Added (Above Avg)'),
-            ('shooting_count_actions', 'Shooting Actions')
-        ] %}
-        {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat.lstrip('avg_')] %}
-            <span class="stat_block above_avg">
-            {% else %}
-            <span class="stat_block below_avg">
-            {% endif %}
-            <h4>{{ label }}</h4>
-            <p class="stat_text">Value: {{ player_goals_added_data[stat] }}</p>
-            <p class="stat_text">Average: {{ player_goals_added_data['avg_' + stat] }}</p>
-            </span>
-        {% endfor %}
-        
-        
+            <!-- Player Goals Added -->
+            <h2>Goals Added</h2>
+            <section class="player_report_stats_block">
+                {% for stat, abr,  label in [
+                    ('dribbling_goals_added_raw', 'DGA(R)', 'Dribbling Goals Added (Raw)'),
+                    ('dribbling_goals_added_above_avg','DGA(AA)', 'Dribbling Goals Added (Above Avg)'),
+                    ('dribbling_count_actions', 'DA', 'Dribbling Actions'),
+                    ('fouling_goals_added_raw', 'FGA(R)', 'Fouling Goals Added (Raw)'),
+                    ('fouling_goals_added_above_avg', 'FGA(AA)', 'Fouling Goals Added (Above Avg)'),
+                    ('fouling_count_actions', 'FA', 'Fouling Actions'),
+                    ('interrupting_goals_added_raw', 'IGA(R)', 'Interrupting Goals Added (Raw)'),
+                    ('interrupting_goals_added_above_avg', 'IGA(AA)', 'Interrupting Goals Added (Above Avg)'),
+                    ('interrupting_count_actions', 'IA', 'Interrupting Actions'),
+                    ('passing_goals_added_raw', 'PGA(R)', 'Passing Goals Added (Raw)'),
+                    ('passing_goals_added_above_avg', 'PGA(AA)', 'Passing Goals Added (Above Avg)'),
+                    ('passing_count_actions', 'PA', 'Passing Actions'),
+                    ('receiving_goals_added_raw', 'RGA(R)', 'Receiving Goals Added (Raw)'),
+                    ('receiving_goals_added_above_avg', 'RGA(AA)', 'Receiving Goals Added (Above Avg)'),
+                    ('receiving_count_actions', 'RA', 'Receiving Actions'),
+                    ('shooting_goals_added_raw', 'SGA(R)', 'Shooting Goals Added (Raw)'),
+                    ('shooting_goals_added_above_avg', 'SGA(AA)', 'Shooting Goals Added (Above Avg)'),
+                    ('shooting_count_actions', 'SA', 'Shooting Actions')
+                ] %}
+                {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat.lstrip('avg_')] %}
+                    <span class="stat_block above_avg">
+                    {% else %}
+                    <span class="stat_block below_avg">
+                    {% endif %}
+                    <h4 title="{{ label }}" >{{ abr }}</h4>
+                    <p class="stat_text">{{ player_goals_added_data[stat] }} ({{ player_goals_added_data['avg_' + stat] }})</p>
+                    </span>
+                {% endfor %}
+            </section>
+            
+        </section>
     </section>
 </section>
 {% endblock %}
