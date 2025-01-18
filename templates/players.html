@@ -9,16 +9,14 @@
                     <th>Player Name</th>
                     <th>Team</th>
                     <th>Position</th>
-                    <th>xgoals/xassists per 90</th>
+                    <th>xG/xA per 90</th>
                     <th>XAssists</th>
-                    <th>XPlace</th>
                     <th>Shots</th>
-                    <th>Shots on Target</th>
+                    <th>SoT</th>
                     <th>Goals</th>
                     <th>XGoals</th>
-                    <th>Primary Assists</th>
+                    <th>Assists</th>
                     <th>Points Added</th>
-                    <th>Key Passes</th>
                     <th>Minutes Played</th>
                 </tr>
             </thead>
@@ -37,14 +35,12 @@
                     <td class="stat">{{ player_xgoal['primary_general_position'] }}</td>
                     <td class="stat">{{ player_xgoal['xgoals_xassists_per_90']}}</td>
                     <td class="stat">{{ player_xgoal['xassists'] }}</td>
-                    <td class="stat">{{ player_xgoal['xplace'] }}</td>
                     <td class="stat">{{ player_xgoal['shots'] }}</td>
                     <td class="stat">{{ player_xgoal['shots_on_target'] }}</td>
                     <td class="stat">{{ player_xgoal['goals'] }}</td>
                     <td class="stat">{{ player_xgoal['xgoals'] }}</td>
                     <td class="stat">{{ player_xgoal['primary_assists'] }}</td>
                     <td class="stat">{{ player_xgoal['points_added'] }}</td>
-                    <td class="stat">{{ player_xgoal['key_passes'] }}</td>
                     <td class="stat">{{ player_xgoal['minutes_played'] }}</td>
                 </tr>
                 {% endfor %}

@@ -269,6 +269,8 @@ ul {
     display: flex;
     flex-direction: column;
     width: 600px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .player_report_name_subheader{
