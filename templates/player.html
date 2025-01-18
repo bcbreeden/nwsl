@@ -50,19 +50,30 @@
             </span>
         {% endfor %}
         
-        
-
         <!-- XPass -->
         <h2>XPass</h2>
-        Games Played: {{player_xpass_data['count_games']}}<br/>
-        Attempted Passes: {{player_xpass_data['attempted_passes']}}<br/>
-        Pass Completion Percentage: {{player_xpass_data['pass_completion_percentage']}}%<br/>
-        xPass Completion Percentage: {{player_xpass_data['xpass_completion_percentage']}}%<br/>
-        Passes Completed Over Expected: {{player_xpass_data['passes_completed_over_expected']}}<br/>
-        Passes Completed Over Expected per 100: {{player_xpass_data['passes_completed_over_expected_p100']}}<br/>
-        Average Distance (yds): {{player_xpass_data['avg_distance_yds']}}<br/>
-        Average Vertical Distance (yds): {{player_xpass_data['avg_vertical_distance_yds']}}<br/>
-        Share of Team Touches: {{player_xpass_data['share_team_touches']}}%<br/>
+        {% for stat, label in [
+            ('count_games', 'Games Played'),
+            ('attempted_passes', 'Attempted Passes'),
+            ('pass_completion_percentage', 'Pass Completion Percentage'),
+            ('xpass_completion_percentage', 'xPass Completion Percentage'),
+            ('passes_completed_over_expected', 'Passes Completed Over Expected'),
+            ('passes_completed_over_expected_p100', 'Passes Completed Over Expected per 100'),
+            ('avg_distance_yds', 'Average Distance (yds)'),
+            ('avg_vertical_distance_yds', 'Average Vertical Distance (yds)'),
+            ('share_team_touches', 'Share of Team Touches')
+        ] %}
+            {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}
+            <span class="stat_block above_avg">
+            {% else %}
+            <span class="stat_block below_avg">
+            {% endif %}
+            <h4>{{ label }}</h4>
+            <p class="stat_text">Value: {{ player_xpass_data[stat] }}</p>
+            <p class="stat_text">Average: {{ player_xpass_data['avg_' + stat] }}</p>
+            </span>
+        {% endfor %}
+        
 
         <!-- Player Goals Added -->
         <h2>Goals Added</h2>

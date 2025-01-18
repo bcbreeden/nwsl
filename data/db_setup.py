@@ -85,26 +85,37 @@ def create_tables():
     ''')
 
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS player_xpass (
-        id TEXT PRIMARY KEY,
-        player_id TEXT,
-        team_id TEXT,
-        general_position TEXT,
-        minutes_played INTEGER,
-        attempted_passes INTEGER,
-        pass_completion_percentage REAL,
-        xpass_completion_percentage REAL,
-        passes_completed_over_expected REAL,
-        passes_completed_over_expected_p100 REAL,
-        avg_distance_yds REAL,
-        avg_vertical_distance_yds REAL,
-        share_team_touches REAL,
-        count_games INTEGER,
-        season INTEGER,
-        FOREIGN KEY (team_id) REFERENCES team_info(team_id),
-        FOREIGN KEY (player_id) REFERENCES player_info(player_id)
-    )
+        CREATE TABLE IF NOT EXISTS player_xpass (
+            id TEXT PRIMARY KEY,
+            player_id TEXT,
+            team_id TEXT,
+            general_position TEXT,
+            minutes_played INTEGER,
+            attempted_passes INTEGER,
+            pass_completion_percentage REAL,
+            xpass_completion_percentage REAL,
+            passes_completed_over_expected REAL,
+            passes_completed_over_expected_p100 REAL,
+            avg_distance_yds REAL,
+            avg_vertical_distance_yds REAL,
+            share_team_touches REAL,
+            count_games INTEGER,
+            season INTEGER,
+            avg_minutes_played REAL,
+            avg_attempted_passes REAL,
+            avg_pass_completion_percentage REAL,
+            avg_xpass_completion_percentage REAL,
+            avg_passes_completed_over_expected REAL,
+            avg_passes_completed_over_expected_p100 REAL,
+            avg_avg_distance_yds REAL,
+            avg_avg_vertical_distance_yds REAL,
+            avg_share_team_touches REAL,
+            avg_count_games REAL,
+            FOREIGN KEY (team_id) REFERENCES team_info(team_id),
+            FOREIGN KEY (player_id) REFERENCES player_info(player_id)
+        )
     ''')
+
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS player_goals_added (
