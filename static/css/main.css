@@ -54,6 +54,7 @@ h2 {
 
 h4 {
     margin: 0px;
+    font-family: "Montserrat", serif;
 }
 
 header {
@@ -300,7 +301,16 @@ ul {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    justify-content: center;
+    padding: 10px;
+    /* width: 80px;
+    height: 80px; */
+}
+
+.stat_text {
+    font-family: "Montserrat", serif;
+    margin: 0px;
+    padding-top: 5px;
 }
 
 .above_avg {

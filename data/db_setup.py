@@ -67,6 +67,7 @@ def create_tables():
         avg_minutes_played REAL,
         avg_shots REAL,
         avg_shots_on_target REAL,
+        avg_shots_on_target_perc REAL,
         avg_goals, avg_xgoals REAL,
         avg_key_passes REAL,
         avg_primary_assists REAL,
@@ -75,6 +76,9 @@ def create_tables():
         avg_points_added REAL,
         avg_xpoints_added REAL,
         avg_xgoals_xassists_per_90 REAL,
+        avg_xplace REAL,
+        avg_goals_minus_xgoals REAL,
+        avg_primary_assists_minus_xassists REAL,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id),
         FOREIGN KEY (player_id) REFERENCES player_info(player_id)
     )

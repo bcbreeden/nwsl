@@ -14,43 +14,43 @@
                 <h1 class="player_name_report">
                     {{player_xgoals_data['player_last_name']}}<br/>
                 </h1>
-                <h2 class="player_report_name_subheader">{{player_xgoals_data['team_name']}}</h2>
+                <h2 class="player_report_name_subheader">{{player_xgoals_data['team_name']}} - {{player_xgoals_data['primary_general_position']}}</h2>
                 <h2 class="player_report_name_subheader">{{player_xgoals_data['nationality']}}</h2>
-                    
                 
-
             </div>
         </section>
         
         <!-- XGoals -->
-        <h2>XGoals</h2>
-        <table class="player_stat_table">
-            <tr>
-                Per 90: {{player_xgoals_data['xgoals_xassists_per_90']}}<br/>
-                Avg: {{player_xgoals_data['avg_xgoals_xassists_per_90']}}
-            </tr>
-
-        </table>
-            <br/>
-        Player Name: {{player_xgoals_data['player_name']}}<br/>
-        Team: {{player_xgoals_data['team_name']}}<br/>
-        Nationality: {{player_xgoals_data['nationality']}}<br/>
-        Position: {{player_xgoals_data['primary_general_position']}}<br/>
-        Minutes: {{player_xgoals_data['minutes_played']}}<br/>
-        Shots: {{player_xgoals_data['shots']}}<br/>
-        SOT: {{player_xgoals_data['shots_on_target']}}<br/>
-        SOT%: {{player_xgoals_data['shots_on_target_perc']}}<br/>
-        Goals: {{player_xgoals_data['goals']}}<br/>
-        XGoals: {{player_xgoals_data['xgoals']}}<br/>
-        XPlace: {{player_xgoals_data['xplace']}}<br/>
-        Goals - XGoals: {{player_xgoals_data['goals_minus_xgoals']}}<br/>
-        Key Passes: {{player_xgoals_data['key_passes']}}<br/>
-        Primary Assists: {{player_xgoals_data['primary_assists']}}<br/>
-        XAssists: {{player_xgoals_data['xassists']}}<br/>
-        Primary Assists - XAssists {{player_xgoals_data['primary_assists_minus_xassists']}}<br/>
-        XGoals + XAssists {{player_xgoals_data['xgoals_plus_xassists']}}<br/>
-        Points Added: {{player_xgoals_data['points_added']}}<br/>
-        XPoints Added: {{player_xgoals_data['xpoints_added']}}<br/>
+        {% for stat, label in [
+            ('xgoals_xassists_per_90', 'XG/XP/90'),
+            ('minutes_played', 'Minutes Played'),
+            ('shots', 'Shots'),
+            ('shots_on_target', 'Shots on Target'),
+            ('shots_on_target_perc', 'Shots on Target %'),
+            ('goals', 'Goals'),
+            ('xgoals', 'Expected Goals (xG)'),
+            ('xplace', 'xPlace'),
+            ('goals_minus_xgoals', 'Goals - xGoals'),
+            ('key_passes', 'Key Passes'),
+            ('primary_assists', 'Primary Assists'),
+            ('xassists', 'Expected Assists (xA)'),
+            ('primary_assists_minus_xassists', 'Primary Assists - xAssists'),
+            ('xgoals_plus_xassists', 'xGoals + xAssists'),
+            ('points_added', 'Points Added'),
+            ('xpoints_added', 'Expected Points Added')
+        ] %}
+            {% if player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}
+            <span class="stat_block above_avg">
+            {% else %}
+            <span class="stat_block below_avg">
+            {% endif %}
+            <h4>{{ label }}</h4>
+            <p class="stat_text">Value: {{ player_xgoals_data[stat] }}</p>
+            <p class="stat_text">Average: {{ player_xgoals_data['avg_' + stat] }}</p>
+            </span>
+        {% endfor %}
+        
+        
 
         <!-- XPass -->
         <h2>XPass</h2>
