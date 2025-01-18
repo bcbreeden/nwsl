@@ -77,24 +77,38 @@
 
         <!-- Player Goals Added -->
         <h2>Goals Added</h2>
-        Dribbling Goals Add Raw: {{player_goals_added_data['dribbling_goals_added_raw']}} <br/>
-        Dribbling Goals Added Above Average: {{player_goals_added_data['dribbling_goals_added_above_avg']}} <br/>
-        Dribbling Count Actions: {{player_goals_added_data['dribbling_count_actions']}} <br/>
-        Fouling Goals Added Raw: {{player_goals_added_data['fouling_goals_added_raw']}} <br/>
-        Fouling Goals Added Above Average: {{player_goals_added_data['fouling_goals_added_above_avg']}} <br/>
-        Fouling Count Actions: {{player_goals_added_data['fouling_count_actions']}} <br/>
-        Interrupting Goals Added Raw: {{player_goals_added_data['interrupting_goals_added_raw']}} <br/>
-        Interrupting Goals Added Above Average: {{player_goals_added_data['interrupting_goals_added_above_avg']}} <br/>
-        Interrupting Count Actions: {{player_goals_added_data['interrupting_count_actions']}} <br/>
-        Passing Goals Added Raw: {{player_goals_added_data['passing_goals_added_raw']}} <br/>
-        Passing Goals Added Above Average: {{player_goals_added_data['passing_goals_added_above_avg']}} <br/>
-        Passing Count Actions: {{player_goals_added_data['passing_count_actions']}} <br/>
-        Receiving Goals Added Raw: {{player_goals_added_data['receiving_goals_added_raw']}} <br/>
-        Receiving Goals Added Above Average: {{player_goals_added_data['receiving_goals_added_above_avg']}} <br/>
-        Receiving Count Actions: {{player_goals_added_data['receiving_count_actions']}} <br/>
-        Shooting Goals Added Raw: {{player_goals_added_data['shooting_goals_added_raw']}} <br/>
-        Shooting Goals Added Above Average: {{player_goals_added_data['shooting_goals_added_above_avg']}} <br/>
-        Shooting Count Actions: {{player_goals_added_data['shooting_count_actions']}} <br/>
+        {% for stat, label in [
+            ('dribbling_goals_added_raw', 'Dribbling Goals Added (Raw)'),
+            ('dribbling_goals_added_above_avg', 'Dribbling Goals Added (Above Avg)'),
+            ('dribbling_count_actions', 'Dribbling Actions'),
+            ('fouling_goals_added_raw', 'Fouling Goals Added (Raw)'),
+            ('fouling_goals_added_above_avg', 'Fouling Goals Added (Above Avg)'),
+            ('fouling_count_actions', 'Fouling Actions'),
+            ('interrupting_goals_added_raw', 'Interrupting Goals Added (Raw)'),
+            ('interrupting_goals_added_above_avg', 'Interrupting Goals Added (Above Avg)'),
+            ('interrupting_count_actions', 'Interrupting Actions'),
+            ('passing_goals_added_raw', 'Passing Goals Added (Raw)'),
+            ('passing_goals_added_above_avg', 'Passing Goals Added (Above Avg)'),
+            ('passing_count_actions', 'Passing Actions'),
+            ('receiving_goals_added_raw', 'Receiving Goals Added (Raw)'),
+            ('receiving_goals_added_above_avg', 'Receiving Goals Added (Above Avg)'),
+            ('receiving_count_actions', 'Receiving Actions'),
+            ('shooting_goals_added_raw', 'Shooting Goals Added (Raw)'),
+            ('shooting_goals_added_above_avg', 'Shooting Goals Added (Above Avg)'),
+            ('shooting_count_actions', 'Shooting Actions')
+        ] %}
+        {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat.lstrip('avg_')] %}
+            <span class="stat_block above_avg">
+            {% else %}
+            <span class="stat_block below_avg">
+            {% endif %}
+            <h4>{{ label }}</h4>
+            <p class="stat_text">Value: {{ player_goals_added_data[stat] }}</p>
+            <p class="stat_text">Average: {{ player_goals_added_data['avg_' + stat] }}</p>
+            </span>
+        {% endfor %}
+        
+        
     </section>
 </section>
 {% endblock %}
