@@ -544,4 +544,29 @@ def update_xgoals_xassists_per_90(season):
 
     print(f'xGoals + xAssists per 90 updated for all players in season {season}.')
 
+def get_player_xgoals_ids_by_season(season):
+    """
+    Fetch all player xgoals IDs for a specific season.
 
+    Args:
+        season (int): The season year to filter by.
+
+    Returns:
+        list: A list of IDs from the player_xgoals table for the specified season.
+    """
+    print(f"Fetching all player xgoals IDs for season: {season}")
+    conn = sqlite3.connect('data/nwsl.db')
+    conn.row_factory = lambda cursor, row: row[0]  # Return only the first column (id)
+    cursor = conn.cursor()
+    
+    query = '''
+        SELECT player_id
+        FROM player_xgoals
+        WHERE season = ?;
+    '''
+    cursor.execute(query, (season,))
+    ids = cursor.fetchall()
+    
+    conn.close()
+    print(f"Retrieved {len(ids)} IDs for season {season}.")
+    return ids

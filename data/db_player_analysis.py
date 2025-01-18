@@ -1,6 +1,8 @@
 from .db_player_xgoals import get_player_xgoals
 from .db_player_xpass import get_player_xpass
 from .db_player_goals_added import get_player_goals_added_by_season
+from data.db_player_xgoals import get_player_xgoals_ids_by_season
+import cohere
 
 def generate_analysis_string(player_id, season):
     """
@@ -18,7 +20,7 @@ def generate_analysis_string(player_id, season):
         "minutes_played", "shots", "shots_on_target", "shots_on_target_perc", "goals",
         "xgoals", "xplace", "goals_minus_xgoals", "key_passes", "primary_assists",
         "xassists", "primary_assists_minus_xassists", "xgoals_plus_xassists",
-        "points_added", "xpoints_added", "xgoals_xassists_per_90", "season"
+        "points_added", "xpoints_added", "xgoals_xassists_per_90"
     ]
 
     # Non-average statistics from player_xpass
@@ -49,9 +51,14 @@ def generate_analysis_string(player_id, season):
     # Construct analysis string
     analysis_parts = []
 
+    # Add player name from xgoals_data
+    analysis_parts.append(f"Player: {xgoals_data['player_name']}")
+    analysis_parts.append(f"Position: {xgoals_data['primary_general_position']}")
+    analysis_parts.append(f"Team: {xgoals_data['team_name']}")
+
     # Add xgoals stats to the analysis
     if xgoals_data:
-        analysis_parts.append("XGoals Statistics:")
+        analysis_parts.append("\nXGoals Statistics:")
         for stat in xgoals_stats:
             if stat in xgoals_data.keys():
                 analysis_parts.append(f"{stat.replace('_', ' ').capitalize()}: {xgoals_data[stat]}")
@@ -73,5 +80,28 @@ def generate_analysis_string(player_id, season):
     # Join the parts into a single string
     analysis_string = "\n".join(analysis_parts)
     return analysis_string
+
+
+def insert_all_player_analysis(season):
+    player_ids = get_player_xgoals_ids_by_season(season)
+    sample_id = player_ids[0]
+    # print(generate_analysis_string(sample_id, season))
+
+    # Initialize the Cohere client
+    co = cohere.Client("")
+    full_message = '''
+    Analyze the following player stats and provide a cohesive analysis for a soccer player. Be consise and highlight key stats that contributes to their play style, strengths, and weaknesses:
+    ''' + generate_analysis_string(sample_id, season)
+    print(full_message)
+
+
+    # Chat API call with properly structured messages
+    response = co.chat(
+        model="command-r7b-12-2024-vllm",  # Specify the model
+        message=full_message
+    )
+
+    # Print the response
+    print(response.text)
 
 
