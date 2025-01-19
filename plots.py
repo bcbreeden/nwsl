@@ -194,14 +194,20 @@ def plot_player_xgoals_spider(player_data):
         r=normalized_values,
         theta=categories,
         fill='toself',
+        fillcolor='#003049',
         name=player_data['player_name'],
         hoverinfo='text',
-        text=hover_values  # Add hover values
+        text=hover_values,  # Add hover values
+        line=dict(color='#003049'),
+        marker=dict(size=5)
     ))
 
     # Update the layout
     fig.update_layout(
         polar=dict(
+                        angularaxis=dict(  # Remove angular gridlines
+                linecolor='rgba(0,0,0,0)'   # Remove the angular axis line
+            ),
             radialaxis=dict(
                 visible=False,
                 range=[0, 1]  # Normalized range
