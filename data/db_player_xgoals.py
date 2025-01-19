@@ -9,18 +9,11 @@ MINUTE_LIMIT = 180
 def insert_player_xgoals_by_season(season):
     """
     Inserts player xGoal data into the database for a specific season, calculating 
-    position-specific averages for players with sufficient minutes played.
+    position-specific averages, minimums, and maximums for players with sufficient minutes played.
 
     Args:
         season (int): The season year for which to insert player xGoal data.
-
-    Functionality:
-    - Fetches player data from the NWSL API.
-    - Excludes goalkeepers and players with less than 200 minutes played for average calculations.
-    - Calculates position-specific averages for stats such as minutes played, goals, xGoals, etc.
-    - Inserts or updates player data into the 'player_xgoals' database table, including position-specific averages.
     """
-def insert_player_xgoals_by_season(season):
     print(f'Inserting data for players (xgoal) for season: {season}')
     
     api_string = f'nwsl/players/xgoals?season_name={season}&stage_name=Regular Season'
@@ -34,92 +27,137 @@ def insert_player_xgoals_by_season(season):
     # Filter out players with less than 200 minutes played for averages
     filtered_for_averages = [player for player in players_data if player.get('minutes_played', 0) >= 200]
 
-    # Group players by position and calculate sums and counts
+    # Group players by position and calculate sums, counts, mins, and maxes
+    stats_to_track = [
+        'minutes_played', 'shots', 'shots_on_target', 'shots_on_target_perc', 'goals',
+        'xgoals', 'xplace', 'goals_minus_xgoals', 'primary_assists_minus_xassists',
+        'key_passes', 'primary_assists', 'xassists', 'xgoals_plus_xassists',
+        'points_added', 'xpoints_added'
+    ]
+
     position_sums = defaultdict(lambda: defaultdict(float))
     position_counts = defaultdict(int)
+    position_mins = defaultdict(lambda: {stat: float('inf') for stat in stats_to_track})
+    position_maxs = defaultdict(lambda: {stat: float('-inf') for stat in stats_to_track})
 
     for player in filtered_for_averages:
         position = player.get('general_position', 'Unknown General Position')
         position_counts[position] += 1
-        position_sums[position]['minutes_played'] += player.get('minutes_played', 0)
-        position_sums[position]['shots'] += player.get('shots', 0)
-        position_sums[position]['shots_on_target'] += player.get('shots_on_target', 0)
-        position_sums[position]['shots_on_target_perc'] += int((player.get('shots_on_target', 0) / player.get('shots', 1)) * 100) if player.get('shots', 0) else 0
-        position_sums[position]['goals'] += player.get('goals', 0)
-        position_sums[position]['xgoals'] += player.get('xgoals', 0)
-        position_sums[position]['xplace'] += player.get('xplace', 0)  # Aggregate xplace
-        position_sums[position]['goals_minus_xgoals'] += player.get('goals_minus_xgoals', 0)  # Aggregate goals - xgoals
-        position_sums[position]['primary_assists_minus_xassists'] += player.get('primary_assists_minus_xassists', 0)  # Aggregate primary_assists - xassists
-        position_sums[position]['key_passes'] += player.get('key_passes', 0)
-        position_sums[position]['primary_assists'] += player.get('primary_assists', 0)
-        position_sums[position]['xassists'] += player.get('xassists', 0)
-        position_sums[position]['xgoals_plus_xassists'] += player.get('xgoals_plus_xassists', 0)
-        position_sums[position]['points_added'] += player.get('points_added', 0)
-        position_sums[position]['xpoints_added'] += player.get('xpoints_added', 0)
+
+        for stat in stats_to_track:
+            value = player.get(stat, 0)
+            position_sums[position][stat] += value
+            position_mins[position][stat] = min(position_mins[position][stat], value)
+            position_maxs[position][stat] = max(position_maxs[position][stat], value)
 
     # Calculate averages for each position
-    position_averages = {
-        position: {f"avg_{key}": round(value / position_counts[position], 2) for key, value in sums.items()}
-        for position, sums in position_sums.items()
+    position_data = {
+        position: {
+            **{f"avg_{stat}": round(position_sums[position][stat] / position_counts[position], 2)
+            if position_counts[position] > 0 else 0 for stat in stats_to_track},
+            **{f"min_{stat}": position_mins[position][stat] for stat in stats_to_track},
+            **{f"max_{stat}": position_maxs[position][stat] for stat in stats_to_track}
+        }
+        for position in position_sums.keys()
     }
+
 
     # Insert data for each player
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
         obj_id = player_id + str(season)
         team_id = player.get('team_id', [])
-        general_position = player.get('general_position', 'Unknown General Position')
-        minutes_played = player.get('minutes_played', 0)
-        shots = player.get('shots', 0)
-        shots_on_target = player.get('shots_on_target', 0)
-        shots_on_target_perc = int((shots_on_target / shots) * 100) if shots else 0
-        goals = player.get('goals', 0)
-        xgoals = round(player.get('xgoals', 0), 2)
-        xplace = round(player.get('xplace', 0), 2)
-        goals_minus_xgoals = round(player.get('goals_minus_xgoals', 0), 2)
-        primary_assists_minus_xassists = round(player.get('primary_assists_minus_xassists', 0), 2)
-        key_passes = player.get('key_passes', 0)
-        primary_assists = player.get('primary_assists', 0)
-        xassists = round(player.get('xassists', 0), 2)
-        primary_assists_minus_xassists = round(player.get('primary_assists_minus_xassists', 0), 2)
-        xgoals_plus_xassists = round(player.get('xgoals_plus_xassists', 0), 2)
-        points_added = round(player.get('points_added', 0), 2)
-        xpoints_added = round(player.get('xpoints_added', 0), 2)
-
         if isinstance(team_id, list):
             team_id = team_id[-1]
+        general_position = player.get('general_position', 'Unknown General Position')
+        season_int = int(season)
 
-        # Get position-specific averages or set default values
-        position_avg = position_averages.get(
-            general_position, {f"avg_{key}": 0 for key in position_sums['Unknown General Position'].keys()}
+        player_stats = {stat: player.get(stat, 0) for stat in stats_to_track}
+
+        # Use position averages, mins, and maxs
+        position_avg = position_data.get(general_position, {f"avg_{stat}": 0 for stat in stats_to_track})
+        position_min = position_data.get(general_position, {f"min_{stat}": 0 for stat in stats_to_track})
+        position_max = position_data.get(general_position, {f"max_{stat}": 0 for stat in stats_to_track})
+
+        values_to_insert = (
+            obj_id, player_id, team_id, general_position, season_int,
+            player_stats['minutes_played'], player_stats['shots'], player_stats['shots_on_target'],
+            player_stats['shots_on_target_perc'], player_stats['goals'], player_stats['xgoals'], player_stats['xplace'],
+            player_stats['goals_minus_xgoals'], player_stats['primary_assists_minus_xassists'], player_stats['key_passes'],
+            player_stats['primary_assists'], player_stats['xassists'], player_stats['xgoals_plus_xassists'],
+            player_stats['points_added'], player_stats['xpoints_added'],
+            position_avg['avg_minutes_played'], position_avg['avg_shots'], position_avg['avg_shots_on_target'],
+            position_avg['avg_shots_on_target_perc'], position_avg['avg_goals'], position_avg['avg_xgoals'],
+            position_avg['avg_xplace'], position_avg['avg_goals_minus_xgoals'],
+            position_avg['avg_primary_assists_minus_xassists'], position_avg['avg_key_passes'],
+            position_avg['avg_primary_assists'], position_avg['avg_xassists'],
+            position_avg['avg_xgoals_plus_xassists'], position_avg['avg_points_added'], position_avg['avg_xpoints_added'],
+            position_min['min_minutes_played'], position_min['min_shots'], position_min['min_shots_on_target'],
+            position_min['min_shots_on_target_perc'], position_min['min_goals'], position_min['min_xgoals'],
+            position_min['min_xplace'], position_min['min_goals_minus_xgoals'],
+            position_min['min_primary_assists_minus_xassists'], position_min['min_key_passes'],
+            position_min['min_primary_assists'], position_min['min_xassists'],
+            position_min['min_xgoals_plus_xassists'], position_min['min_points_added'], position_min['min_xpoints_added'],
+            position_max['max_minutes_played'], position_max['max_shots'], position_max['max_shots_on_target'],
+            position_max['max_shots_on_target_perc'], position_max['max_goals'], position_max['max_xgoals'],
+            position_max['max_xplace'], position_max['max_goals_minus_xgoals'],
+            position_max['max_primary_assists_minus_xassists'], position_max['max_key_passes'],
+            position_max['max_primary_assists'], position_max['max_xassists'],
+            position_max['max_xgoals_plus_xassists'], position_max['max_points_added'], position_max['max_xpoints_added']
         )
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
-                id, player_id, team_id, general_position, minutes_played, shots, 
-                shots_on_target, shots_on_target_perc, goals, xgoals, xplace, goals_minus_xgoals, 
-                key_passes, primary_assists, xassists, primary_assists_minus_xassists, 
-                xgoals_plus_xassists, points_added, xpoints_added, season,
-                avg_minutes_played, avg_shots, avg_shots_on_target, avg_shots_on_target_perc, avg_goals, avg_xgoals, 
-                avg_xplace, avg_goals_minus_xgoals, avg_primary_assists_minus_xassists, avg_key_passes, 
-                avg_primary_assists, avg_xassists, avg_xgoals_plus_xassists, avg_points_added, avg_xpoints_added
+                id, player_id, team_id, general_position, season,
+                minutes_played, shots, shots_on_target, shots_on_target_perc, goals,
+                xgoals, xplace, goals_minus_xgoals, primary_assists_minus_xassists,
+                key_passes, primary_assists, xassists, xgoals_plus_xassists,
+                points_added, xpoints_added,
+                avg_minutes_played, avg_shots, avg_shots_on_target, avg_shots_on_target_perc, avg_goals, avg_xgoals,
+                avg_xplace, avg_goals_minus_xgoals, avg_primary_assists_minus_xassists, avg_key_passes,
+                avg_primary_assists, avg_xassists, avg_xgoals_plus_xassists, avg_points_added, avg_xpoints_added,
+                min_minutes_played, min_shots, min_shots_on_target, min_shots_on_target_perc, min_goals, min_xgoals,
+                min_xplace, min_goals_minus_xgoals, min_primary_assists_minus_xassists, min_key_passes,
+                min_primary_assists, min_xassists, min_xgoals_plus_xassists, min_points_added, min_xpoints_added,
+                max_minutes_played, max_shots, max_shots_on_target, max_shots_on_target_perc, max_goals, max_xgoals,
+                max_xplace, max_goals_minus_xgoals, max_primary_assists_minus_xassists, max_key_passes,
+                max_primary_assists, max_xassists, max_xgoals_plus_xassists, max_points_added, max_xpoints_added
             ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         ''', (
-            obj_id, player_id, team_id, general_position, minutes_played, shots, shots_on_target, shots_on_target_perc,
-            goals, xgoals, xplace, goals_minus_xgoals, key_passes, primary_assists, xassists,
-            primary_assists_minus_xassists, xgoals_plus_xassists, points_added, xpoints_added, int(season),
+            obj_id, player_id, team_id, general_position, season_int,
+            player_stats['minutes_played'], player_stats['shots'], player_stats['shots_on_target'],
+            player_stats['shots_on_target_perc'], player_stats['goals'], player_stats['xgoals'], player_stats['xplace'],
+            player_stats['goals_minus_xgoals'], player_stats['primary_assists_minus_xassists'], player_stats['key_passes'],
+            player_stats['primary_assists'], player_stats['xassists'], player_stats['xgoals_plus_xassists'],
+            player_stats['points_added'], player_stats['xpoints_added'],
             position_avg['avg_minutes_played'], position_avg['avg_shots'], position_avg['avg_shots_on_target'],
             position_avg['avg_shots_on_target_perc'], position_avg['avg_goals'], position_avg['avg_xgoals'],
-            position_avg['avg_xplace'], position_avg['avg_goals_minus_xgoals'], position_avg['avg_primary_assists_minus_xassists'],
-            position_avg['avg_key_passes'], position_avg['avg_primary_assists'], position_avg['avg_xassists'],
-            position_avg['avg_xgoals_plus_xassists'], position_avg['avg_points_added'], position_avg['avg_xpoints_added']
+            position_avg['avg_xplace'], position_avg['avg_goals_minus_xgoals'],
+            position_avg['avg_primary_assists_minus_xassists'], position_avg['avg_key_passes'],
+            position_avg['avg_primary_assists'], position_avg['avg_xassists'],
+            position_avg['avg_xgoals_plus_xassists'], position_avg['avg_points_added'], position_avg['avg_xpoints_added'],
+            position_min['min_minutes_played'], position_min['min_shots'], position_min['min_shots_on_target'],
+            position_min['min_shots_on_target_perc'], position_min['min_goals'], position_min['min_xgoals'],
+            position_min['min_xplace'], position_min['min_goals_minus_xgoals'],
+            position_min['min_primary_assists_minus_xassists'], position_min['min_key_passes'],
+            position_min['min_primary_assists'], position_min['min_xassists'],
+            position_min['min_xgoals_plus_xassists'], position_min['min_points_added'], position_min['min_xpoints_added'],
+            position_max['max_minutes_played'], position_max['max_shots'], position_max['max_shots_on_target'],
+            position_max['max_shots_on_target_perc'], position_max['max_goals'], position_max['max_xgoals'],
+            position_max['max_xplace'], position_max['max_goals_minus_xgoals'],
+            position_max['max_primary_assists_minus_xassists'], position_max['max_key_passes'],
+            position_max['max_primary_assists'], position_max['max_xassists'],
+            position_max['max_xgoals_plus_xassists'], position_max['max_points_added'], position_max['max_xpoints_added']
         ))
 
     conn.commit()
     conn.close()
-    print(f'Player xgoals data for season {season} inserted with position-specific averages, including avg_primary_assists_minus_xassists.')
+    print(f'Player xgoals data for season {season} inserted with position-specific averages, mins, and maxes.')
+
 
 
 
