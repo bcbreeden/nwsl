@@ -86,7 +86,7 @@ def insert_all_player_analysis(season):
     player_ids = get_player_xgoals_ids_by_season(season)
     sample_id = player_ids[0]
     # print(generate_analysis_string(sample_id, season))
-
+    
     # Initialize the Cohere client
     co = cohere.Client("")
     full_message = '''
