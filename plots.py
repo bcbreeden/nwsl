@@ -148,17 +148,17 @@ def plot_player_xgoals_spider(player_data):
         player_data (sqlite3.Row): A row object containing player xGoals data, including min_ and max_ values for each stat.
 
     Returns:
-        None
+        Tuple[str, str]: JSON-encoded Plotly figure and config.
     """
     stats_to_plot = [
         'shots', 'shots_on_target', 'shots_on_target_perc',
-        'goals', 'xgoals', 'xplace', 'goals_minus_xgoals', 'primary_assists_minus_xassists',
-        'key_passes', 'primary_assists', 'xassists', 'xgoals_plus_xassists',
+        'goals', 'xgoals', 'xplace', 'xassists', 'key_passes', 'primary_assists', 'xgoals_plus_xassists',
         'points_added', 'xpoints_added'
     ]
 
     categories = []
     normalized_values = []
+    hover_values = []  # Store hover values (non-normalized stats)
 
     for stat in stats_to_plot:
         min_stat_key = f'min_{stat}'
@@ -180,10 +180,12 @@ def plot_player_xgoals_spider(player_data):
             # Append data for plotting
             categories.append(stat.replace('_', ' ').title())
             normalized_values.append(normalized_stat)
+            hover_values.append(f"{stat.replace('_', ' ').title()}: {player_stat}")  # Add hover text
 
     # Close the radar chart loop
     categories.append(categories[0])
     normalized_values.append(normalized_values[0])
+    hover_values.append(hover_values[0])  # Close the hover loop
 
     # Create the radar chart
     fig = go.Figure()
@@ -193,7 +195,8 @@ def plot_player_xgoals_spider(player_data):
         theta=categories,
         fill='toself',
         name=player_data['player_name'],
-        hoverinfo='none'
+        hoverinfo='text',
+        text=hover_values  # Add hover values
     ))
 
     # Update the layout
@@ -210,9 +213,10 @@ def plot_player_xgoals_spider(player_data):
     # Convert the figure to JSON and add config to disable displayModeBar
     fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     config = json.dumps({
-    "displayModeBar": False,  # Disable the toolbar
-    "scrollZoom": False,      # Disable zooming with the scroll wheel
-    "staticPlot": True        # Make the plot fully static
+        "displayModeBar": False,  # Disable the toolbar
+        "scrollZoom": False,      # Disable zooming with the scroll wheel
+        "dragMode": False,
+        "staticPlot": True        # Make the plot fully static
     })
 
     return fig_json, config
