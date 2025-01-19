@@ -24,6 +24,15 @@ def insert_player_xgoals_by_season(season):
     # Filter out goalkeepers
     players_data = [player for player in players_data if player.get('general_position') != 'GK']
 
+    # Calculate shots_on_target_perc for each player
+    for player in players_data:
+        shots = player.get('shots', 0)
+        shots_on_target = player.get('shots_on_target', 0)
+        if shots == 0:
+            player['shots_on_target_perc'] = 0
+        else:
+            player['shots_on_target_perc'] = int((shots_on_target / shots) * 100)
+
     # Filter out players with less than 200 minutes played for averages
     filtered_for_averages = [player for player in players_data if player.get('minutes_played', 0) >= 200]
 
@@ -54,13 +63,12 @@ def insert_player_xgoals_by_season(season):
     position_data = {
         position: {
             **{f"avg_{stat}": round(position_sums[position][stat] / position_counts[position], 2)
-            if position_counts[position] > 0 else 0 for stat in stats_to_track},
+               if position_counts[position] > 0 else 0 for stat in stats_to_track},
             **{f"min_{stat}": position_mins[position][stat] for stat in stats_to_track},
             **{f"max_{stat}": position_maxs[position][stat] for stat in stats_to_track}
         }
         for position in position_sums.keys()
     }
-
 
     # Insert data for each player
     for player in players_data:

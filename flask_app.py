@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
-from plots import plot_team_goals_points, plot_team_points_diff, plot_goal_vs_xgoal
+from plots import plot_team_goals_points, plot_team_points_diff, plot_goal_vs_xgoal, plot_player_xgoals_spider
 import plotly.graph_objects as go
 import plotly.io as pio
 
@@ -64,6 +64,12 @@ def player():
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
         player_xgoals_data = db_player_xgoals.get_player_xgoals(player_id, 2024)
+
+        # player_xgoals_spider = plot_player_xgoals_spider(player_xgoals_data)
+        # player_xgoals_spider_html = pio.to_html(player_xgoals_spider, full_html=False)
+
+        xgoals_fig_json, xgoals_config = plot_player_xgoals_spider(player_xgoals_data)
+
         player_xpass_data = db_player_xpass.get_player_xpass(player_id, 2024)
         player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, 2024)
         return render_template('player.html',
@@ -71,7 +77,10 @@ def player():
                                obj_id = obj_id,
                                player_xgoals_data = player_xgoals_data,
                                player_xpass_data = player_xpass_data,
-                               player_goals_added_data = player_goals_added_data)
+                               player_goals_added_data = player_goals_added_data,
+                            #    player_xgoals_spider_plot = player_xgoals_spider_html,
+                               xgoals_fig_json = xgoals_fig_json,
+                               xgoals_config = xgoals_config)
     player_data = db_player_xgoals.get_all_player_xgoals(2024)
     return render_template('players.html',
                            players = player_data)

@@ -2,6 +2,8 @@ import plotly.graph_objects as go
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
+import plotly
+import json
 
 def plot_team_goals_points():
     rows = db_team_xgoals.get_top_team_xgoals_stat(2024, 'points')
@@ -135,3 +137,82 @@ def plot_goal_vs_xgoal():
         height=800
     )
     return fig
+
+import plotly.graph_objects as go
+
+def plot_player_xgoals_spider(player_data):
+    """
+    Generates an interactive spider web graph for player stats with scales based on min_ and max_ values using Plotly.
+
+    Args:
+        player_data (sqlite3.Row): A row object containing player xGoals data, including min_ and max_ values for each stat.
+
+    Returns:
+        None
+    """
+    stats_to_plot = [
+        'shots', 'shots_on_target', 'shots_on_target_perc',
+        'goals', 'xgoals', 'xplace', 'goals_minus_xgoals', 'primary_assists_minus_xassists',
+        'key_passes', 'primary_assists', 'xassists', 'xgoals_plus_xassists',
+        'points_added', 'xpoints_added'
+    ]
+
+    categories = []
+    normalized_values = []
+
+    for stat in stats_to_plot:
+        min_stat_key = f'min_{stat}'
+        max_stat_key = f'max_{stat}'
+
+        # Ensure the stat and its min/max values exist in the player data
+        if stat in player_data.keys() and min_stat_key in player_data.keys() and max_stat_key in player_data.keys():
+            min_stat = player_data[min_stat_key]
+            max_stat = player_data[max_stat_key]
+            player_stat = player_data[stat]
+
+            # Skip stats with invalid ranges
+            if max_stat == min_stat:
+                continue
+
+            # Normalize the player stat to a 0-1 scale
+            normalized_stat = (player_stat - min_stat) / (max_stat - min_stat)
+
+            # Append data for plotting
+            categories.append(stat.replace('_', ' ').title())
+            normalized_values.append(normalized_stat)
+
+    # Close the radar chart loop
+    categories.append(categories[0])
+    normalized_values.append(normalized_values[0])
+
+    # Create the radar chart
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatterpolar(
+        r=normalized_values,
+        theta=categories,
+        fill='toself',
+        name=player_data['player_name'],
+        hoverinfo='none'
+    ))
+
+    # Update the layout
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=False,
+                range=[0, 1]  # Normalized range
+            ),
+        ),
+        showlegend=False
+    )
+
+    # Convert the figure to JSON and add config to disable displayModeBar
+    fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    config = json.dumps({
+    "displayModeBar": False,  # Disable the toolbar
+    "scrollZoom": False,      # Disable zooming with the scroll wheel
+    "staticPlot": True        # Make the plot fully static
+    })
+
+    return fig_json, config

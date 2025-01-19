@@ -20,6 +20,13 @@
             </div>
         </section>
         <section class="player_report_stats_container">
+            <div class="plot_container" id="xgoals_plot">
+            </div>
+            <script>
+                var spiderChartData = JSON.parse('{{ xgoals_fig_json|safe }}');
+                var spiderChartConfig = JSON.parse('{{ xgoals_config|safe }}');
+                Plotly.newPlot('xgoals_plot', spiderChartData.data, spiderChartData.layout, spiderChartConfig);
+            </script>
             <!-- XGoals -->
             <h2>XGoals</h2>
             <section class="player_report_stats_block">
