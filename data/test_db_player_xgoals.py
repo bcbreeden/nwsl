@@ -1,9 +1,10 @@
 import unittest
 from unittest.mock import patch
-from .db_player_xgoals import fetch_players_xgoal_data, calculate_shots_on_target_percentage, aggregate_position_data
+import sqlite3
+from collections import defaultdict
+from .db_player_xgoals import fetch_players_xgoal_data, calculate_player_statistics, aggregate_position_data, insert_player_data
 
 class TestFetchPlayersXGoalData(unittest.TestCase):
-
     @patch('data.db_player_xgoals.make_asa_api_call')
     def test_fetch_with_default_excluded_positions(self, mock_make_asa_api_call):
         # Mock API response
@@ -90,7 +91,7 @@ class TestCalculateShotsOnTargetPercentage(unittest.TestCase):
             {'player_id': 2, 'shots': 8, 'shots_on_target': 4, 'minutes_played': 150},
             {'player_id': 3, 'shots': 0, 'shots_on_target': 0, 'minutes_played': 250},
         ]
-        result = calculate_shots_on_target_percentage(players_data)
+        result = calculate_player_statistics(players_data)
 
         # Assert calculations
         self.assertEqual(len(result), 2)  # Only players with >= 180 minutes should remain
@@ -102,7 +103,7 @@ class TestCalculateShotsOnTargetPercentage(unittest.TestCase):
             {'player_id': 1, 'shots': 10, 'shots_on_target': 5, 'minutes_played': 180},
             {'player_id': 2, 'shots': 8, 'shots_on_target': 4, 'minutes_played': 179},
         ]
-        result = calculate_shots_on_target_percentage(players_data)
+        result = calculate_player_statistics(players_data)
 
         # Assert only players meeting the default minimum minutes remain
         self.assertEqual(len(result), 1)
@@ -113,7 +114,7 @@ class TestCalculateShotsOnTargetPercentage(unittest.TestCase):
             {'player_id': 1, 'shots': 10, 'shots_on_target': 5, 'minutes_played': 180},
             {'player_id': 2, 'shots': 8, 'shots_on_target': 4, 'minutes_played': 179},
         ]
-        result = calculate_shots_on_target_percentage(players_data, minimum_minutes=179)
+        result = calculate_player_statistics(players_data, minimum_minutes=179)
 
         # Assert players meeting the custom minimum minutes remain
         self.assertEqual(len(result), 2)
@@ -123,7 +124,7 @@ class TestCalculateShotsOnTargetPercentage(unittest.TestCase):
             {'player_id': 1, 'shots': 0, 'shots_on_target': 0, 'minutes_played': 200},
             {'player_id': 2, 'shots': 0, 'shots_on_target': 0, 'minutes_played': 250},
         ]
-        result = calculate_shots_on_target_percentage(players_data)
+        result = calculate_player_statistics(players_data)
 
         # Assert shots_on_target_perc is 0 for players with 0 shots
         self.assertEqual(len(result), 2)
@@ -132,7 +133,7 @@ class TestCalculateShotsOnTargetPercentage(unittest.TestCase):
 
     def test_calculate_with_empty_data(self):
         players_data = []
-        result = calculate_shots_on_target_percentage(players_data)
+        result = calculate_player_statistics(players_data)
 
         # Assert result is empty
         self.assertEqual(result, [])
@@ -142,14 +143,13 @@ class TestCalculateShotsOnTargetPercentage(unittest.TestCase):
             {'player_id': 1, 'minutes_played': 200},  # Missing shots and shots_on_target
             {'player_id': 2, 'shots': 10, 'shots_on_target': 5},  # Missing minutes_played
         ]
-        result = calculate_shots_on_target_percentage(players_data)
+        result = calculate_player_statistics(players_data)
 
         # Assert calculations for available data
         self.assertEqual(len(result), 1)  # Only the first player meets the minimum minutes
         self.assertEqual(result[0]['shots_on_target_perc'], 0)  # shots_on_target_perc is 0 by default
 
 class TestAggregatePositionData(unittest.TestCase):
-
     def test_aggregate_with_valid_data(self):
         filtered_players = [
             {'player_id': 1, 'general_position': 'ST', 'goals': 5, 'assists': 3},
