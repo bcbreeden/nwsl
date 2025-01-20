@@ -1,7 +1,7 @@
 import unittest
 import json
 import plotly
-from plots import plot_spider  # Replace 'your_module' with the actual module name
+from plots import plot_spider
 
 class TestPlotSpider(unittest.TestCase):
 
