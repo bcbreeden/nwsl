@@ -140,22 +140,21 @@ def plot_goal_vs_xgoal():
 
 import plotly.graph_objects as go
 
-def plot_player_xgoals_spider(player_data):
+def plot_spider(stats_to_plot, player_data):
     """
     Generates an interactive spider web graph for player stats with scales based on min_ and max_ values using Plotly.
 
     Args:
+        stats_to_plot (list): A list of stats to plot.
         player_data (sqlite3.Row): A row object containing player xGoals data, including min_ and max_ values for each stat.
 
     Returns:
         Tuple[str, str]: JSON-encoded Plotly figure and config.
     """
-    stats_to_plot = [
-        'shots', 'shots_on_target', 'shots_on_target_perc', 'xgoals_xassists_per_90',
-        'goals', 'xgoals', 'xassists', 'xplace', 'key_passes', 'primary_assists', 'xgoals_plus_xassists',
-        'points_added', 'xpoints_added'
-    ]
-
+    if len(stats_to_plot) == 0:
+        print('No stats provided for spider plot.')
+        return [0, 0]
+    
     categories = []
     normalized_values = []
     hover_values = []  # Store hover values (non-normalized stats)
@@ -181,9 +180,14 @@ def plot_player_xgoals_spider(player_data):
             categories.append(stat.replace('_', ' ').title())
             normalized_values.append(normalized_stat)
             hover_values.append(f"{stat.replace('_', ' ').title()}: {player_stat}")  # Add hover text
-
+    
     # Close the radar chart loop
-    categories.append(categories[0])
+    try:
+        categories.append(categories[0])
+    except IndexError:
+        print('No categories provided for spider plot')
+        return[0, 0]
+    
     normalized_values.append(normalized_values[0])
     hover_values.append(hover_values[0])  # Close the hover loop
 
