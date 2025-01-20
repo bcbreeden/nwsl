@@ -151,8 +151,8 @@ def plot_player_xgoals_spider(player_data):
         Tuple[str, str]: JSON-encoded Plotly figure and config.
     """
     stats_to_plot = [
-        'shots', 'shots_on_target', 'shots_on_target_perc',
-        'goals', 'xgoals', 'xplace', 'xassists', 'key_passes', 'primary_assists', 'xgoals_plus_xassists',
+        'shots', 'shots_on_target', 'shots_on_target_perc', 'xgoals_xassists_per_90',
+        'goals', 'xgoals', 'xassists', 'xplace', 'key_passes', 'primary_assists', 'xgoals_plus_xassists',
         'points_added', 'xpoints_added'
     ]
 
@@ -199,14 +199,14 @@ def plot_player_xgoals_spider(player_data):
         hoverinfo='text',
         text=hover_values,  # Add hover values
         line=dict(color='#003049'),
-        marker=dict(size=5)
+        marker=dict(size=1)
     ))
 
     # Update the layout
     fig.update_layout(
         polar=dict(
-                        angularaxis=dict(  # Remove angular gridlines
-                linecolor='rgba(0,0,0,0)'   # Remove the angular axis line
+            angularaxis=dict(  # Remove angular gridlines
+            linecolor='rgba(0,0,0,0)'   # Remove the angular axis line
             ),
             radialaxis=dict(
                 visible=False,

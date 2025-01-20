@@ -95,6 +95,7 @@ def create_tables():
             min_xgoals_plus_xassists REAL,
             min_points_added REAL,
             min_xpoints_added REAL,
+            min_xgoals_xassists_per_90 REAL,
             max_minutes_played REAL,
             max_shots REAL,
             max_shots_on_target REAL,
@@ -110,6 +111,7 @@ def create_tables():
             max_xgoals_plus_xassists REAL,
             max_points_added REAL,
             max_xpoints_added REAL,
+            max_xgoals_xassists_per_90 REAL,
             FOREIGN KEY (team_id) REFERENCES team_info(team_id),
             FOREIGN KEY (player_id) REFERENCES player_info(player_id)
         )

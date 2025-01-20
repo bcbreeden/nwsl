@@ -470,26 +470,12 @@ def get_stat_ranges():
 
 def update_xgoals_xassists_per_90(season):
     """
-    Update the xGoals + xAssists per 90 metric for all players in the specified season.
-
-    This function retrieves all player data for a given season from the database, calculates 
-    the xGoals + xAssists per 90 metric for each player, and updates the player_xgoals table 
-    with the calculated values. Players with fewer than MINUTE_LIMIT will have their 
-    xGoals + xAssists per 90 metric set to 0.
+    Update the xGoals + xAssists per 90 metric for all players in the specified season, 
+    calculating position-specific averages, maximums, and minimums.
 
     Args:
         season (int): The season year for which the xGoals + xAssists per 90 metric should be updated.
     
-    Process:
-        1. Fetch all player xgoals data for the specified season using the get_all_player_xgoals function.
-        2. For each player:
-            - Extract xGoals, xAssists, and minutes played.
-            - Calculate xGoals + xAssists per 90 if the player has >= MINUTE_LIMIT.
-        3. Update the player_xgoals table in the database with the calculated metric.
-    
-    Database Table:
-        Updates the `player_xgoals` table, specifically the `xgoals_xassists_per_90` column.
-
     Returns:
         None
     """
@@ -526,13 +512,16 @@ def update_xgoals_xassists_per_90(season):
             WHERE id = ?
         ''', (xgoals_xassists_per_90, player_stats['id']))
 
-        # Aggregate stats by position for averages
+        # Aggregate stats by position for averages, min, and max
         if position not in position_stats:
-            position_stats[position] = {'sum': 0, 'count': 0}
+            position_stats[position] = {'sum': 0, 'count': 0, 'max': float('-inf'), 'min': float('inf')}
         position_stats[position]['sum'] += xgoals_xassists_per_90
-        position_stats[position]['count'] += 1 if xgoals_xassists_per_90 > 0 else 0
+        if xgoals_xassists_per_90 > 0:
+            position_stats[position]['count'] += 1
+            position_stats[position]['max'] = max(position_stats[position]['max'], xgoals_xassists_per_90)
+            position_stats[position]['min'] = min(position_stats[position]['min'], xgoals_xassists_per_90)
 
-     # Calculate averages by position and update the table
+    # Update averages, min, and max for each player
     for row in rows:
         player_stats = dict(row)
         position = player_stats.get('general_position', 'Unknown')
@@ -541,21 +530,25 @@ def update_xgoals_xassists_per_90(season):
             avg_xgoals_xassists_per_90 = round(
                 position_stats[position]['sum'] / position_stats[position]['count'], 2
             )
+            max_xgoals_xassists_per_90 = position_stats[position]['max']
+            min_xgoals_xassists_per_90 = position_stats[position]['min']
         else:
             avg_xgoals_xassists_per_90 = 0
+            max_xgoals_xassists_per_90 = 0
+            min_xgoals_xassists_per_90 = 0
 
-        # Update average stat for the player
+        # Update the average, max, and min stats for the player
         cursor.execute('''
             UPDATE player_xgoals
-            SET avg_xgoals_xassists_per_90 = ?
+            SET avg_xgoals_xassists_per_90 = ?, max_xgoals_xassists_per_90 = ?, min_xgoals_xassists_per_90 = ?
             WHERE id = ?
-        ''', (avg_xgoals_xassists_per_90, player_stats['id']))
+        ''', (avg_xgoals_xassists_per_90, max_xgoals_xassists_per_90, min_xgoals_xassists_per_90, player_stats['id']))
 
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
 
-    print(f'xGoals + xAssists per 90 updated for all players in season {season}.')
+    print(f'xGoals + xAssists per 90 updated for all players in season {season}, including position-specific averages, mins, and maxes.')
 
 def get_player_xgoals_ids_by_season(season):
     """
