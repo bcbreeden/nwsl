@@ -36,7 +36,7 @@ def insert_player_xgoals_by_season(season, conn=None):
         conn.close()
     print(f'Player xgoals data for season {season} inserted successfully.')
 
-def get_player_xgoals(player_id, season):
+def get_player_xgoal_data(player_id, season):
     print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = player_id + str(season)
     conn = sqlite3.connect('data/nwsl.db')
@@ -167,7 +167,6 @@ def player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
     print('Top {} shots on target% sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-# needs unit test
 def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
     """
     Retrieve the minutes played for defender (DF) players, sorted by a specified stat.
@@ -248,20 +247,8 @@ def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
                             (e.g., "minutes_played", "goals").
         limit (int): The maximum number of players to return in the result.
 
-    Process:
-        1. Establish a connection to the SQLite database and set the row factory.
-        2. Execute an SQL query to:
-            - Select data from `player_xgoals`, `player_info`, and `team_info`.
-            - Filter by season and exclude players with `primary_broad_position` of DF or GK.
-            - Sort results by the specified stat in descending order.
-            - Limit the results to the specified number of players.
-        3. Fetch and return the results.
-
     Returns:
         list: A list of rows (SQLite Row objects) containing player data that matches the query.
-
-    Example Usage:
-        rows = player_xgoals_get_minutes_played_non_df(2023, "minutes_played", 10)
     """
     print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
     conn = sqlite3.connect('data/nwsl.db')
@@ -308,23 +295,9 @@ def get_stat_ranges():
     Args:
         None
 
-    Process:
-        1. Establish a connection to the SQLite database.
-        2. Execute an SQL query to calculate the minimum and maximum values for key stats.
-        3. Map the query results to a dictionary using stat names as keys.
-        4. Close the database connection and return the dictionary.
-
     Returns:
         dict: A dictionary containing the min and max values for each stat. 
               Format: { "stat_name": (min_value, max_value), ... }
-
-    Example Output:
-        {
-            "minutes_played": (0, 3000),
-            "shots": (0, 150),
-            "goals": (0, 25),
-            ...
-        }
     """
     conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()

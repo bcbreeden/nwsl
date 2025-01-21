@@ -1,8 +1,9 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import sqlite3
 from collections import defaultdict
-from .db_player_xgoals import fetch_players_xgoal_data, calculate_player_statistics, aggregate_position_data, insert_player_xgoals_by_season
+from .db_player_xgoals import (fetch_players_xgoal_data, calculate_player_statistics, aggregate_position_data, insert_player_xgoals_by_season,
+                                get_player_xgoal_data)
 
 class TestFetchPlayersXGoalData(unittest.TestCase):
     @patch('data.db_player_xgoals.make_asa_api_call')

@@ -1,4 +1,4 @@
-from .db_player_xgoals import get_player_xgoals
+from .db_player_xgoals import get_player_xgoal_data
 from .db_player_xpass import get_player_xpass
 from .db_player_goals_added import get_player_goals_added_by_season
 from data.db_player_xgoals import get_player_xgoals_ids_by_season
@@ -41,7 +41,7 @@ def generate_analysis_string(player_id, season):
     ]
 
     # Fetch data for xgoals, xpass, and goals added
-    xgoals_data = get_player_xgoals(player_id, season)
+    xgoals_data = get_player_xgoal_data(player_id, season)
     xpass_data = get_player_xpass(player_id, season)
     goals_added_data = get_player_goals_added_by_season(player_id, season)
 
