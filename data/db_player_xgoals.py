@@ -570,7 +570,7 @@ def aggregate_position_data(filtered_players, stats_to_track):
 
 def insert_player_data(conn, players_data, position_data, stats_to_track, season):
     """
-    Insert player data into the database.
+    Insert player data into the database, rounding all REAL values to two decimal places.
 
     Args:
         conn (sqlite3.Connection): Database connection.
@@ -589,12 +589,15 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
             team_id = team_id[-1]
         general_position = player.get('general_position', 'Unknown General Position')
 
-        player_stats = {stat: player.get(stat, 0) for stat in stats_to_track}
-        position_avg = position_data.get(general_position, {f"avg_{stat}": 0 for stat in stats_to_track})
-        position_min = position_data.get(general_position, {f"min_{stat}": 0 for stat in stats_to_track})
-        position_max = position_data.get(general_position, {f"max_{stat}": 0 for stat in stats_to_track})
+        # Prepare player stats and round values
+        player_stats = {stat: round(player.get(stat, 0), 2) if isinstance(player.get(stat), (float, int)) else player.get(stat, 0)
+                        for stat in stats_to_track}
+        position_avg = {f"avg_{stat}": round(position_data.get(general_position, {}).get(f"avg_{stat}", 0), 2) for stat in stats_to_track}
+        position_min = {f"min_{stat}": round(position_data.get(general_position, {}).get(f"min_{stat}", 0), 2) for stat in stats_to_track}
+        position_max = {f"max_{stat}": round(position_data.get(general_position, {}).get(f"max_{stat}", 0), 2) for stat in stats_to_track}
         
-        player_stats['shots_on_target_perc'] = (player['shots_on_target'] / player['shots']) * 100 if player['shots'] > 0 else 0
+        # Calculate Shot on Target% (not included in api)
+        player_stats['shots_on_target_perc'] = round((player['shots_on_target'] / player['shots']) * 100 if player['shots'] > 10 else 0, 2)
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
