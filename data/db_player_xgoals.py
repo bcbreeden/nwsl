@@ -6,39 +6,6 @@ from collections import defaultdict
 
 MINUTE_LIMIT = 180
 
-def insert_player_xgoals_by_season(season, conn=None):
-    """
-    Main function to fetch, process, and insert player xGoals data.
-
-    Args:
-        season (int): The season year.
-        conn (sqlite3.Connection, optional): Database connection. Defaults to None.
-
-    Returns:
-        None
-    """
-    print(f'Inserting data for players (xgoal) for season: {season}')
-    close_connection = False
-    if conn is None:
-        conn = sqlite3.connect('data/nwsl.db')
-        close_connection = True
-
-    stats_to_track = [
-    'minutes_played', 'shots', 'shots_on_target', 'shots_on_target_perc', 'goals',
-    'xgoals', 'xplace', 'goals_minus_xgoals', 'primary_assists_minus_xassists',
-    'key_passes', 'primary_assists', 'xassists', 'xgoals_plus_xassists',
-    'points_added', 'xpoints_added'
-    ]
-
-    players_data = fetch_players_xgoal_data(season, excluded_positions=['GK'])
-    filtered_players = calculate_player_statistics(players_data)
-    position_data = aggregate_position_data(filtered_players, stats_to_track)
-    insert_player_data(conn, players_data, position_data, stats_to_track, season)
-
-    if close_connection:
-        conn.close()
-    print(f'Player xgoals data for season {season} inserted successfully.')
-
 def get_player_xgoal_data(player_id: str, season: int):
     """
     Fetches and returns player xGoals data for a specific player and season.
@@ -183,7 +150,7 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
     print('Top {} sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-def player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
+def get_player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
     """
     Retrieve player data for a given season, filtered by a minimum number of shots 
     and sorted by a specified stat.
@@ -230,7 +197,7 @@ def player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
     print('Top {} shots on target% sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
+def get_defender_minutes_played(season, sorting_stat, limit):
     """
     Retrieve minutes played for defenders in a given season, sorted by a specified stat.
 
@@ -275,7 +242,7 @@ def player_xgoals_get_minutes_played_defender(season, sorting_stat, limit):
     print('Top {} minutes played sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-def player_xgoals_get_minutes_played_non_df(season, sorting_stat, limit):
+def get_minutes_played_non_df(season, sorting_stat, limit):
     """
     Retrieve the minutes played for players who are not defenders (DF) or goalkeepers (GK),
     sorted by a specified stat.
@@ -408,6 +375,42 @@ def get_player_xgoals_ids_by_season(season):
     print(f"Retrieved {len(ids)} IDs for season {season}.")
     return ids
 
+'''
+INSERT XGOALS DATA
+'''
+def insert_player_xgoals_by_season(season, conn=None):
+    """
+    Main function to fetch, process, and insert player xGoals data.
+
+    Args:
+        season (int): The season year.
+        conn (sqlite3.Connection, optional): Database connection. Defaults to None.
+
+    Returns:
+        None
+    """
+    print(f'Inserting data for players (xgoal) for season: {season}')
+    close_connection = False
+    if conn is None:
+        conn = sqlite3.connect('data/nwsl.db')
+        close_connection = True
+
+    stats_to_track = [
+    'minutes_played', 'shots', 'shots_on_target', 'shots_on_target_perc', 'goals',
+    'xgoals', 'xplace', 'goals_minus_xgoals', 'primary_assists_minus_xassists',
+    'key_passes', 'primary_assists', 'xassists', 'xgoals_plus_xassists',
+    'points_added', 'xpoints_added'
+    ]
+
+    players_data = fetch_players_xgoal_data(season, excluded_positions=['GK'])
+    filtered_players = calculate_player_statistics(players_data)
+    position_data = aggregate_position_data(filtered_players, stats_to_track)
+    insert_player_data(conn, players_data, position_data, stats_to_track, season)
+
+    if close_connection:
+        conn.close()
+    print(f'Player xgoals data for season {season} inserted successfully.')
+
 def fetch_players_xgoal_data(season: int, excluded_positions: list = None):
     """
     Fetch player data from the API for a specific season.
@@ -512,7 +515,7 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
         position_max = {f"max_{stat}": round(position_data.get(general_position, {}).get(f"max_{stat}", 0), 2) for stat in stats_to_track}
         
         # Calculate Shot on Target% (not included in api)
-        player_stats['shots_on_target_perc'] = round((player['shots_on_target'] / player['shots']) * 100 if player['shots'] > 10 else 0, 2)
+        player_stats['shots_on_target_perc'] = round((player['shots_on_target'] / player['shots']) * 100 if player['shots'] >= 5 else 0, 0)
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
