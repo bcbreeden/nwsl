@@ -135,19 +135,40 @@ def create_tables():
             count_games INTEGER,
             season INTEGER,
             avg_minutes_played REAL,
+            min_minutes_played REAL,
+            max_minutes_played REAL,
             avg_attempted_passes REAL,
+            min_attempted_passes REAL,
+            max_attempted_passes REAL,
             avg_pass_completion_percentage REAL,
+            min_pass_completion_percentage REAL,
+            max_pass_completion_percentage REAL,
             avg_xpass_completion_percentage REAL,
+            min_xpass_completion_percentage REAL,
+            max_xpass_completion_percentage REAL,
             avg_passes_completed_over_expected REAL,
+            min_passes_completed_over_expected REAL,
+            max_passes_completed_over_expected REAL,
             avg_passes_completed_over_expected_p100 REAL,
+            min_passes_completed_over_expected_p100 REAL,
+            max_passes_completed_over_expected_p100 REAL,
             avg_avg_distance_yds REAL,
+            min_avg_distance_yds REAL,
+            max_avg_distance_yds REAL,
             avg_avg_vertical_distance_yds REAL,
+            min_avg_vertical_distance_yds REAL,
+            max_avg_vertical_distance_yds REAL,
             avg_share_team_touches REAL,
+            min_share_team_touches REAL,
+            max_share_team_touches REAL,
             avg_count_games REAL,
+            min_count_games REAL,
+            max_count_games REAL,
             FOREIGN KEY (team_id) REFERENCES team_info(team_id),
             FOREIGN KEY (player_id) REFERENCES player_info(player_id)
         )
     ''')
+
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS player_goals_added (
