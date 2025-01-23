@@ -67,9 +67,9 @@ def player():
         'points_added', 'xpoints_added'
         ]
         x_pass_stats_to_plot = [
-        'attempted_passes', 'pass_completion_percentage', 'xpass_completion_percentage',
-        'passes_completed_over_expected', 'passes_completed_over_expected_p100', 'avg_distance_yds',
-        'avg_vertical_distance_yds', 'share_team_touches'
+        'attempted_passes', 'pass_completion_percentage', 'passes_completed_over_expected',
+        'xpass_completion_percentage', 'avg_vertical_distance_yds', 'avg_distance_yds',
+        'passes_completed_over_expected_p100', 'share_team_touches'
         ]
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
