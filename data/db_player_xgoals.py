@@ -294,60 +294,6 @@ def get_minutes_played_non_df(season, sorting_stat, limit):
     print('Top {} minutes played sorted by {} for: {} returned'.format(limit, sorting_stat, season))
     return rows
 
-def get_stat_ranges():
-    """
-    Retrieve the minimum and maximum values for key player statistics from the database.
-
-    This function queries the `player_xgoals` table to calculate the min and max values
-    for various player stats. The results are returned as a dictionary with each stat's
-    name as the key and a tuple of (min, max) values as the value.
-
-    Args:
-        None
-
-    Returns:
-        dict: A dictionary containing the min and max values for each stat. 
-              Format: { "stat_name": (min_value, max_value), ... }
-    """
-    conn = sqlite3.connect('data/nwsl.db')
-    cursor = conn.cursor()
-    
-    query = """
-    SELECT 
-        MIN(minutes_played), MAX(minutes_played),
-        MIN(shots), MAX(shots),
-        MIN(shots_on_target), MAX(shots_on_target),
-        MIN(shots_on_target_perc), MAX(shots_on_target_perc),
-        MIN(goals), MAX(goals),
-        MIN(xgoals), MAX(xgoals),
-        MIN(xplace), MAX(xplace),
-        MIN(goals_minus_xgoals), MAX(goals_minus_xgoals),
-        MIN(key_passes), MAX(key_passes),
-        MIN(primary_assists), MAX(primary_assists),
-        MIN(xassists), MAX(xassists),
-        MIN(primary_assists_minus_xassists), MAX(primary_assists_minus_xassists),
-        MIN(xgoals_plus_xassists), MAX(xgoals_plus_xassists),
-        MIN(points_added), MAX(points_added),
-        MIN(xpoints_added), MAX(xpoints_added)
-    FROM player_xgoals;
-    """
-    
-    cursor.execute(query)
-    result = cursor.fetchone()
-    
-    stat_names = [
-        "minutes_played", "shots", "shots_on_target", "shots_on_target_perc", 
-        "goals", "xgoals", "xplace", "goals_minus_xgoals", 
-        "key_passes", "primary_assists", "xassists", 
-        "primary_assists_minus_xassists", "xgoals_plus_xassists", 
-        "points_added", "xpoints_added"
-    ]
-    
-    stat_ranges = {stat_names[i]: (result[i*2], result[i*2+1]) for i in range(len(stat_names))}
-    
-    conn.close()
-    return stat_ranges
-
 def get_player_xgoals_ids_by_season(season):
     """
     Fetch all player xgoals IDs for a specific season.
