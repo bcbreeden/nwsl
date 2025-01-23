@@ -58,6 +58,14 @@
                     </span>
                 {% endfor %}
             </section>
+
+            <div class="plot_container" id="xpass_plot">
+            </div>
+            <script>
+                var xpassSpiderChartData = {{ xpass_fig_json|safe }};
+                var xpassSpiderChartConfig = {{ xpass_config|safe }};
+                Plotly.newPlot('xpass_plot', xpassSpiderChartData.data, xpassSpiderChartData.layout, xpassSpiderChartConfig);
+            </script>
             <!-- XPass -->
             <h2>XPass</h2>
             <section class="player_report_stats_block">

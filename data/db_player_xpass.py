@@ -118,7 +118,7 @@ def insert_player_xpass_by_season(season, conn=None):
     ]
 
     players_data = fetch_players_xpass_data(season, excluded_positions=['GK'])
-    filtered_players = filter_players(players_data)
+    filtered_players = calculate_player_statistics(players_data)
     position_data = aggregate_position_data(filtered_players, stats_to_track)
     insert_player_data(conn, players_data, position_data, stats_to_track, season)
 
@@ -126,7 +126,12 @@ def insert_player_xpass_by_season(season, conn=None):
         conn.close()
     print(f'Player xpass data for season {season} inserted successfully.')
 
-def filter_players(players_data: list, minimum_minutes: int = 180):
+def calculate_player_statistics(players_data: list, minimum_minutes: int = 180):
+    stats_to_calculate = ['pass_completion_percentage', 'xpass_completion_percentage', 'share_team_touches']
+    for player in players_data:
+        for stat in stats_to_calculate:
+            stat_value = player.get(stat, 0)
+            player[stat] = round((stat_value * 100), 2)
     return [player for player in players_data if player.get('minutes_played', 0) >= minimum_minutes]
 
 def fetch_players_xpass_data(season: int, excluded_positions: list = None):
@@ -185,13 +190,13 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
         general_position = player.get('general_position', 'Unknown General Position')
         minutes_played = player.get('minutes_played', 0)
         attempted_passes = player.get('attempted_passes', 0)
-        pass_completion_percentage = round((player.get('pass_completion_percentage', 0.0) * 100), 2)
-        xpass_completion_percentage = round((player.get('xpass_completion_percentage', 0.0) * 100), 2)
+        pass_completion_percentage = player.get('pass_completion_percentage', 0.0)
+        xpass_completion_percentage = player.get('xpass_completion_percentage', 0.0)
         passes_completed_over_expected = round(player.get('passes_completed_over_expected', 0.0), 2)
         passes_completed_over_expected_p100 = round(player.get('passes_completed_over_expected_p100', 0.0), 2)
         avg_distance_yds = round(player.get('avg_distance_yds', 0.0), 2)
         avg_vertical_distance_yds = round(player.get('avg_vertical_distance_yds', 0.0), 2)
-        share_team_touches = round((player.get('share_team_touches', 0.0) * 100), 2)
+        share_team_touches = player.get('share_team_touches', 0.0)
         count_games = player.get('count_games', 0)
 
         if isinstance(team_id, list):

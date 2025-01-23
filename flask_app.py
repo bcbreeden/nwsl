@@ -66,11 +66,17 @@ def player():
         'goals', 'xgoals', 'xassists', 'xplace', 'key_passes', 'primary_assists', 'xgoals_plus_xassists',
         'points_added', 'xpoints_added'
         ]
+        x_pass_stats_to_plot = [
+        'attempted_passes', 'pass_completion_percentage', 'xpass_completion_percentage',
+        'passes_completed_over_expected', 'passes_completed_over_expected_p100', 'avg_distance_yds',
+        'avg_vertical_distance_yds', 'share_team_touches'
+        ]
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
         player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, 2024)
-        xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
         player_xpass_data = db_player_xpass.get_player_xpass(player_id, 2024)
+        xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
+        xpass_fig_json, xpass_config = plot_spider(x_pass_stats_to_plot, player_xpass_data)
         player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, 2024)
         return render_template('player.html',
                                player_id = player_id,
@@ -79,7 +85,9 @@ def player():
                                player_xpass_data = player_xpass_data,
                                player_goals_added_data = player_goals_added_data,
                                xgoals_fig_json = xgoals_fig_json,
-                               xgoals_config = xgoals_config)
+                               xgoals_config = xgoals_config,
+                               xpass_fig_json = xpass_fig_json,
+                               xpass_config = xpass_config)
     player_data = db_player_xgoals.get_all_player_xgoals(2024)
     return render_template('players.html',
                            players = player_data)

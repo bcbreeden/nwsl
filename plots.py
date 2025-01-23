@@ -186,7 +186,7 @@ def plot_spider(stats_to_plot, player_data):
         categories.append(categories[0])
     except IndexError:
         print('No categories provided for spider plot')
-        return[0, 0]
+        return [0, 0]
     
     normalized_values.append(normalized_values[0])
     hover_values.append(hover_values[0])  # Close the hover loop
@@ -209,15 +209,14 @@ def plot_spider(stats_to_plot, player_data):
     # Update the layout
     fig.update_layout(
         polar=dict(
-            angularaxis=dict(  # Remove angular gridlines
-            linecolor='rgba(0,0,0,0)'   # Remove the angular axis line
-            ),
             radialaxis=dict(
                 visible=False,
                 range=[0, 1]  # Normalized range
             ),
         ),
-        showlegend=False
+        # margin=dict(t=50, b=50, l=50, r=50),  # Add margin for long labels
+        showlegend=False,
+        # width=800,
     )
 
     # Convert the figure to JSON and add config to disable displayModeBar
@@ -230,3 +229,4 @@ def plot_spider(stats_to_plot, player_data):
     })
 
     return fig_json, config
+
