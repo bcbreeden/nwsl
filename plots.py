@@ -140,7 +140,7 @@ def plot_goal_vs_xgoal():
 
 import plotly.graph_objects as go
 
-def plot_spider(stats_to_plot, player_data):
+def plot_spider(stats_to_plot, player_data, label_font_size = 12):
     """
     Generates an interactive spider web graph for player stats with scales based on min_ and max_ values using Plotly.
 
@@ -213,11 +213,13 @@ def plot_spider(stats_to_plot, player_data):
                 visible=False,
                 range=[0, 1]  # Normalized range
             ),
+            angularaxis=dict(
+            tickfont=dict(size=label_font_size)  # Set font size for labels (adjust the size as needed)
+            )
         ),
-        # margin=dict(t=50, b=50, l=50, r=50),  # Add margin for long labels
         showlegend=False,
-        # width=800,
     )
+    print(fig.layout)
 
     # Convert the figure to JSON and add config to disable displayModeBar
     fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

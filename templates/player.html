@@ -91,6 +91,13 @@
                 {% endfor %}
             </section>
 
+            <div class="plot_container" id="above_avg_plot">
+            </div>
+            <script>
+                var aboveAvgSpiderChartData = {{ above_avg_fig_json|safe }};
+                var aboveAvgSpiderChartConfig = {{ above_added_config|safe }};
+                Plotly.newPlot('above_avg_plot', aboveAvgSpiderChartData.data, aboveAvgSpiderChartData.layout, aboveAvgSpiderChartConfig);
+            </script>
             <!-- Player Goals Added -->
             <h2>Goals Added</h2>
             <section class="player_report_stats_block">

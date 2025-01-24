@@ -268,7 +268,7 @@ ul {
 .player_report {
     display: flex;
     flex-direction: column;
-    width: 600px;
+    width: 650px;
     padding-top: 20px;
     padding-bottom: 20px;
 }
@@ -318,8 +318,8 @@ ul {
     align-items: center;
     justify-content: center;
     padding: 10px;
-    width: 120px;
-    height: 120px;
+    width: 140px;
+    height: 140px;
 }
 
 .stat_text {
