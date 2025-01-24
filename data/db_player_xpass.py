@@ -1,7 +1,6 @@
 from api import make_asa_api_call
 from .data_util import aggregate_position_data
 import sqlite3
-from collections import defaultdict
 
 def insert_player_xpass_by_season(season, conn=None):
     """

@@ -73,11 +73,14 @@ def player():
         ]
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
+        
         player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, 2024)
         player_xpass_data = db_player_xpass.get_player_xpass(player_id, 2024)
+        player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, 2024)
+
         xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
         xpass_fig_json, xpass_config = plot_spider(x_pass_stats_to_plot, player_xpass_data)
-        player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, 2024)
+        
         return render_template('player.html',
                                player_id = player_id,
                                obj_id = obj_id,
