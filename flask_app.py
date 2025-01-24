@@ -72,10 +72,12 @@ def player():
         'passes_completed_over_expected_p100', 'share_team_touches'
         ]
 
-        above_avg_to_plot = {
-            'receiving_goals_added_above_avg', 'fouling_goals_added_above_avg',
-            'passing_goals_added_above_avg', 'shooting_goals_added_above_avg',
-            'dribbling_goals_added_above_avg', 'interrupting_goals_added_above_avg'
+        defense_to_plot = {
+            'interrupting_goals_added_raw', 'interrupting_goals_added_above_avg',
+            'interrupting_count_actions', 'fouling_goals_added_raw',
+            'fouling_goals_added_above_avg', 'fouling_count_actions',
+            'receiving_goals_added_raw', 'receiving_goals_added_above_avg',
+            'receiving_count_actions'
         }
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
@@ -86,7 +88,7 @@ def player():
 
         xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
         xpass_fig_json, xpass_config = plot_spider(x_pass_stats_to_plot, player_xpass_data)
-        above_avg_fig_json, above_added_config = plot_spider(above_avg_to_plot, player_goals_added_data, 9)
+        defense_fig_json, defense_config = plot_spider(defense_to_plot, player_goals_added_data, 9)
         
         return render_template('player.html',
                                player_id = player_id,
@@ -98,8 +100,8 @@ def player():
                                xgoals_config = xgoals_config,
                                xpass_fig_json = xpass_fig_json,
                                xpass_config = xpass_config,
-                               above_avg_fig_json = above_avg_fig_json,
-                               above_added_config = above_added_config)
+                               defense_fig_json = defense_fig_json,
+                               defense_config = defense_config)
     player_data = db_player_xgoals.get_all_player_xgoals(2024)
     return render_template('players.html',
                            players = player_data)
