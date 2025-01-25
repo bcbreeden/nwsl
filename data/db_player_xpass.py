@@ -1,5 +1,5 @@
 from api import make_asa_api_call
-from .data_util import aggregate_position_data
+from .data_util import aggregate_position_data, generate_player_season_id
 import sqlite3
 
 def insert_player_xpass_by_season(season, conn=None):
@@ -57,7 +57,7 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
 
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
-        obj_id = player_id + str(season)
+        obj_id = generate_player_season_id(player_id=player_id, season=str(season))
         team_id = player.get('team_id', [])
         general_position = player.get('general_position', 'Unknown General Position')
         minutes_played = player.get('minutes_played', 0)
@@ -120,7 +120,7 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
 
 def get_player_xpass(player_id, season):
     print('Fetching player xpass for:{}, Season: {}'.format(player_id, season))
-    obj_id = player_id + str(season)
+    obj_id = generate_player_season_id(player_id=player_id, season=str(season))
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()

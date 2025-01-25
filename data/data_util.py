@@ -35,3 +35,6 @@ def aggregate_position_data(filtered_players, stats_to_track):
         }
         for position in position_sums.keys()
     }
+
+def generate_player_season_id(player_id, season):
+    return (str(player_id) + str(season))

@@ -1,4 +1,5 @@
 from api import make_asa_api_call
+from .data_util import generate_player_season_id
 import sqlite3
 
 def insert_goalkeeper_xgoals_by_season(season):
@@ -9,7 +10,7 @@ def insert_goalkeeper_xgoals_by_season(season):
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown Player ID')
-        obj_id = player_id + str(season)
+        obj_id = generate_player_season_id(player_id=player_id, season=str(season))
         team_id = player.get('team_id', 'Unknown Team ID')
         minutes_played = player.get('minutes_played', 0)
         shots_faced = player.get('shots_faced', 0)
@@ -87,11 +88,11 @@ def get_all_goalkeepers_xgoals_by_season(season):
 
 def get_goalkeeper_xgoals_by_season(player_id, season):
     print('Fetching goalkeeper xgoals for {} season: {}'.format(player_id, season))
-    obj_id = player_id + str(season)
+    obj_id = generate_player_season_id(player_id=player_id, season=str(season))
     conn = sqlite3.connect('data/nwsl.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    obj_id = player_id + str(season)
+    obj_id = generate_player_season_id(player_id=player_id, season=str(season))
     query = f'''
         SELECT 
             gx.*,
