@@ -84,7 +84,6 @@ def generate_analysis_string(player_id, season):
     analysis_string = "\n".join(analysis_parts)
     return analysis_string
 
-
 def insert_all_player_analysis(season):
     load_dotenv()
     API_KEY = os.getenv('analysis_api_key')
@@ -106,7 +105,7 @@ def insert_all_player_analysis(season):
         message=full_message
     )
     converted_html_text = convert_analysis_to_html(response.text)
-    print(converted_html_text)
+    print(converted_html_text) 
 
 def convert_analysis_to_html(analysis: str) -> str:
     """

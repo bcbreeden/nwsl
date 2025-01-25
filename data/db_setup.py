@@ -437,6 +437,16 @@ def create_tables():
         FOREIGN KEY (away_team_id) REFERENCES team_info(team_id)
     )
 ''')
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS player_analysis (
+        id TEXT PRIMARY KEY,
+        player_id TEXT,
+        season INTEGER,
+        analysis TEXT,
+        FOREIGN KEY (player_id) REFERENCES player_info(player_id)
+    )
+''')
 
     # Commit the changes and close the connection
     conn.commit()
