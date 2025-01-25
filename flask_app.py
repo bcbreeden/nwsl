@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
-                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
+                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_player_analysis)
 from plots import plot_team_goals_points, plot_team_points_diff, plot_goal_vs_xgoal, plot_spider
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -85,6 +85,7 @@ def player():
         player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, 2024)
         player_xpass_data = db_player_xpass.get_player_xpass(player_id, 2024)
         player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, 2024)
+        player_analysis_data = db_player_analysis.get_player_analysis(player_id=player_id, season=2024)
 
         xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
         xpass_fig_json, xpass_config = plot_spider(x_pass_stats_to_plot, player_xpass_data)
@@ -96,6 +97,7 @@ def player():
                                player_xgoals_data = player_xgoals_data,
                                player_xpass_data = player_xpass_data,
                                player_goals_added_data = player_goals_added_data,
+                               player_analysis_data = player_analysis_data,
                                xgoals_fig_json = xgoals_fig_json,
                                xgoals_config = xgoals_config,
                                xpass_fig_json = xpass_fig_json,
