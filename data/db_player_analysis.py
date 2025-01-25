@@ -10,7 +10,7 @@ from html import escape
 import sqlite3
 import time
 
-def insert_all_player_analysis(season):
+def insert_all_player_analysis(season, testing = True):
     load_dotenv()
     API_KEY = os.getenv('analysis_api_key')
     player_ids = get_player_xgoals_ids_by_season(season)
@@ -29,7 +29,7 @@ def insert_all_player_analysis(season):
 
         if analysis_string is not None:
             full_message = '''
-            Analyze the following player stats from the perspective of a soccer scout. The player is a woman. Provide a concise and insightful assessment of her play style, key strengths, and areas for improvement. Focus on overarching themes and patterns in her performance without mentioning or referencing specific statistical values, percentages, or metrics. The analysis should be descriptive, professional, and tailored to inform talent evaluation and player development.
+            Analyze the following player stats from the perspective of a soccer scout. The player is a woman. Use the provided statistics to compare the player's performance against league or positional averages. Highlight areas where she exceeds the average, where she aligns with the average, and where she may fall below it. Focus on overarching themes and patterns in her play style, strengths, and areas for improvement, using these comparisons to add context and depth to your analysis. Avoid mentioning specific numerical values, percentages, or metrics directly. The analysis should be descriptive, professional, and tailored to inform talent evaluation and player development.
             ''' + analysis_string
 
             # Chat API call with properly structured messages
@@ -43,7 +43,9 @@ def insert_all_player_analysis(season):
             insert_player_analysis(player_id=id, season=season, analysis_string=converted_html_text)
             print('Complete for: {} {}'.format(id, season))
             print(converted_html_text)
-        
+
+        if testing:
+            break
         # If not the last iteration, wait to respect the rate limit
         print('Cycle complete, rate limit pause initiated.')
         if idx < len(player_ids) - 1:
@@ -75,22 +77,28 @@ def generate_analysis_string(player_id, season, minimum_minutes):
     Returns:
         str: A formatted string containing non-average statistics for xgoals, xpass, and goals added.
     """
-    # Non-average statistics from player_xgoals
     xgoals_stats = [
         "minutes_played", "shots", "shots_on_target", "shots_on_target_perc", "goals",
         "xgoals", "xplace", "goals_minus_xgoals", "key_passes", "primary_assists",
         "xassists", "primary_assists_minus_xassists", "xgoals_plus_xassists",
-        "points_added", "xpoints_added", "xgoals_xassists_per_90"
+        "points_added", "xpoints_added", "xgoals_xassists_per_90", "avg_minutes_played",
+        "avg_shots", "avg_shots_on_target", "avg_shots_on_target_perc", "avg_goals",
+        "avg_xgoals", "avg_key_passes", "avg_primary_assists", "avg_xassists",
+        "avg_xgoals_plus_xassists", "avg_points_added", "avg_xpoints_added",
+        "avg_xgoals_xassists_per_90", "avg_xplace", "avg_goals_minus_xgoals",
+        "avg_primary_assists_minus_xassists"
     ]
 
-    # Non-average statistics from player_xpass
     xpass_stats = [
         "attempted_passes", "pass_completion_percentage", "xpass_completion_percentage",
         "passes_completed_over_expected", "passes_completed_over_expected_p100",
-        "avg_distance_yds", "avg_vertical_distance_yds", "share_team_touches", "count_games"
+        "avg_distance_yds", "avg_vertical_distance_yds", "share_team_touches", "count_games", "avg_attempted_passes", "avg_pass_completion_percentage",
+        "avg_xpass_completion_percentage", "avg_passes_completed_over_expected",
+        "avg_passes_completed_over_expected_p100", "avg_avg_distance_yds",
+        "avg_avg_vertical_distance_yds", "avg_share_team_touches",
+        "avg_count_games"
     ]
 
-    # Non-average statistics from player_goals_added
     goals_added_stats = [
         "dribbling_goals_added_raw", "dribbling_goals_added_above_avg", "dribbling_count_actions",
         "fouling_goals_added_raw", "fouling_goals_added_above_avg", "fouling_count_actions",
@@ -98,6 +106,15 @@ def generate_analysis_string(player_id, season, minimum_minutes):
         "passing_goals_added_raw", "passing_goals_added_above_avg", "passing_count_actions",
         "receiving_goals_added_raw", "receiving_goals_added_above_avg", "receiving_count_actions",
         "shooting_goals_added_raw", "shooting_goals_added_above_avg", "shooting_count_actions"
+        "avg_dribbling_goals_added_raw", "avg_dribbling_goals_added_above_avg",
+        "avg_dribbling_count_actions", "avg_fouling_goals_added_raw",
+        "avg_fouling_goals_added_above_avg", "avg_fouling_count_actions",
+        "avg_interrupting_goals_added_raw", "avg_interrupting_goals_added_above_avg",
+        "avg_interrupting_count_actions", "avg_passing_goals_added_raw",
+        "avg_passing_goals_added_above_avg", "avg_passing_count_actions",
+        "avg_receiving_goals_added_raw", "avg_receiving_goals_added_above_avg",
+        "avg_receiving_count_actions", "avg_shooting_goals_added_raw",
+        "avg_shooting_goals_added_above_avg", "avg_shooting_count_actions"
     ]
 
     # Fetch data for xgoals, xpass, and goals added
