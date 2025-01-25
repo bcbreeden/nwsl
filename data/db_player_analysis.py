@@ -3,6 +3,9 @@ from .db_player_xpass import get_player_xpass
 from .db_player_goals_added import get_player_goals_added_by_season
 from data.db_player_xgoals import get_player_xgoals_ids_by_season
 import cohere
+from dotenv import load_dotenv
+import os
+from html import escape
 
 def generate_analysis_string(player_id, season):
     """
@@ -83,12 +86,14 @@ def generate_analysis_string(player_id, season):
 
 
 def insert_all_player_analysis(season):
+    load_dotenv()
+    API_KEY = os.getenv('analysis_api_key')
+
     player_ids = get_player_xgoals_ids_by_season(season)
     sample_id = player_ids[0]
-    # print(generate_analysis_string(sample_id, season))
     
     # Initialize the Cohere client
-    co = cohere.Client("")
+    co = cohere.Client(API_KEY)
     full_message = '''
     Analyze the following player stats and provide a cohesive analysis for a soccer player. Be consise and highlight key stats that contributes to their play style, strengths, and weaknesses:
     ''' + generate_analysis_string(sample_id, season)
@@ -100,8 +105,47 @@ def insert_all_player_analysis(season):
         model="command-r7b-12-2024-vllm",  # Specify the model
         message=full_message
     )
+    converted_html_text = convert_analysis_to_html(response.text)
+    print(converted_html_text)
 
-    # Print the response
-    print(response.text)
+def convert_analysis_to_html(analysis: str) -> str:
+    """
+    Converts a formatted analysis string into an HTML representation.
 
+    Args:
+        analysis (str): The input analysis string.
+
+    Returns:
+        str: The HTML representation of the analysis.
+    """
+    lines = analysis.split("\n")
+    html_lines = []
+
+    for line in lines:
+        if line.startswith("**") and line.endswith("**"):
+            # Convert headings (e.g., **Strengths:**)
+            html_lines.append(f"<h2>{escape(line.strip('**:'))}</h2>")
+        elif line.startswith("- **") and line.endswith(":"):
+            # Convert strengths/weaknesses list items with bold text
+            key, value = line[3:].split("**", 1)
+            value = value.strip(":")
+            html_lines.append(f"<li><strong>{escape(key)}</strong>: {escape(value)}</li>")
+        elif line.startswith("-"):
+            # Convert list items
+            html_lines.append(f"<li>{escape(line[2:].strip())}</li>")
+        elif line.strip() == "":
+            # Skip empty lines
+            continue
+        elif line.startswith("**"):
+            # Convert bolded text (e.g., "**Player Analysis: Lena Silano**")
+            html_lines.append(f"<h3>{escape(line.strip('**'))}</h3>")
+        else:
+            # Convert regular paragraphs
+            html_lines.append(f"<p>{escape(line.strip())}</p>")
+
+    # Wrap everything in a container div and join the HTML lines
+    html_result = f"<div>\n{''.join(html_lines)}\n</div>"
+
+    # Remove all asterisks and apostrophes from the final HTML string
+    return html_result.replace("*", "").replace("&#x27;", "'")
 
