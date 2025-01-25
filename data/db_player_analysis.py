@@ -1,13 +1,70 @@
 from .db_player_xgoals import get_player_xgoal_data
 from .db_player_xpass import get_player_xpass
 from .db_player_goals_added import get_player_goals_added_by_season
-from data.db_player_xgoals import get_player_xgoals_ids_by_season
+from .db_player_xgoals import get_player_xgoals_ids_by_season
+from .data_util import generate_player_season_id
 import cohere
 from dotenv import load_dotenv
 import os
 from html import escape
+import sqlite3
+import time
 
-def generate_analysis_string(player_id, season):
+def insert_all_player_analysis(season):
+    load_dotenv()
+    API_KEY = os.getenv('analysis_api_key')
+    player_ids = get_player_xgoals_ids_by_season(season)
+
+    # Define the rate limit and buffer
+    RATE_LIMIT = 10  # 10 requests per minute
+    REQUEST_INTERVAL = (60 - 5) / RATE_LIMIT  # Subtract 5 seconds for a buffer, then calculate interval
+
+    # Initialize the Cohere client
+    co = cohere.Client(API_KEY)
+
+    for idx, id in enumerate(player_ids):
+        print('Creating analysis for player:', id)
+        # sample_id = player_ids[0]
+        analysis_string = generate_analysis_string(player_id=id, season=season, minimum_minutes=180)
+
+        if analysis_string is not None:
+            full_message = '''
+            Analyze the following player stats from the perspective of a soccer scout. The player is a woman. Provide a concise and insightful assessment of her play style, key strengths, and areas for improvement. Focus on overarching themes and patterns in her performance without mentioning or referencing specific statistical values, percentages, or metrics. The analysis should be descriptive, professional, and tailored to inform talent evaluation and player development.
+            ''' + analysis_string
+
+            # Chat API call with properly structured messages
+            response = co.chat(
+                model="command-r7b-12-2024-vllm",  # Specify the model
+                message=full_message
+            )
+            converted_html_text = convert_analysis_to_html(response.text)
+
+            print('Inserting player analysis: {} {}'.format(id, season))
+            insert_player_analysis(player_id=id, season=season, analysis_string=converted_html_text)
+            print('Complete for: {} {}'.format(id, season))
+            print(converted_html_text)
+        
+        # If not the last iteration, wait to respect the rate limit
+        print('Cycle complete, rate limit pause initiated.')
+        if idx < len(player_ids) - 1:
+            time.sleep(REQUEST_INTERVAL)
+        
+
+def insert_player_analysis(player_id, season, analysis_string):
+    obj_id = generate_player_season_id(player_id=player_id, season=season)
+
+    conn = sqlite3.connect('data/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('''
+            INSERT OR REPLACE INTO player_analysis  (id, player_id, season, analysis) 
+            VALUES (?, ?, ?, ?)
+        ''', (obj_id, player_id, season, analysis_string)
+        )
+    conn.commit()
+    conn.close()
+
+def generate_analysis_string(player_id, season, minimum_minutes):
     """
     Generate a descriptive string of non-average statistics for a player and season, including xgoals, xpass, and goals added.
 
@@ -49,7 +106,13 @@ def generate_analysis_string(player_id, season):
     goals_added_data = get_player_goals_added_by_season(player_id, season)
 
     if not any([xgoals_data, xpass_data, goals_added_data]):
-        return f"No data available for player ID: {player_id}, Season: {season}."
+        print(f"No data available for player ID: {player_id}, Season: {season}.")
+        return None
+    
+    minutes = int(xgoals_data['minutes_played'])
+    if minutes < minimum_minutes:
+        print(f"Player did not meet minimum minutes requirement: {player_id}, Minutes: {minutes}.")
+        return None
 
     # Construct analysis string
     analysis_parts = []
@@ -83,29 +146,6 @@ def generate_analysis_string(player_id, season):
     # Join the parts into a single string
     analysis_string = "\n".join(analysis_parts)
     return analysis_string
-
-def insert_all_player_analysis(season):
-    load_dotenv()
-    API_KEY = os.getenv('analysis_api_key')
-
-    player_ids = get_player_xgoals_ids_by_season(season)
-    sample_id = player_ids[0]
-    
-    # Initialize the Cohere client
-    co = cohere.Client(API_KEY)
-    full_message = '''
-    Analyze the following player stats and provide a cohesive analysis for a soccer player. Be consise and highlight key stats that contributes to their play style, strengths, and weaknesses:
-    ''' + generate_analysis_string(sample_id, season)
-    print(full_message)
-
-
-    # Chat API call with properly structured messages
-    response = co.chat(
-        model="command-r7b-12-2024-vllm",  # Specify the model
-        message=full_message
-    )
-    converted_html_text = convert_analysis_to_html(response.text)
-    print(converted_html_text) 
 
 def convert_analysis_to_html(analysis: str) -> str:
     """
@@ -148,3 +188,20 @@ def convert_analysis_to_html(analysis: str) -> str:
     # Remove all asterisks and apostrophes from the final HTML string
     return html_result.replace("*", "").replace("&#x27;", "'")
 
+
+def get_player_analysis(player_id: str, season: int):
+    print('Fetching player analysis for:{}, Season: {}'.format(player_id, season))
+    obj_id = generate_player_season_id(player_id=player_id, season=str(season))
+    conn = sqlite3.connect('data/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT * FROM player_analysis
+        WHERE id = ?
+        '''
+    cursor.execute(query, (obj_id,))
+    row = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    print('Player analysis returned: {}-{}'.format(season, player_id))
+    return row
