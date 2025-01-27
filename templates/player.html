@@ -139,4 +139,65 @@
         </section>
     </section>
 </section>
+<div class="hidden">
+
+    {{player_xgoals_data['player_first_name']}} {{player_xgoals_data['player_last_name']}}
+    {% for stat, abr,  label in [
+        ('xgoals_xassists_per_90', 'XG/XA|90', 'XGoals/XAssists Per 90 Minutes'),
+        ('minutes_played', 'MP', 'Minutes Played'),
+        ('shots', 'S', 'Shots'),
+        ('shots_on_target', 'SOT', 'Shots on Target'),
+        ('shots_on_target_perc', 'SOT %', 'Shots on Target %'),
+        ('goals', 'G', 'Goals'),
+        ('xgoals', 'xG', 'Expected Goals'),
+        ('xplace', 'xP', 'xPlace'),
+        ('goals_minus_xgoals', 'G-xG', 'Goals - xGoals'),
+        ('key_passes', 'KP', 'Key Passes'),
+        ('primary_assists', 'PA', 'Primary Assists'),
+        ('xassists', 'xA', 'Expected Assists (xA)'),
+        ('primary_assists_minus_xassists', 'PA-xA', 'Primary Assists - xAssists'),
+        ('xgoals_plus_xassists', 'xG + xA', 'xGoals + xAssists'),
+        ('points_added', 'PA', 'Points Added'),
+        ('xpoints_added', 'xPA', 'Expected Points Added')
+    ] %}
+        {{ stat }}: {{ player_xgoals_data[stat] }}  (Position Average: {{ player_xgoals_data['avg_' + stat] }})
+    {% endfor %}
+
+    {% for stat, abr, label in [
+        ('count_games','GP', 'Games Played'),
+        ('attempted_passes', 'AP', 'Attempted Passes'),
+        ('pass_completion_percentage', 'PC %', 'Pass Completion Percentage'),
+        ('xpass_completion_percentage', 'xPC %', 'xPass Completion Percentage'),
+        ('passes_completed_over_expected', 'PCOE', 'Passes Completed Over Expected'),
+        ('passes_completed_over_expected_p100', 'PCOE 100', 'Passes Completed Over Expected per 100'),
+        ('avg_distance_yds', 'AvgD',  'Average Distance (yds)'),
+        ('avg_vertical_distance_yds', 'AvgVD', 'Average Vertical Distance (yds)'),
+        ('share_team_touches', 'SoTT %', 'Share of Team Touches')
+    ] %}
+        {{ stat }}: {{ player_xpass_data[stat] }}  (Position Average: {{ player_xpass_data['avg_' + stat] }})
+    {% endfor %}
+
+    {% for stat, abr,  label in [
+        ('dribbling_goals_added_raw', 'DGA(R)', 'Dribbling Goals Added (Raw)'),
+        ('dribbling_goals_added_above_avg','DGA(AA)', 'Dribbling Goals Added (Above Avg)'),
+        ('dribbling_count_actions', 'DA', 'Dribbling Actions'),
+        ('fouling_goals_added_raw', 'FGA(R)', 'Fouling Goals Added (Raw)'),
+        ('fouling_goals_added_above_avg', 'FGA(AA)', 'Fouling Goals Added (Above Avg)'),
+        ('fouling_count_actions', 'FA', 'Fouling Actions'),
+        ('interrupting_goals_added_raw', 'IGA(R)', 'Interrupting Goals Added (Raw)'),
+        ('interrupting_goals_added_above_avg', 'IGA(AA)', 'Interrupting Goals Added (Above Avg)'),
+        ('interrupting_count_actions', 'IA', 'Interrupting Actions'),
+        ('passing_goals_added_raw', 'PGA(R)', 'Passing Goals Added (Raw)'),
+        ('passing_goals_added_above_avg', 'PGA(AA)', 'Passing Goals Added (Above Avg)'),
+        ('passing_count_actions', 'PA', 'Passing Actions'),
+        ('receiving_goals_added_raw', 'RGA(R)', 'Receiving Goals Added (Raw)'),
+        ('receiving_goals_added_above_avg', 'RGA(AA)', 'Receiving Goals Added (Above Avg)'),
+        ('receiving_count_actions', 'RA', 'Receiving Actions'),
+        ('shooting_goals_added_raw', 'SGA(R)', 'Shooting Goals Added (Raw)'),
+        ('shooting_goals_added_above_avg', 'SGA(AA)', 'Shooting Goals Added (Above Avg)'),
+        ('shooting_count_actions', 'SA', 'Shooting Actions')
+    ] %}
+        {{ stat }}: {{ player_goals_added_data[stat] }} (Position Average: {{ player_goals_added_data['avg_' + stat] }})
+    {% endfor %}
+</div>
 {% endblock %}
