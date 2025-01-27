@@ -271,6 +271,7 @@ ul {
     width: 650px;
     padding-top: 20px;
     padding-bottom: 20px;
+    align-items: center;
 }
 
 .player_report_name_subheader{
@@ -285,6 +286,7 @@ ul {
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding: 20px;
 }
 
 .player_report_name_container {
@@ -309,6 +311,10 @@ ul {
 .player_report_stats_container {
     display: flex;
     flex-direction: column;
+}
+
+.player_scouting_report {
+    margin-top: 40px;
 }
 
 .stat_block {

@@ -29,7 +29,7 @@ def insert_all_player_analysis(season, testing = True):
 
         if analysis_string is not None:
             full_message = '''
-            Analyze the following player stats from the perspective of a soccer scout. The player is a woman. Use the provided statistics to compare the player's performance against league or positional averages. Highlight areas where she exceeds the average, where she aligns with the average, and where she may fall below it. Focus on overarching themes and patterns in her play style, strengths, and areas for improvement, using these comparisons to add context and depth to your analysis. Avoid mentioning specific numerical values, percentages, or metrics directly. The analysis should be descriptive, professional, and tailored to inform talent evaluation and player development.
+            Analyze the following player stats from the perspective of a soccer scout. The player is a woman. Use the provided statistics and league average to provide a concise, 2-3 paragraph summary of the players performance.
             ''' + analysis_string
 
             # Chat API call with properly structured messages
