@@ -306,6 +306,7 @@ ul {
     flex-wrap: wrap;
     padding-top: 15px;
     padding-bottom: 15px;
+    justify-content: center;
 }
 
 .player_report_stats_container {
