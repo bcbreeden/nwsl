@@ -322,22 +322,19 @@ def get_player_xgoals_ids_by_season(season):
 '''
 INSERT XGOALS DATA
 '''
-def insert_player_xgoals_by_season(season, conn=None):
+def insert_player_xgoals_by_season(season):
     """
     Main function to fetch, process, and insert player xGoals data.
 
     Args:
         season (int): The season year.
-        conn (sqlite3.Connection, optional): Database connection. Defaults to None.
 
     Returns:
         None
     """
     print(f'Inserting data for players (xgoal) for season: {season}')
-    close_connection = False
-    if conn is None:
-        conn = sqlite3.connect('data/nwsl.db')
-        close_connection = True
+    conn = sqlite3.connect('data/nwsl.db')
+    close_connection = True
 
     stats_to_track = [
     'minutes_played', 'shots', 'shots_on_target', 'shots_on_target_perc', 'goals',
@@ -351,8 +348,7 @@ def insert_player_xgoals_by_season(season, conn=None):
     position_data = aggregate_position_data(filtered_players, stats_to_track)
     insert_player_data(conn, players_data, position_data, stats_to_track, season)
 
-    if close_connection:
-        conn.close()
+    conn.close()
     print(f'Player xgoals data for season {season} inserted successfully.')
 
 def fetch_players_xgoal_data(season: int, excluded_positions: list = None):
