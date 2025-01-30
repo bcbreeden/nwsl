@@ -105,9 +105,17 @@ class TestPlayerXGoal(unittest.TestCase):
             get_player_xgoal_data(player_id=self.test_player_id, season=1912)
         self.assertIn("No data found", str(context.exception))
 
-    def test_get_all_player_xgoals(self):
+    def test_get_all_player_xgoals_limit(self):
         players_data = get_all_player_xgoals(season=self.test_season, limit=self.length_limit)
         self.assertEqual(len(players_data), 3)
+        xgoals_player = players_data[0]
+        self.assertIsNotNone(xgoals_player)
+        for column in xgoals_player.keys():
+           self.assertEqual(self.expected_player_data[column], xgoals_player[column])
+
+    def test_get_all_player_xgoals_no_limit(self):
+        players_data = get_all_player_xgoals(season=self.test_season)
+        self.assertEqual(len(players_data), 282)
         xgoals_player = players_data[0]
         self.assertIsNotNone(xgoals_player)
         for column in xgoals_player.keys():
