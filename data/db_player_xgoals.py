@@ -438,7 +438,7 @@ def calculate_and_update_xgxa90(season):
     """
     Calculate xGoals + xAssists per 90 and update the database for each player.
     """
-    rows = get_all_player_xgoals(season)
+    rows = get_top_player_xgoals_stat(season)
     conn = sqlite3.connect('data/nwsl.db')
     cursor = conn.cursor()
     for row in rows:
@@ -492,7 +492,7 @@ def update_xgoals_xassists_per_90(season):
     calculate_and_update_xgxa90(season)
 
     # Aggregate position stats based on updated data
-    rows = get_all_player_xgoals(season)
+    rows = get_top_player_xgoals_stat(season)
     stats_to_track = ['xgoals_xassists_per_90']
     filtered_players = [dict(row) for row in rows]
     position_data = aggregate_position_data(filtered_players, stats_to_track)
