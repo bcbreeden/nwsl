@@ -19,7 +19,7 @@ def get_player_xgoal_data(player_id: str, season: int):
     Returns:
         sqlite3.Row: A Row object containing xGoals data for the player, including 
                      related player information and team details.
-                     
+
     Raises:
         PlayerDataNotFoundError: If no data is found for the given player and season.
     """
@@ -56,63 +56,7 @@ def get_player_xgoal_data(player_id: str, season: int):
     print('Player xgoal returned.')
     return row
 
-def get_all_player_xgoals(season: int, sorting_stat: str='goals', limit: int=None):
-    """
-    Retrieve all players' xGoals data for a specific season, ordered by a specified column, with an optional limit.
-
-    This function queries the `player_xgoals` table to fetch player data for a given season, 
-    along with related player and team information, sorted by the specified column, 
-    and optionally limited to a specific number of rows.
-
-    Args:
-        season (int): The season year to filter the data (e.g., 2023).
-        sorting_stat (str): The column by which to sort the results (default is 'goals').
-        limit (int, optional): The maximum number of rows to return. Defaults to None (no limit).
-
-    Returns:
-        list[sqlite3.Row]: A list of rows containing player xGoals data for the specified season, ordered by the given column.
-    """
-    print('Fetching all players xgoals for season: {} sorted by {}'.format(season, sorting_stat))
-    conn = sqlite3.connect('data/nwsl.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-
-    # Use a parameterized query to prevent SQL injection
-    query = f'''
-        SELECT 
-            px.*,
-            pi.*,
-            ti.team_name
-        FROM 
-            player_xgoals AS px
-        JOIN 
-            player_info AS pi
-        ON 
-            px.player_id = pi.player_id
-        JOIN
-            team_info AS ti
-        ON
-            px.team_id = ti.team_id   
-        WHERE
-            px.season = ?
-        ORDER BY
-            px.{sorting_stat} DESC
-    '''
-
-    # Add LIMIT clause if limit is specified
-    if limit is not None:
-        query += f' LIMIT {limit};'
-    else:
-        query += f';'
-    
-    cursor.execute(query, (season,))
-    rows = cursor.fetchall()
-    conn.commit()
-    conn.close()
-    print(f'All players xgoals sorted by {sorting_stat} returned.')
-    return rows
-
-def get_top_player_xgoals_stat(season, sorting_stat, limit):
+def get_top_player_xgoals_stat(season, sorting_stat: str='goals', limit: int=None):
     """
     Retrieve the top players' xGoals data for a given season, sorted by a specific statistic.
 
@@ -150,8 +94,13 @@ def get_top_player_xgoals_stat(season, sorting_stat, limit):
             px.season = ?
         ORDER BY
             px.{sorting_stat} DESC
-        LIMIT {limit};
     '''
+    # Add LIMIT clause if limit is specified
+    if limit is not None:
+        query += f' LIMIT {limit};'
+    else:
+        query += f';'
+
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
     conn.commit()

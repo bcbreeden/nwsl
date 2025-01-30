@@ -51,7 +51,7 @@ def games():
 
 @app.route('/players')
 def players():
-    players_xgoals_data = db_player_xgoals.get_all_player_xgoals(2024)
+    players_xgoals_data = db_player_xgoals.get_top_player_xgoals_stat(2024)
     players_xpass_data = db_player_xpass.get_all_player_xpass(2024)
 
     combined_data = zip(players_xgoals_data, players_xpass_data)
