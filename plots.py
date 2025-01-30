@@ -219,7 +219,6 @@ def plot_spider(stats_to_plot, player_data, label_font_size = 12):
         ),
         showlegend=False,
     )
-    print(fig.layout)
 
     # Convert the figure to JSON and add config to disable displayModeBar
     fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

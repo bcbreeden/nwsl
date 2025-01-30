@@ -4,6 +4,10 @@ import sqlite3
 
 MINUTE_LIMIT = 180
 
+class PlayerDataNotFoundError(Exception):
+    """Custom exception raised when player data is not found."""
+    pass
+
 def get_player_xgoal_data(player_id: str, season: int):
     """
     Fetches and returns player xGoals data for a specific player and season.
@@ -15,6 +19,9 @@ def get_player_xgoal_data(player_id: str, season: int):
     Returns:
         sqlite3.Row: A Row object containing xGoals data for the player, including 
                      related player information and team details.
+                     
+    Raises:
+        PlayerDataNotFoundError: If no data is found for the given player and season.
     """
     print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = generate_player_season_id(player_id=player_id, season=str(season))
@@ -42,6 +49,8 @@ def get_player_xgoal_data(player_id: str, season: int):
         '''
     cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
+    if row is None:
+        raise PlayerDataNotFoundError(f"No data found for player_id={player_id} and season={season}")
     conn.commit()
     conn.close()
     print('Player xgoal returned.')
@@ -87,12 +96,14 @@ def get_all_player_xgoals(season: int, sorting_stat: str='goals', limit: int=Non
         WHERE
             px.season = ?
         ORDER BY
-            px.{sorting_stat};
+            px.{sorting_stat} DESC
     '''
 
     # Add LIMIT clause if limit is specified
     if limit is not None:
-        query += f' LIMIT {limit}'
+        query += f' LIMIT {limit};'
+    else:
+        query += f';'
     
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
