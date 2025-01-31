@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="player_report_outer_container">
+    <section class="player_report">
+        <section class="player_report_header">
+            <div class="player_report_team_container">
+                <img class="team_logo" src="{{ url_for('static', filename='img/' + keeper_xgoal_data['team_abbreviation'] + '.png') }}">
+            </div>
+            <div class="player_report_name_container">
+                <h1 class="player_name_report">
+                    {{keeper_xgoal_data['player_first_name']}}<br/>
+                </h1>
+                <h1 class="player_name_report">
+                    {{keeper_xgoal_data['player_last_name']}}<br/>
+                </h1>
+                <h2 class="player_report_name_subheader">{{keeper_xgoal_data['team_name']}} - Goalkeeper</h2>
+                <h2 class="player_report_name_subheader">{{keeper_xgoal_data['nationality']}}</h2>
+                
+            </div>
+        </section>
+        <section class="player_report_stats_container">
+            <div class="plot_container" id="xgoals_plot">
+            </div>
+            <script>
+                var spiderChartData = {{ xgoals_fig_json|safe }};
+                var spiderChartConfig = {{ xgoals_config|safe }};
+                Plotly.newPlot('xgoals_plot', spiderChartData.data, spiderChartData.layout, spiderChartConfig);
+            </script>
+            <!-- XGoals -->
+            <h2>XGoals</h2>
+            <section class="player_report_stats_block">
+                {% for stat, abr, label in [
+                    ('minutes_played', 'MP', 'Minutes Played'),
+                    ('shots_faced', 'SF', 'Shots Faced'),
+                    ('goals_conceded', 'GC', 'Goals Conceded'),
+                    ('saves', 'SV', 'Saves'),
+                    ('share_headed_shots', 'SHS', 'Share of Headed Shots Faced'),
+                    ('xgoals_gk_faced', 'xG_F', 'Expected Goals Faced'),
+                    ('goals_minus_xgoals_gk', 'G-xG_F', 'Goals - xGoals Faced'),
+                    ('goals_divided_by_xgoals_gk', 'G/xG_F', 'Goals / Expected Goals Faced')
+                ] %}
+                    {% if keeper_xgoal_data[stat] >= keeper_xgoal_data['avg_' + stat] %}
+                    <span class="stat_block above_avg">
+                    {% else %}
+                    <span class="stat_block below_avg">
+                    {% endif %}
+                    <h4 title="{{ label }}">{{ abr }}</h4>
+                    <p class="stat_text">{{ keeper_xgoal_data[stat] }} ({{ keeper_xgoal_data['avg_' + stat] }})</p>
+                    </span>
+                {% endfor %}                
+            </section>            
+        </section>
+    </section>
+</section>
+<div class="hidden">
+
+</div>
+{% endblock %}

@@ -60,10 +60,8 @@ def get_all_goalkeepers_xgoals_by_season(season):
     query = '''
         SELECT 
             gx.*,
-            pi.player_name,
-            pi.player_first_name,
-            pi.player_last_name,
-            ti.team_name
+            pi.*,
+            ti.*
             FROM 
                 goalkeeper_xgoals AS gx
             JOIN 
@@ -96,10 +94,8 @@ def get_goalkeeper_xgoals_by_season(player_id, season):
     query = f'''
         SELECT 
             gx.*,
-            pi.player_name,
-            pi.player_first_name,
-            pi.player_last_name,
-            ti.team_name
+            pi.*,
+            ti.*
             FROM 
                 goalkeeper_xgoals AS gx
             JOIN 

@@ -22,7 +22,7 @@
                 {% for player in keeper_data %}
                 <tr>
                     <td>
-                        <form action="/player" method="POST">
+                        <form action="/goalkeeper" method="POST">
                             <input type="hidden" id="player_id" name="player_id" value="{{ player['player_id'] }}">
                             <input type="hidden" id="obj_id" name="obj_id" value="{{ player['id'] }}">
                             <input type="submit" class="grid_button" value="{{ player['player_name'] }}">

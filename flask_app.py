@@ -108,8 +108,25 @@ def player():
 
 @app.route('/goalkeepers', methods=['GET', 'POST'])
 def goalkeepers():
+    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(2024)
+    return render_template('goalkeepers.html',
+                           keeper_data = goalkeeper_data)
+
+@app.route('/goalkeeper', methods=['GET', 'POST'])
+def goalkeeper():
     if request.method == 'POST':
-        pass
+        player_id = request.form.get('player_id')
+        obj_id = request.form.get('obj_id')
+        keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id, 2024)
+
+        for key in keeper_xgoal_data.keys():
+            print(f"{key}: {keeper_xgoal_data[key]}")
+
+        return render_template('goalkeeper.html',
+                                player_id = player_id,
+                                obj_id = obj_id,
+                                keeper_xgoal_data  = keeper_xgoal_data)
+    
     goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(2024)
     return render_template('goalkeepers.html',
                            keeper_data = goalkeeper_data)
