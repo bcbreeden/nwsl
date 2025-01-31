@@ -106,9 +106,13 @@ def player():
     return render_template('players.html',
                            players = player_data)
 
-@app.route('/goalkeepers')
+@app.route('/goalkeepers', methods=['GET', 'POST'])
 def goalkeepers():
-    return render_template('goalkeepers.html')
+    if request.method == 'POST':
+        pass
+    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(2024)
+    return render_template('goalkeepers.html',
+                           keeper_data = goalkeeper_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
