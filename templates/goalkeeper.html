@@ -20,13 +20,6 @@
             </div>
         </section>
         <section class="player_report_stats_container">
-            <div class="plot_container" id="xgoals_plot">
-            </div>
-            <script>
-                var spiderChartData = {{ xgoals_fig_json|safe }};
-                var spiderChartConfig = {{ xgoals_config|safe }};
-                Plotly.newPlot('xgoals_plot', spiderChartData.data, spiderChartData.layout, spiderChartConfig);
-            </script>
             <!-- XGoals -->
             <h2>XGoals</h2>
             <section class="player_report_stats_block">
@@ -40,17 +33,25 @@
                     ('goals_minus_xgoals_gk', 'G-xG_F', 'Goals - xGoals Faced'),
                     ('goals_divided_by_xgoals_gk', 'G/xG_F', 'Goals / Expected Goals Faced')
                 ] %}
-                    {% if keeper_xgoal_data[stat] >= keeper_xgoal_data['avg_' + stat] %}
-                    <span class="stat_block above_avg">
+                    {% if stat in ['goals_conceded', 'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk'] %}
+                        {% if keeper_xgoal_data[stat] <= keeper_xgoal_data['avg_' + stat] %}
+                        <span class="stat_block above_avg">
+                        {% else %}
+                        <span class="stat_block below_avg">
+                        {% endif %}
                     {% else %}
-                    <span class="stat_block below_avg">
+                        {% if keeper_xgoal_data[stat] >= keeper_xgoal_data['avg_' + stat] %}
+                        <span class="stat_block above_avg">
+                        {% else %}
+                        <span class="stat_block below_avg">
+                        {% endif %}
                     {% endif %}
                     <h4 title="{{ label }}">{{ abr }}</h4>
                     <p class="stat_text">{{ keeper_xgoal_data[stat] }} ({{ keeper_xgoal_data['avg_' + stat] }})</p>
                     </span>
                 {% endfor %}                
             </section>            
-        </section>
+        </section>        
     </section>
 </section>
 <div class="hidden">

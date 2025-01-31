@@ -103,7 +103,7 @@ def fetch_keeper_xgoal_data(season: int):
     # Filter out passed in positions and return
     return [keeper for keeper in keepers_data]
 
-def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 180):
+def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
     """
     Calculate `shots_on_target_perc` and filter players by minutes played.
 

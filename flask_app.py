@@ -119,9 +119,6 @@ def goalkeeper():
         obj_id = request.form.get('obj_id')
         keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id, 2024)
 
-        for key in keeper_xgoal_data.keys():
-            print(f"{key}: {keeper_xgoal_data[key]}")
-
         return render_template('goalkeeper.html',
                                 player_id = player_id,
                                 obj_id = obj_id,
