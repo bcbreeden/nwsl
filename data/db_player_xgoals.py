@@ -294,7 +294,6 @@ def insert_player_xgoals_by_season(season):
     """
     print(f'Inserting data for players (xgoal) for season: {season}')
     conn = sqlite3.connect('data/nwsl.db')
-    close_connection = True
 
     stats_to_track = [
     'minutes_played', 'shots', 'shots_on_target', 'shots_on_target_perc', 'goals',
