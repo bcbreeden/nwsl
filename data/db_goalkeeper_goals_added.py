@@ -114,10 +114,8 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     query = '''
         SELECT 
             gkga.*,
-            pi.player_name,
-            pi.player_first_name,
-            pi.player_last_name,
-            ti.team_name
+            pi.*,
+            ti.*
             FROM 
                 goalkeeper_goals_added AS gkga
             JOIN 
@@ -146,22 +144,26 @@ def insert_goalkeeper_goals_added_by_season(season):
     conn = sqlite3.connect('data/nwsl.db')
 
     stats_to_track = [
-        'minutes_played',
         'claiming_goals_added_raw',
         'claiming_goals_added_above_avg',
         'claiming_count_actions',
+
         'fielding_goals_added_raw',
         'fielding_goals_added_above_avg',
         'fielding_count_actions',
+
         'handling_goals_added_raw',
         'handling_goals_added_above_avg',
         'handling_count_actions',
+
         'passing_goals_added_raw',
         'passing_goals_added_above_avg',
         'passing_count_actions',
+
         'shotstopping_goals_added_raw',
         'shotstopping_goals_added_above_avg',
         'shotstopping_count_actions',
+
         'sweeping_goals_added_raw',
         'sweeping_goals_added_above_avg',
         'sweeping_count_actions',
@@ -188,6 +190,13 @@ def fetch_keeper_xgoal_data(season: int):
 
     api_string = 'nwsl/goalkeepers/goals-added?season_name={}&stage_name=Regular Season'.format(str(season))
     keepers_data = make_asa_api_call(api_string)[1]
+
+    for keeper in keepers_data:
+        for action in keeper.get('data', []):
+            action_type = action['action_type'].lower()  # Lowercase the action type for key consistency
+            keeper[f"{action_type}_goals_added_raw"] = action['goals_added_raw']
+            keeper[f"{action_type}_goals_added_above_avg"] = action['goals_added_above_avg']
+            keeper[f"{action_type}_count_actions"] = action['count_actions']
 
     # Filter out passed in positions and return
     return [keeper for keeper in keepers_data]
@@ -222,12 +231,67 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
         obj_id = generate_player_season_id(player_id=player_id, season=str(season))
         team_id = keeper.get('team_id', 'Unknown Team ID')
 
-        if isinstance(team_id, list):
-            team_id = team_id[-1]
+        if isinstance(team_id, list):  # Handle case where team_id is a list
+            team_id = team_id[-1]  # Choose the last item or another appropriate element
+        elif not isinstance(team_id, str):
+            team_id = 'Unknown Team ID'
         general_position = keeper.get('general_position', 'Unknown General Position')
+        minutes_played = keeper.get('minutes_played', 0)
 
-        player_stats = {stat: round(keeper.get(stat, 0), 2) if isinstance(keeper.get(stat), (float, int)) else keeper.get(stat, 0)
-                        for stat in stats_to_track}
+        # Initialize stats for all goalkeeper action types
+        claiming_goals_added_raw = 0
+        claiming_goals_added_above_avg = 0
+        claiming_count_actions = 0
+
+        fielding_goals_added_raw = 0
+        fielding_goals_added_above_avg = 0
+        fielding_count_actions = 0
+
+        handling_goals_added_raw = 0
+        handling_goals_added_above_avg = 0
+        handling_count_actions = 0
+
+        passing_goals_added_raw = 0
+        passing_goals_added_above_avg = 0
+        passing_count_actions = 0
+
+        shotstopping_goals_added_raw = 0
+        shotstopping_goals_added_above_avg = 0
+        shotstopping_count_actions = 0
+
+        sweeping_goals_added_raw = 0
+        sweeping_goals_added_above_avg = 0
+        sweeping_count_actions = 0
+
+        # Populate stats with actual data
+        for action in keeper.get('data', []):
+            action_type = action.get('action_type', '').lower()
+            if action_type == 'claiming':
+                claiming_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                claiming_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
+                claiming_count_actions = action.get('count_actions', 0)
+            elif action_type == 'fielding':
+                fielding_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                fielding_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
+                fielding_count_actions = action.get('count_actions', 0)
+            elif action_type == 'handling':
+                handling_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                handling_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
+                handling_count_actions = action.get('count_actions', 0)
+            elif action_type == 'passing':
+                passing_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                passing_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
+                passing_count_actions = action.get('count_actions', 0)
+            elif action_type == 'shotstopping':
+                shotstopping_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                shotstopping_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
+                shotstopping_count_actions = action.get('count_actions', 0)
+            elif action_type == 'sweeping':
+                sweeping_goals_added_raw = round(action.get('goals_added_raw', 0), 2)
+                sweeping_goals_added_above_avg = round(action.get('goals_added_above_avg', 0), 2)
+                sweeping_count_actions = action.get('count_actions', 0)
+
+
         position_avg = {f"avg_{stat}": round(position_data.get(general_position, {}).get(f"avg_{stat}", 0), 2) for stat in stats_to_track}
         position_min = {f"min_{stat}": round(position_data.get(general_position, {}).get(f"min_{stat}", 0), 2) for stat in stats_to_track}
         position_max = {f"max_{stat}": round(position_data.get(general_position, {}).get(f"max_{stat}", 0), 2) for stat in stats_to_track}
@@ -238,7 +302,6 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
                 player_id,
                 team_id,
                 season,
-                minutes_played,
                 claiming_goals_added_raw,
                 claiming_goals_added_above_avg,
                 claiming_count_actions,
@@ -257,7 +320,6 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
                 sweeping_goals_added_raw,
                 sweeping_goals_added_above_avg,
                 sweeping_count_actions,
-                avg_minutes_played,
                 avg_claiming_goals_added_raw,
                 avg_claiming_goals_added_above_avg,
                 avg_claiming_count_actions,
@@ -276,7 +338,6 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
                 avg_sweeping_goals_added_raw,
                 avg_sweeping_goals_added_above_avg,
                 avg_sweeping_count_actions,
-                min_minutes_played,
                 min_claiming_goals_added_raw,
                 min_claiming_goals_added_above_avg,
                 min_claiming_count_actions,
@@ -295,7 +356,6 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
                 min_sweeping_goals_added_raw,
                 min_sweeping_goals_added_above_avg,
                 min_sweeping_count_actions,
-                max_minutes_played,
                 max_claiming_goals_added_raw,
                 max_claiming_goals_added_above_avg,
                 max_claiming_count_actions,
@@ -317,33 +377,31 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
             ) VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             obj_id,
             player_id,
             team_id,
             int(season),
-            player_stats['minutes_played'],
-            player_stats['claiming_goals_added_raw'],
-            player_stats['claiming_goals_added_above_avg'],
-            player_stats['claiming_count_actions'],
-            player_stats['fielding_goals_added_raw'],
-            player_stats['fielding_goals_added_above_avg'],
-            player_stats['fielding_count_actions'],
-            player_stats['handling_goals_added_raw'],
-            player_stats['handling_goals_added_above_avg'],
-            player_stats['handling_count_actions'],
-            player_stats['passing_goals_added_raw'],
-            player_stats['passing_goals_added_above_avg'],
-            player_stats['passing_count_actions'],
-            player_stats['shotstopping_goals_added_raw'],
-            player_stats['shotstopping_goals_added_above_avg'],
-            player_stats['shotstopping_count_actions'],
-            player_stats['sweeping_goals_added_raw'],
-            player_stats['sweeping_goals_added_above_avg'],
-            player_stats['sweeping_count_actions'],
+            claiming_goals_added_raw,
+            claiming_goals_added_above_avg,
+            claiming_count_actions,
+            fielding_goals_added_raw,
+            fielding_goals_added_above_avg,
+            fielding_count_actions,
+            handling_goals_added_raw,
+            handling_goals_added_above_avg,
+            handling_count_actions,
+            passing_goals_added_raw,
+            passing_goals_added_above_avg,
+            passing_count_actions,
+            shotstopping_goals_added_raw,
+            shotstopping_goals_added_above_avg,
+            shotstopping_count_actions,
+            sweeping_goals_added_raw,
+            sweeping_goals_added_above_avg,
+            sweeping_count_actions,
 
-            position_avg['avg_minutes_played'],
             position_avg['avg_claiming_goals_added_raw'],
             position_avg['avg_claiming_goals_added_above_avg'],
             position_avg['avg_claiming_count_actions'],
@@ -363,7 +421,6 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
             position_avg['avg_sweeping_goals_added_above_avg'],
             position_avg['avg_sweeping_count_actions'],
 
-            position_min['min_minutes_played'],
             position_min['min_claiming_goals_added_raw'],
             position_min['min_claiming_goals_added_above_avg'],
             position_min['min_claiming_count_actions'],
@@ -383,7 +440,6 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
             position_min['min_sweeping_goals_added_above_avg'],
             position_min['min_sweeping_count_actions'],
 
-            position_max['max_minutes_played'],
             position_max['max_claiming_goals_added_raw'],
             position_max['max_claiming_goals_added_above_avg'],
             position_max['max_claiming_count_actions'],

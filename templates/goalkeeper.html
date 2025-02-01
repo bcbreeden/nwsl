@@ -50,7 +50,50 @@
                     <p class="stat_text">{{ keeper_xgoal_data[stat] }} ({{ keeper_xgoal_data['avg_' + stat] }})</p>
                     </span>
                 {% endfor %}                
-            </section>            
+            </section>
+            
+            <!-- Goals Added -->
+            <h2>Goals Added</h2>
+            <section class="player_report_stats_block">
+                {% for stat, abr, label in [
+                    ('claiming_goals_added_raw', 'CGA(R)', 'Claiming Goals Added (Raw)'),
+                    ('claiming_goals_added_above_avg', 'CGA(AA)', 'Claiming Goals Added (Above Avg)'),
+                    ('claiming_count_actions', 'CA', 'Claiming Actions'),
+                    ('fielding_goals_added_raw', 'FGA(R)', 'Fielding Goals Added (Raw)'),
+                    ('fielding_goals_added_above_avg', 'FGA(AA)', 'Fielding Goals Added (Above Avg)'),
+                    ('fielding_count_actions', 'FA', 'Fielding Actions'),
+                    ('handling_goals_added_raw', 'HGA(R)', 'Handling Goals Added (Raw)'),
+                    ('handling_goals_added_above_avg', 'HGA(AA)', 'Handling Goals Added (Above Avg)'),
+                    ('handling_count_actions', 'HA', 'Handling Actions'),
+                    ('passing_goals_added_raw', 'PGA(R)', 'Passing Goals Added (Raw)'),
+                    ('passing_goals_added_above_avg', 'PGA(AA)', 'Passing Goals Added (Above Avg)'),
+                    ('passing_count_actions', 'PA', 'Passing Actions'),
+                    ('shotstopping_goals_added_raw', 'SGA(R)', 'Shotstopping Goals Added (Raw)'),
+                    ('shotstopping_goals_added_above_avg', 'SGA(AA)', 'Shotstopping Goals Added (Above Avg)'),
+                    ('shotstopping_count_actions', 'SA', 'Shotstopping Actions'),
+                    ('sweeping_goals_added_raw', 'SWGA(R)', 'Sweeping Goals Added (Raw)'),
+                    ('sweeping_goals_added_above_avg', 'SWGA(AA)', 'Sweeping Goals Added (Above Avg)'),
+                    ('sweeping_count_actions', 'SWA', 'Sweeping Actions')
+                ] %}
+                    {% if stat in ['claiming_goals_added_above_avg', 'fielding_goals_added_above_avg', 'handling_goals_added_above_avg',
+                    'passing_goals_added_above_avg', 'shotstopping_goals_added_above_avg', 'sweeping_goals_added_above_avg'] %}
+                        {% if keeper_goals_added_data[stat] <= keeper_goals_added_data['avg_' + stat] %}
+                        <span class="stat_block above_avg">
+                        {% else %}
+                        <span class="stat_block below_avg">
+                        {% endif %}
+                    {% else %}
+                        {% if keeper_goals_added_data[stat] >= keeper_goals_added_data['avg_' + stat] %}
+                        <span class="stat_block above_avg">
+                        {% else %}
+                        <span class="stat_block below_avg">
+                        {% endif %}
+                    {% endif %}
+                    <h4 title="{{ label }}">{{ abr }}</h4>
+                    <p class="stat_text">{{ keeper_goals_added_data[stat] }} ({{ keeper_goals_added_data['avg_' + stat] }})</p>
+                    </span>
+                {% endfor %}                
+            </section>
         </section>        
     </section>
 </section>

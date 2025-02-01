@@ -117,12 +117,14 @@ def goalkeeper():
     if request.method == 'POST':
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
-        keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id, 2024)
+        keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id=player_id, season=2024)
+        keeper_goals_added_data = db_goalkeeper_goals_added.get_goalkeeper_goals_added_by_season(player_id=player_id, season=2024)
 
         return render_template('goalkeeper.html',
                                 player_id = player_id,
                                 obj_id = obj_id,
-                                keeper_xgoal_data  = keeper_xgoal_data)
+                                keeper_xgoal_data  = keeper_xgoal_data,
+                                keeper_goals_added_data = keeper_goals_added_data)
     
     goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(2024)
     return render_template('goalkeepers.html',
