@@ -84,7 +84,7 @@ def insert_goalkeeper_xgoals_by_season(season):
     insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season)
 
     conn.close()
-    print(f'Player xgoals data for season {season} inserted successfully.')
+    print(f'Keeper xgoals data for season {season} inserted successfully.')
 
 def fetch_keeper_xgoal_data(season: int):
     """
@@ -105,7 +105,7 @@ def fetch_keeper_xgoal_data(season: int):
 
 def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
     """
-    Calculate `shots_on_target_perc` and filter players by minutes played.
+    Return a list of player statistics. This function is where any custome
 
     Args:
         keepers_data (list): List of keeper data dictionaries.
