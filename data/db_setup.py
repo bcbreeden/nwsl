@@ -270,6 +270,7 @@ def create_tables():
         xgoals_gk_faced REAL,
         goals_minus_xgoals_gk REAL,
         goals_divided_by_xgoals_gk REAL,
+        save_perc REAL,
 
         avg_minutes_played REAL,
         avg_shots_faced REAL,
@@ -279,6 +280,7 @@ def create_tables():
         avg_xgoals_gk_faced REAL,
         avg_goals_minus_xgoals_gk REAL,
         avg_goals_divided_by_xgoals_gk REAL,
+        avg_save_perc REAL,
 
         min_minutes_played INTEGER,
         min_shots_faced INTEGER,
@@ -288,6 +290,7 @@ def create_tables():
         min_xgoals_gk_faced REAL,
         min_goals_minus_xgoals_gk REAL,
         min_goals_divided_by_xgoals_gk REAL,
+        min_save_perc REAL,
 
         max_minutes_played INTEGER,
         max_shots_faced INTEGER,
@@ -297,6 +300,7 @@ def create_tables():
         max_xgoals_gk_faced REAL,
         max_goals_minus_xgoals_gk REAL,
         max_goals_divided_by_xgoals_gk REAL,
+        max_save_perc REAL,
 
         FOREIGN KEY (team_id) REFERENCES team_info(team_id),
         FOREIGN KEY (player_id) REFERENCES player_info(player_id)

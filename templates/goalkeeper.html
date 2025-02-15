@@ -31,7 +31,8 @@
                     ('share_headed_shots', 'SHS', 'Share of Headed Shots Faced'),
                     ('xgoals_gk_faced', 'xG_F', 'Expected Goals Faced'),
                     ('goals_minus_xgoals_gk', 'G-xG_F', 'Goals - xGoals Faced'),
-                    ('goals_divided_by_xgoals_gk', 'G/xG_F', 'Goals / Expected Goals Faced')
+                    ('goals_divided_by_xgoals_gk', 'G/xG_F', 'Goals / Expected Goals Faced'),
+                    ('save_perc', 'S%', 'Save Percentage')
                 ] %}
                     {% if stat in ['goals_conceded', 'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk'] %}
                         {% if keeper_xgoal_data[stat] <= keeper_xgoal_data['avg_' + stat] %}

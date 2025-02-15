@@ -75,7 +75,7 @@ def insert_goalkeeper_xgoals_by_season(season):
 
     stats_to_track = [
     'minutes_played', 'shots_faced', 'goals_conceded', 'saves', 'share_headed_shots',
-    'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk'
+    'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk', 'save_perc'
     ]
 
     keepers_data = fetch_keeper_xgoal_data(season)
@@ -114,6 +114,11 @@ def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
     Returns:
         list: Filtered list of player data dictionaries with calculated statistics.
     """
+    for keeper in keepers_data:
+        saves = keeper.get('saves', 0)
+        shots_faced = keeper.get('shots_faced', 0)
+        keeper['save_perc'] = (saves / shots_faced) * 100 if shots_faced > 0 else 0
+
     return [player for player in keepers_data if player.get('minutes_played', 0) >= minimum_minutes]
 
 def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season):
@@ -132,7 +137,6 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
         player_id = keeper.get('player_id', 'Unknown Player ID')
         obj_id = generate_player_season_id(player_id=player_id, season=str(season))
         team_id = keeper.get('team_id', 'Unknown Team ID')
-
         if isinstance(team_id, list):
             team_id = team_id[-1]
         general_position = keeper.get('general_position', 'Unknown General Position')
@@ -146,19 +150,21 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
         cursor.execute('''
             INSERT OR REPLACE INTO goalkeeper_xgoals (
                 id, player_id, team_id, season, minutes_played, shots_faced, goals_conceded, 
-                saves, share_headed_shots, xgoals_gk_faced, goals_minus_xgoals_gk, 
+                saves, share_headed_shots, xgoals_gk_faced, goals_minus_xgoals_gk,
                 goals_divided_by_xgoals_gk,
                 avg_minutes_played, avg_shots_faced, avg_goals_conceded, avg_saves, avg_share_headed_shots, 
                 avg_xgoals_gk_faced, avg_goals_minus_xgoals_gk, avg_goals_divided_by_xgoals_gk,
                 min_minutes_played, min_shots_faced, min_goals_conceded, min_saves, min_share_headed_shots, 
                 min_xgoals_gk_faced, min_goals_minus_xgoals_gk, min_goals_divided_by_xgoals_gk,
                 max_minutes_played, max_shots_faced, max_goals_conceded, max_saves, max_share_headed_shots, 
-                max_xgoals_gk_faced, max_goals_minus_xgoals_gk, max_goals_divided_by_xgoals_gk
+                max_xgoals_gk_faced, max_goals_minus_xgoals_gk, max_goals_divided_by_xgoals_gk,
+                save_perc, avg_save_perc, min_save_perc, max_save_perc
             ) VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?
             )
         ''', (
             obj_id,
@@ -199,7 +205,12 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
             position_max['max_share_headed_shots'],
             position_max['max_xgoals_gk_faced'],
             position_max['max_goals_minus_xgoals_gk'],
-            position_max['max_goals_divided_by_xgoals_gk']
+            position_max['max_goals_divided_by_xgoals_gk'],
+
+            player_stats['save_perc'],
+            position_avg['avg_save_perc'],
+            position_min['min_save_perc'],
+            position_max['max_save_perc']
             ))
         
     conn.commit()

@@ -376,9 +376,6 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
         position_avg = {f"avg_{stat}": round(position_data.get(general_position, {}).get(f"avg_{stat}", 0), 2) for stat in stats_to_track}
         position_min = {f"min_{stat}": round(position_data.get(general_position, {}).get(f"min_{stat}", 0), 2) for stat in stats_to_track}
         position_max = {f"max_{stat}": round(position_data.get(general_position, {}).get(f"max_{stat}", 0), 2) for stat in stats_to_track}
-        
-        # Calculate Shot on Target% (not included in api)
-        player_stats['shots_on_target_perc'] = round((player['shots_on_target'] / player['shots']) * 100 if player['shots'] >= 5 else 0, 0)
 
         cursor.execute('''
             INSERT OR REPLACE INTO player_xgoals (
