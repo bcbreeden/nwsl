@@ -119,12 +119,21 @@ def goalkeeper():
         obj_id = request.form.get('obj_id')
         keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id=player_id, season=2024)
         keeper_goals_added_data = db_goalkeeper_goals_added.get_goalkeeper_goals_added_by_season(player_id=player_id, season=2024)
+        
+        combined_data = {**keeper_xgoal_data, **keeper_goals_added_data}
+        combined_data["goals_minus_xgoals_gk"] = abs(combined_data["goals_minus_xgoals_gk"])
+        stats_to_plot = ['goals_minus_xgoals_gk', 'shotstopping_goals_added_above_avg', 'handling_goals_added_above_avg', 'claiming_goals_added_above_avg',
+                         'sweeping_goals_added_above_avg', 'passing_goals_added_above_avg']
+        keeper_fig_json, keeper_config = plot_spider(stats_to_plot, combined_data)
+        
 
         return render_template('goalkeeper.html',
                                 player_id = player_id,
                                 obj_id = obj_id,
                                 keeper_xgoal_data  = keeper_xgoal_data,
-                                keeper_goals_added_data = keeper_goals_added_data)
+                                keeper_goals_added_data = keeper_goals_added_data,
+                                keeper_fig_json = keeper_fig_json,
+                                keeper_config = keeper_config)
     
     goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(2024)
     return render_template('goalkeepers.html',

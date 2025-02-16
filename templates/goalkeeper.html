@@ -20,6 +20,13 @@
             </div>
         </section>
         <section class="player_report_stats_container">
+            <div class="plot_container" id="keeper_plot">
+            </div>
+            <script>
+                var keeperSpiderChartData = {{ keeper_fig_json|safe }};
+                var keeperSpiderChartConfig = {{ keeper_config|safe }};
+                Plotly.newPlot('keeper_plot', keeperSpiderChartData.data, keeperSpiderChartData.layout, keeperSpiderChartConfig);
+            </script>
             <!-- XGoals -->
             <h2>XGoals</h2>
             <section class="player_report_stats_block">
