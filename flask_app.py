@@ -5,22 +5,24 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
 from plots import plot_team_goals_points, plot_team_points_diff, plot_goal_vs_xgoal, plot_spider
 import plotly.graph_objects as go
 import plotly.io as pio
+from datetime import datetime
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
+season = datetime.now().year
 
 '''
 Renders the index template.
 '''
 @app.route('/')
 def index():
-    team_points_data = db_team_xgoals.get_top_team_xgoals_stat(2024, 'points')
-    top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(2024, 'goals', 5)
-    top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(2024, 'primary_assists', 5)
-    shots_on_target = db_player_xgoals.get_player_xgoals_minimum_shots(2024, 'shots_on_target_perc', 5, 10)
-    total_shots = db_player_xgoals.get_top_player_xgoals_stat(2024, 'shots', 5)
-    minutes_played_df = db_player_xgoals.get_defender_minutes_played(2024, 'minutes_played', 5)
-    minutes_played_non_df = db_player_xgoals.get_minutes_played_non_df(2024, 'minutes_played', 5)
+    team_points_data = db_team_xgoals.get_top_team_xgoals_stat(season, 'points')
+    top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(season, 'goals', 5)
+    top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(season, 'primary_assists', 5)
+    shots_on_target = db_player_xgoals.get_player_xgoals_minimum_shots(season, 'shots_on_target_perc', 5, 10)
+    total_shots = db_player_xgoals.get_top_player_xgoals_stat(season, 'shots', 5)
+    minutes_played_df = db_player_xgoals.get_defender_minutes_played(season, 'minutes_played', 5)
+    minutes_played_non_df = db_player_xgoals.get_minutes_played_non_df(season, 'minutes_played', 5)
     return render_template('index.html',
                            team_points_data = team_points_data,
                            top_scorers = top_5_goalscorers,
@@ -32,7 +34,7 @@ def index():
 
 @app.route('/teams')
 def teams():
-    team_data = db_team_xgoals.get_top_team_xgoals_stat(2024, 'points')
+    team_data = db_team_xgoals.get_top_team_xgoals_stat(season, 'points')
     plt_team_goals_points = plot_team_goals_points()
     plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
     plt_team_points_diff = plot_team_points_diff()
@@ -51,8 +53,8 @@ def games():
 
 @app.route('/players')
 def players():
-    players_xgoals_data = db_player_xgoals.get_top_player_xgoals_stat(2024)
-    players_xpass_data = db_player_xpass.get_all_player_xpass(2024)
+    players_xgoals_data = db_player_xgoals.get_top_player_xgoals_stat(season)
+    players_xpass_data = db_player_xpass.get_all_player_xpass(season)
 
     combined_data = zip(players_xgoals_data, players_xpass_data)
     return render_template('players.html',
@@ -82,9 +84,9 @@ def player():
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
         
-        player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, 2024)
-        player_xpass_data = db_player_xpass.get_player_xpass(player_id, 2024)
-        player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, 2024)
+        player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, season)
+        player_xpass_data = db_player_xpass.get_player_xpass(player_id, season)
+        player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, season)
 
         xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
         xpass_fig_json, xpass_config = plot_spider(x_pass_stats_to_plot, player_xpass_data)
@@ -102,13 +104,13 @@ def player():
                                xpass_config = xpass_config,
                                defense_fig_json = defense_fig_json,
                                defense_config = defense_config)
-    player_data = db_player_xgoals.get_all_player_xgoals(2024)
+    player_data = db_player_xgoals.get_all_player_xgoals(season)
     return render_template('players.html',
                            players = player_data)
 
 @app.route('/goalkeepers', methods=['GET', 'POST'])
 def goalkeepers():
-    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(2024)
+    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(season)
     return render_template('goalkeepers.html',
                            keeper_data = goalkeeper_data)
 
@@ -117,11 +119,14 @@ def goalkeeper():
     if request.method == 'POST':
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
-        keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id=player_id, season=2024)
-        keeper_goals_added_data = db_goalkeeper_goals_added.get_goalkeeper_goals_added_by_season(player_id=player_id, season=2024)
+        keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id=player_id, season=season)
+        keeper_goals_added_data = db_goalkeeper_goals_added.get_goalkeeper_goals_added_by_season(player_id=player_id, season=season)
         
         combined_data = {**keeper_xgoal_data, **keeper_goals_added_data}
+
+        # This value needs to be inverted since a negative value is better than a positive one
         combined_data["goals_minus_xgoals_gk"] = abs(combined_data["goals_minus_xgoals_gk"])
+        
         stats_to_plot = ['goals_minus_xgoals_gk', 'shotstopping_goals_added_above_avg', 'handling_goals_added_above_avg', 'claiming_goals_added_above_avg',
                          'sweeping_goals_added_above_avg', 'passing_goals_added_above_avg']
         keeper_fig_json, keeper_config = plot_spider(stats_to_plot, combined_data)
@@ -135,7 +140,7 @@ def goalkeeper():
                                 keeper_fig_json = keeper_fig_json,
                                 keeper_config = keeper_config)
     
-    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(2024)
+    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(season)
     return render_template('goalkeepers.html',
                            keeper_data = goalkeeper_data)
 
