@@ -13,7 +13,7 @@ app.config["DEBUG"] = True
 class SeasonManager:
     def __init__(self):
         self.season = datetime.now().year
-        self.seasons = [2025, 2024, 2023, 2022]
+        self.seasons = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 
     def set_season(self, new_season):
         self.season = int(new_season)

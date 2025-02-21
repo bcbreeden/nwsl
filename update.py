@@ -9,8 +9,8 @@ Updates the tables for the current year (if applicable).
 Requires tables to be setup, if setup.py has not been run, run that first.
 '''
 if __name__ == '__main__':
-    # season = datetime.now().year
-    season = 2024
+    season = datetime.now().year
+    # season = 2024
     db_player_info.insert_all_players_info()
     db_team_info.insert_team_info()
     db_games_xgoals.insert_all_games_xgoals_by_season(season)
