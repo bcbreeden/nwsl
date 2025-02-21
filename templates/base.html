@@ -24,6 +24,7 @@
         <header>
             <h1>NWSL</h1>
             <h1>Insights</h1>
+            <h1>{{ season }}</h1>
             <nav>
                 <ul>
                     <li><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
@@ -33,6 +34,16 @@
                     <li><a class="nav-link" href="{{ url_for('games') }}">Games</a></li>
                 </ul>
             </nav>
+            <form action="/" method="POST">
+                <label for="season_year">Choose an option:</label>
+                <select id="season_year" name="season_year">
+                    {% for season_year in seasons %}
+                        <option id="season_year" name="season_year" value="{{season_year}}">{{season_year}}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+                <input type="submit" value="Submit">
+            </form>
         </header>
         <main>
             <section id="block-content">

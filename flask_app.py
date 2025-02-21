@@ -9,20 +9,34 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-season = datetime.now().year
+
+class SeasonManager:
+    def __init__(self):
+        self.season = datetime.now().year
+        self.seasons = [2025, 2024, 2023, 2022]
+
+    def set_season(self, new_season):
+        self.season = int(new_season)
+
+season_manager = SeasonManager()
 
 '''
 Renders the index template.
 '''
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    team_points_data = db_team_xgoals.get_top_team_xgoals_stat(season, 'points')
-    top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(season, 'goals', 5)
-    top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(season, 'primary_assists', 5)
-    shots_on_target = db_player_xgoals.get_player_xgoals_minimum_shots(season, 'shots_on_target_perc', 5, 10)
-    total_shots = db_player_xgoals.get_top_player_xgoals_stat(season, 'shots', 5)
-    minutes_played_df = db_player_xgoals.get_defender_minutes_played(season, 'minutes_played', 5)
-    minutes_played_non_df = db_player_xgoals.get_minutes_played_non_df(season, 'minutes_played', 5)
+    if request.method == 'POST':
+        new_season = request.form.get('season_year')
+        print('test')
+        print(new_season)
+        season_manager.set_season(new_season)
+    team_points_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
+    top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'goals', 5)
+    top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'primary_assists', 5)
+    shots_on_target = db_player_xgoals.get_player_xgoals_minimum_shots(season_manager.season, 'shots_on_target_perc', 5, 10)
+    total_shots = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'shots', 5)
+    minutes_played_df = db_player_xgoals.get_defender_minutes_played(season_manager.season, 'minutes_played', 5)
+    minutes_played_non_df = db_player_xgoals.get_minutes_played_non_df(season_manager.season, 'minutes_played', 5)
     return render_template('index.html',
                            team_points_data = team_points_data,
                            top_scorers = top_5_goalscorers,
@@ -30,11 +44,13 @@ def index():
                            shots_on_target = shots_on_target,
                            minutes_played_df = minutes_played_df,
                            minutes_played_non_df = minutes_played_non_df,
-                           total_shots = total_shots)
+                           total_shots = total_shots,
+                           season = season_manager.season,
+                           seasons =season_manager.seasons)
 
 @app.route('/teams')
 def teams():
-    team_data = db_team_xgoals.get_top_team_xgoals_stat(season, 'points')
+    team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
     plt_team_goals_points = plot_team_goals_points()
     plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
     plt_team_points_diff = plot_team_points_diff()
@@ -45,20 +61,26 @@ def teams():
                            teams = team_data,
                            team_goal_point_plot = plt_team_goals_points_html,
                            team_points_dif_plot = plt_team_points_diff_html,
-                           team_goal_xgoal_diff_plot = plt_team_goal_xgoal_diff_html)
+                           team_goal_xgoal_diff_plot = plt_team_goal_xgoal_diff_html,
+                           season = season_manager.season,
+                           seasons = season_manager.seasons)
 
 @app.route('/games')
 def games():
-    return render_template('games.html')
+    return render_template('games.html',
+                           season = season_manager.season,
+                           seasons = season_manager.seasons)
 
 @app.route('/players')
 def players():
-    players_xgoals_data = db_player_xgoals.get_top_player_xgoals_stat(season)
-    players_xpass_data = db_player_xpass.get_all_player_xpass(season)
+    players_xgoals_data = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season)
+    players_xpass_data = db_player_xpass.get_all_player_xpass(season_manager.season)
 
     combined_data = zip(players_xgoals_data, players_xpass_data)
     return render_template('players.html',
-                           player_data = combined_data)
+                           player_data = combined_data,
+                           season = season_manager.season,
+                           seasons = season_manager.seasons)
 
 @app.route('/player', methods=['GET', 'POST'])
 def player():
@@ -84,9 +106,9 @@ def player():
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
         
-        player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, season)
-        player_xpass_data = db_player_xpass.get_player_xpass(player_id, season)
-        player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, season)
+        player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, season_manager.season)
+        player_xpass_data = db_player_xpass.get_player_xpass(player_id, season_manager.season)
+        player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, season_manager.season)
 
         xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
         xpass_fig_json, xpass_config = plot_spider(x_pass_stats_to_plot, player_xpass_data)
@@ -103,24 +125,30 @@ def player():
                                xpass_fig_json = xpass_fig_json,
                                xpass_config = xpass_config,
                                defense_fig_json = defense_fig_json,
-                               defense_config = defense_config)
-    player_data = db_player_xgoals.get_all_player_xgoals(season)
+                               defense_config = defense_config,
+                               season = season_manager.season,
+                               seasons = season_manager.seasons)
+    player_data = db_player_xgoals.get_all_player_xgoals(season_manager.season)
     return render_template('players.html',
-                           players = player_data)
+                           players = player_data,
+                           season = season_manager.season,
+                           seasons = season_manager.seasons)
 
 @app.route('/goalkeepers', methods=['GET', 'POST'])
 def goalkeepers():
-    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(season)
+    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(season_manager.season)
     return render_template('goalkeepers.html',
-                           keeper_data = goalkeeper_data)
+                           keeper_data = goalkeeper_data,
+                           season = season_manager.season,
+                           seasons = season_manager.seasons)
 
 @app.route('/goalkeeper', methods=['GET', 'POST'])
 def goalkeeper():
     if request.method == 'POST':
         player_id = request.form.get('player_id')
         obj_id = request.form.get('obj_id')
-        keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id=player_id, season=season)
-        keeper_goals_added_data = db_goalkeeper_goals_added.get_goalkeeper_goals_added_by_season(player_id=player_id, season=season)
+        keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id=player_id, season=season_manager.season)
+        keeper_goals_added_data = db_goalkeeper_goals_added.get_goalkeeper_goals_added_by_season(player_id=player_id, season=season_manager.season)
         
         combined_data = {**keeper_xgoal_data, **keeper_goals_added_data}
 
@@ -138,11 +166,15 @@ def goalkeeper():
                                 keeper_xgoal_data  = keeper_xgoal_data,
                                 keeper_goals_added_data = keeper_goals_added_data,
                                 keeper_fig_json = keeper_fig_json,
-                                keeper_config = keeper_config)
+                                keeper_config = keeper_config,
+                                season = season_manager.season,
+                                seasons = season_manager.seasons)
     
-    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(season)
+    goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(season_manager.season)
     return render_template('goalkeepers.html',
-                           keeper_data = goalkeeper_data)
+                           keeper_data = goalkeeper_data,
+                           season = season_manager.season,
+                           seasons = season_manager.seasons)
 
 if __name__ == '__main__':
     app.run(debug=True)
