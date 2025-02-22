@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
@@ -13,7 +13,7 @@ app.config["DEBUG"] = True
 class SeasonManager:
     def __init__(self):
         self.season = datetime.now().year
-        self.seasons = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+        self.seasons = [2025, 2024, 2023, 2022, 2021, 2020, 2019]
 
     def set_season(self, new_season):
         self.season = int(new_season)
@@ -27,8 +27,6 @@ Renders the index template.
 def index():
     if request.method == 'POST':
         new_season = request.form.get('season_year')
-        print('test')
-        print(new_season)
         season_manager.set_season(new_season)
     team_points_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
     top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'goals', 5)
@@ -128,11 +126,7 @@ def player():
                                defense_config = defense_config,
                                season = season_manager.season,
                                seasons = season_manager.seasons)
-    player_data = db_player_xgoals.get_all_player_xgoals(season_manager.season)
-    return render_template('players.html',
-                           players = player_data,
-                           season = season_manager.season,
-                           seasons = season_manager.seasons)
+    return redirect(url_for('players'))
 
 @app.route('/goalkeepers', methods=['GET', 'POST'])
 def goalkeepers():

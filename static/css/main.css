@@ -74,6 +74,10 @@ p, td, label, select .dt-info, .player_first_name_report, .player_last_name_repo
     font-style: normal;
 }
 
+label {
+    color: var(--block-bg);
+}
+
 main {
     display: flex;
     flex-direction: column;
@@ -125,8 +129,45 @@ ul {
     align-self: center;
 }
 
+#nav_form_container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
 #title, #block-content {
     padding-left: var(--padding-left);
+}
+
+#season_select_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 7px;
+    width: 100px;
+}
+
+#season_year {
+    background-color: var(--dark-bg);
+    color: var(--block-bg);
+    border: 1 solid white;
+    border-radius: 3px;
+    width: auto;
+    padding: 3px;
+    margin-top: 15px;
+    text-align: center;
+
+    appearance: none; /* Removes default browser styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.label_small {
+    font-size: 12px;
+    text-align: center;
 }
 
 .footer-text {
@@ -140,7 +181,14 @@ ul {
     cursor: pointer;
 }
 
-.grid_button:hover {
+.grid_button_light {
+    background-color: var(--white);
+    border: 0;
+    color: var(--link);
+    cursor: pointer;
+}
+
+.grid_button:hover, .grid_button_light:hover{
     color: var(--contrast-alt);
 }
 
@@ -243,7 +291,7 @@ ul {
 }
 */
 
- .current {
+.current {
     background: transparent !important;
     border: 1px solid var(--link) !important;
     color: var(--dark-bg);

@@ -34,16 +34,19 @@
                     <li><a class="nav-link" href="{{ url_for('games') }}">Games</a></li>
                 </ul>
             </nav>
-            <form action="/" method="POST">
-                <label for="season_year">Choose an option:</label>
-                <select id="season_year" name="season_year">
-                    {% for season_year in seasons %}
-                        <option id="season_year" name="season_year" value="{{season_year}}">{{season_year}}</option>
-                    {% endfor %}
-                </select>
-                <br><br>
-                <input type="submit" value="Submit">
-            </form>
+            <section id="nav_form_container">
+                <form id="season_select_form" action="/" method="POST">
+                    <label class="label_small" for="season_year">The data can be adjusted for a specific season below.</label>
+                    <select id="season_year" name="season_year">
+                        <option value="" disabled selected>Select Season</option>
+                        {% for season_year in seasons %}
+                            <option id="season_year" name="season_year" value="{{season_year}}"> {{season_year}}</option>
+                        {% endfor %}
+                    </select>
+                    <br><br>
+                    <input type="submit" class="grid_button_light" value="Submit">
+                </form>
+            </section>
         </header>
         <main>
             <section id="block-content">
