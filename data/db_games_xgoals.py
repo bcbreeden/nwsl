@@ -1,7 +1,7 @@
 from api import make_asa_api_call
 import sqlite3
 
-def insert_all_games_xgoals_by_season(season):
+def insert_all_games_xgoals_by_season(season): # pragma: no cover
     print('Inserting games by season for:', season)
     api_string = 'nwsl/games/xgoals?season_name={}&stage_name=Regular Season'.format(str(season))
     games_data = make_asa_api_call(api_string)[1]

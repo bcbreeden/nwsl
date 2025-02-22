@@ -76,9 +76,9 @@ class TestPlayerXGoal(unittest.TestCase):
             "max_points_added": 5.36,
             "max_xpoints_added": 8.15,
             "max_xgoals_xassists_per_90": 0.74,
-            "player_name": "Sophia Smith",
+            "player_name": "Sophia Wilson",
             "player_first_name": "Sophia",
-            "player_last_name": "Smith",
+            "player_last_name": "Wilson",
             "birth_date": "2000-08-10",
             "height_ft": 5,
             "height_in": 5,
@@ -88,7 +88,8 @@ class TestPlayerXGoal(unittest.TestCase):
             "secondary_broad_position": "Unknown Secondary Broad Position",
             "secondary_general_position": "Unknown Secondary General Position",
             "team_name": "Portland Thorns FC",
-            "team_abbreviation": "POR"
+            "team_abbreviation": "POR",
+            "team_short_name": "Portland"
         }
 
     def test_get_player_xgoal(self):
