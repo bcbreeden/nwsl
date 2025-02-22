@@ -29,15 +29,23 @@ def get_player_xgoal_data_all_seasons(player_id: str):
     query = '''
         SELECT 
             px.*,
-            pi.*
+            pi.*,
+            ti.team_name,
+            ti.team_abbreviation
             FROM 
                 player_xgoals AS px
             JOIN 
                 player_info AS pi
             ON 
                 px.player_id = pi.player_id
+            JOIN
+                team_info AS ti
+            ON
+                px.team_id = ti.team_id
             WHERE
-                px.player_id = ?;
+                px.player_id = ?
+            ORDER BY
+                px.season DESC;
         '''
     cursor.execute(query, (player_id,))
     row = cursor.fetchall()

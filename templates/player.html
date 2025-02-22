@@ -133,9 +133,35 @@
             </section>
         <!-- All Seasons Data -->
          <h2>All Seasons Data</h2>
-            {% for season in player_season_data %}
-                {{ season['season'] }} - {{ season['goals'] }}
-            {% endfor %}
+         <table>
+            <thead>
+                <tr>
+                    <th>Season</th>
+                    <th>Team</th>
+                    <th>Minutes</th>
+                    <th>G</th>
+                    <th>A</th>
+                    <th>xG</th>
+                    <th>xA</th>
+                    <th>xG/xA/90</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for season in player_season_data %}
+                <tr>
+                    <td>{{ season['season'] }}</td>
+                    <td>{{ season['team_abbreviation'] }}</td>
+                    <td>{{ season['minutes_played'] }}</td>
+                    <td>{{ season['goals'] }}</td>
+                    <td>{{ season['primary_assists'] }}</td>
+                    <td>{{ season['xgoals'] }}</td>
+                    <td>{{ season['xassists'] }}</td>
+                    <td>{{ season['xgoals_xassists_per_90'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+         </table>
+           
         </section>
     </section>
 </section>
