@@ -13,7 +13,7 @@ app.config["DEBUG"] = True
 class SeasonManager:
     def __init__(self):
         self.season = datetime.now().year
-        self.seasons = [2025, 2024, 2023, 2022, 2021, 2020, 2019]
+        self.seasons = [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016]
 
     def set_season(self, new_season):
         self.season = int(new_season)
@@ -107,6 +107,7 @@ def player():
         player_xgoals_data = db_player_xgoals.get_player_xgoal_data(player_id, season_manager.season)
         player_xpass_data = db_player_xpass.get_player_xpass(player_id, season_manager.season)
         player_goals_added_data = db_player_goals_added.get_player_goals_added_by_season(player_id, season_manager.season)
+        player_xgoals_all_seasons_data = db_player_xgoals.get_player_xgoal_data_all_seasons(player_id)
 
         xgoals_fig_json, xgoals_config = plot_spider(x_goals_stats_to_plot, player_xgoals_data)
         xpass_fig_json, xpass_config = plot_spider(x_pass_stats_to_plot, player_xpass_data)
@@ -125,7 +126,8 @@ def player():
                                defense_fig_json = defense_fig_json,
                                defense_config = defense_config,
                                season = season_manager.season,
-                               seasons = season_manager.seasons)
+                               seasons = season_manager.seasons,
+                               player_season_data = player_xgoals_all_seasons_data)
     return redirect(url_for('players'))
 
 @app.route('/goalkeepers', methods=['GET', 'POST'])

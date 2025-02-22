@@ -131,7 +131,11 @@
                     </span>
                 {% endfor %}
             </section>
-            
+        <!-- All Seasons Data -->
+         <h2>All Seasons Data</h2>
+            {% for season in player_season_data %}
+                {{ season['season'] }} - {{ season['goals'] }}
+            {% endfor %}
         </section>
     </section>
 </section>

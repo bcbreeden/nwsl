@@ -3,7 +3,7 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass)
 
 if __name__ == '__main__':
-    SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+    SEASONS = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
     print('Initial setup has started. This may take a few minutes.')
     db_setup.create_tables()
     db_player_info.insert_all_players_info()

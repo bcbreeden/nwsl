@@ -8,6 +8,46 @@ class PlayerDataNotFoundError(Exception):
     """Custom exception raised when player data is not found."""
     pass
 
+def get_player_xgoal_data_all_seasons(player_id: str):
+    """
+    Fetches and returns player xGoals data for all seasons.
+
+    Args:
+        player_id (str): The unique identifier of the player.
+
+    Returns:
+        sqlite3.Row: A Row object containing xGoals data for the player, including 
+                     related player information and team details.
+
+    Raises:
+        PlayerDataNotFoundError: If no data is found for the given player and season.
+    """
+    print('Fetching player xgoals for:{}, All Seasons'.format(player_id))
+    conn = sqlite3.connect('data/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT 
+            px.*,
+            pi.*
+            FROM 
+                player_xgoals AS px
+            JOIN 
+                player_info AS pi
+            ON 
+                px.player_id = pi.player_id
+            WHERE
+                px.player_id = ?;
+        '''
+    cursor.execute(query, (player_id,))
+    row = cursor.fetchall()
+    if row is None:
+        raise PlayerDataNotFoundError(f"No data found for player_id={player_id} all seasons.")
+    conn.commit()
+    conn.close()
+    print('Player xgoal returned for all seasons.')
+    return row
+
 def get_player_xgoal_data(player_id: str, season: int):
     """
     Fetches and returns player xGoals data for a specific player and season.
