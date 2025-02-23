@@ -121,3 +121,6 @@ class TestPlayerXGoal(unittest.TestCase):
         self.assertIsNotNone(xgoals_player)
         for column in xgoals_player.keys():
            self.assertEqual(self.expected_player_data[column], xgoals_player[column])
+
+if __name__ == '__main__':
+    unittest.main()

@@ -2,6 +2,10 @@ from api import make_asa_api_call
 from .data_util import aggregate_position_data, generate_player_season_id
 import sqlite3
 
+class PlayerDataNotFoundError(Exception):
+    """Custom exception raised when player data is not found."""
+    pass
+
 def get_all_goalkeepers_xgoals_by_season(season):
     print('Fetching all goalkeepers xgoals for season: {}'.format(season))
     conn = sqlite3.connect('data/nwsl.db')
@@ -60,16 +64,18 @@ def get_goalkeeper_xgoals_by_season(player_id, season):
                 gx.id = ?;
         '''
     cursor.execute(query, (obj_id,))
-    rows = cursor.fetchone()
+    row = cursor.fetchone()
+    if row is None:
+        raise PlayerDataNotFoundError(f"No data found for player_id={player_id} for {season}.")
     conn.commit()
     conn.close()
     print('Goalkeeper returned with xgoal data.')
-    return rows
+    return row
 
 '''
 INSERT XGOALS DATA
 '''
-def insert_goalkeeper_xgoals_by_season(season):
+def insert_goalkeeper_xgoals_by_season(season): # pragma: no cover
     print(f'Inserting data for goalkeepers (xgoal) for season: {season}')
     conn = sqlite3.connect('data/nwsl.db')
 
@@ -86,7 +92,7 @@ def insert_goalkeeper_xgoals_by_season(season):
     conn.close()
     print(f'Keeper xgoals data for season {season} inserted successfully.')
 
-def fetch_keeper_xgoal_data(season: int):
+def fetch_keeper_xgoal_data(season: int): # pragma: no cover
     """
     Fetch keeper data from the API for a specific season.
 
@@ -103,7 +109,7 @@ def fetch_keeper_xgoal_data(season: int):
     # Filter out passed in positions and return
     return [keeper for keeper in keepers_data]
 
-def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
+def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500): # pragma: no cover
     """
     Return a list of player statistics. This function is where any custome
 
@@ -121,7 +127,7 @@ def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
 
     return [player for player in keepers_data if player.get('minutes_played', 0) >= minimum_minutes]
 
-def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season):
+def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season): # pragma: no cover
     """
     Insert keeper data into the database, rounding all REAL values to two decimal places.
 

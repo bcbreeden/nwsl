@@ -145,8 +145,8 @@ def goalkeeper():
         obj_id = request.form.get('obj_id')
         keeper_xgoal_data = db_goalkeeper_xgoals.get_goalkeeper_xgoals_by_season(player_id=player_id, season=season_manager.season)
         keeper_goals_added_data = db_goalkeeper_goals_added.get_goalkeeper_goals_added_by_season(player_id=player_id, season=season_manager.season)
-        # for key in keeper_goals_added_data.keys():
-        #     print(f"{key}: {keeper_goals_added_data[key]}")
+        for key in keeper_xgoal_data.keys():
+            print(f"{key}: {keeper_xgoal_data[key]}")
         
         combined_data = {**keeper_xgoal_data, **keeper_goals_added_data}
 
