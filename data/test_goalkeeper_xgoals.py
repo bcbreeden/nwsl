@@ -1,6 +1,6 @@
 import unittest
 
-from .db_goalkeeper_xgoals import get_goalkeeper_xgoals_by_season, get_all_goalkeepers_xgoals_by_season, PlayerDataNotFoundError
+from .db_goalkeeper_xgoals import get_goalkeeper_xgoals_by_season, get_all_goalkeepers_xgoals_by_season, fetch_keeper_xgoal_data
 
 class TestKeeperXGoal(unittest.TestCase):
     def setUp(self):
@@ -70,12 +70,10 @@ class TestKeeperXGoal(unittest.TestCase):
            self.assertEqual(self.expected_keeper_data[column], keeper_data[column])
     
     def test_invalid_get_keeper_xgoal(self):
-        with self.assertRaises(PlayerDataNotFoundError) as context:
-            get_goalkeeper_xgoals_by_season(player_id='hooplah', season=self.test_season)
-        self.assertIn("No data found", str(context.exception))
-        with self.assertRaises(PlayerDataNotFoundError) as context:
-            get_goalkeeper_xgoals_by_season(player_id=self.test_player_id, season=1912)
-        self.assertIn("No data found", str(context.exception))
+        data = get_goalkeeper_xgoals_by_season(player_id='hooplah', season=self.test_season)
+        self.assertIsNone(data)
+        data = get_goalkeeper_xgoals_by_season(player_id=self.test_player_id, season=1912)
+        self.assertIsNone(data)
 
     def test_get_all_keepers_by_season(self):
         data = get_all_goalkeepers_xgoals_by_season(season=self.test_season)
@@ -85,6 +83,11 @@ class TestKeeperXGoal(unittest.TestCase):
     def test_invalid_get_keepers_by_season(self):
         data = get_all_goalkeepers_xgoals_by_season(season=1999)
         self.assertEqual(len(data), 0)
+    
+    def test_fetch_keepers_xgoal_data(self):
+        data = fetch_keeper_xgoal_data(self.test_season)
+        self.assertIsNotNone(data)
+        self.assertEqual(24, len(data))
 
 if __name__ == '__main__':
     unittest.main()

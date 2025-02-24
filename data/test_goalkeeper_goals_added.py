@@ -1,5 +1,5 @@
 import unittest
-from .db_goalkeeper_goals_added import get_goalkeeper_goals_added_by_season, PlayerDataNotFoundError
+from .db_goalkeeper_goals_added import get_goalkeeper_goals_added_by_season
 
 class TestKeeperGoalsAdded(unittest.TestCase):
     def setUp(self):
@@ -106,12 +106,10 @@ class TestKeeperGoalsAdded(unittest.TestCase):
             self.assertEqual(self.expected_player_data[column], player_data[column])
 
     def test_invalid_get_keeper_goals_added(self):
-        with self.assertRaises(PlayerDataNotFoundError) as context:
-            get_goalkeeper_goals_added_by_season(player_id='hooplah', season=self.test_season)
-        self.assertIn("No data found", str(context.exception))
-        with self.assertRaises(PlayerDataNotFoundError) as context:
-            get_goalkeeper_goals_added_by_season(player_id=self.test_player_id, season=1912)
-        self.assertIn("No data found", str(context.exception))
+        data = get_goalkeeper_goals_added_by_season(player_id='hooplah', season=self.test_season)
+        self.assertIsNone(data)
+        data = get_goalkeeper_goals_added_by_season(player_id=self.test_player_id, season=1912)
+        self.assertIsNone(data)
 
 if __name__ == '__main__':
     unittest.main()

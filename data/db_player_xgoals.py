@@ -4,10 +4,6 @@ import sqlite3
 
 MINUTE_LIMIT = 180
 
-class PlayerDataNotFoundError(Exception):
-    """Custom exception raised when player data is not found."""
-    pass
-
 def get_player_xgoal_data_all_seasons(player_id: str):
     """
     Fetches and returns player xGoals data for all seasons.
@@ -50,7 +46,7 @@ def get_player_xgoal_data_all_seasons(player_id: str):
     cursor.execute(query, (player_id,))
     row = cursor.fetchall()
     if row is None:
-        raise PlayerDataNotFoundError(f"No data found for player_id={player_id} all seasons.")
+        print(f"No player xgoal data found for player_id={player_id} all seasons.")
     conn.commit()
     conn.close()
     print('Player xgoal returned for all seasons.')
@@ -98,7 +94,7 @@ def get_player_xgoal_data(player_id: str, season: int):
     cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
     if row is None:
-        raise PlayerDataNotFoundError(f"No data found for player_id={player_id} and season={season}")
+        print(f"WARNING: No player xgoal data found for player_id={player_id} and season={season}")
     conn.commit()
     conn.close()
     print('Player xgoal returned.')

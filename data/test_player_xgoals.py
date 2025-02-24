@@ -1,5 +1,5 @@
 import unittest
-from .db_player_xgoals import get_player_xgoal_data, get_top_player_xgoals_stat, PlayerDataNotFoundError
+from .db_player_xgoals import get_player_xgoal_data, get_top_player_xgoals_stat
 
 class TestPlayerXGoal(unittest.TestCase):
     def setUp(self):
@@ -99,12 +99,10 @@ class TestPlayerXGoal(unittest.TestCase):
            self.assertEqual(self.expected_player_data[column], player_data[column])
     
     def test_invalid_get_player_xgoal(self):
-        with self.assertRaises(PlayerDataNotFoundError) as context:
-            get_player_xgoal_data(player_id='hooplah', season=self.test_season)
-        self.assertIn("No data found", str(context.exception))
-        with self.assertRaises(PlayerDataNotFoundError) as context:
-            get_player_xgoal_data(player_id=self.test_player_id, season=1912)
-        self.assertIn("No data found", str(context.exception))
+        data = get_player_xgoal_data(player_id='hooplah', season=self.test_season)
+        self.assertIsNone(data)
+        data = get_player_xgoal_data(player_id=self.test_player_id, season=1912)
+        self.assertIsNone(data)
 
     def test_get_top_player_xgoals_limit(self):
         players_data = get_top_player_xgoals_stat(season=self.test_season, limit=self.length_limit)

@@ -2,10 +2,6 @@ from api import make_asa_api_call
 from .data_util import generate_player_season_id, aggregate_position_data
 import sqlite3
 
-class PlayerDataNotFoundError(Exception):
-    """Custom exception raised when player data is not found."""
-    pass
-
 def get_goalkeeper_goals_added_by_season(player_id, season):
     print('Fetching goalkeeper xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = generate_player_season_id(player_id=player_id, season=str(season))
@@ -33,7 +29,7 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
     if row is None:
-        raise PlayerDataNotFoundError(f"No data found for player_id={player_id} all seasons.")
+        print(f"WARNING: No goalkeeper goals added data found for player_id={player_id} season={season}.")
     conn.commit()
     conn.close()
     print('Goalkeeper goals added returned.')
