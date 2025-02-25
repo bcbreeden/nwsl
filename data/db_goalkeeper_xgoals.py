@@ -106,7 +106,7 @@ def fetch_keeper_xgoal_data(season: int):
 
     return [keeper for keeper in keepers_data]
 
-def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500): # pragma: no cover
+def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
     """
     Return a list of player statistics. This function is where any custome
 
@@ -122,7 +122,10 @@ def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
         shots_faced = keeper.get('shots_faced', 0)
         keeper['save_perc'] = (saves / shots_faced) * 100 if shots_faced > 0 else 0
 
-    return [player for player in keepers_data if player.get('minutes_played', 0) >= minimum_minutes]
+    data = [player for player in keepers_data if player.get('minutes_played', 0) >= minimum_minutes]
+    if len(data) == 0:
+        print('WARNING: No data returned in calculate player statistics goalkeeper xgoals.')
+    return data
 
 def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season): # pragma: no cover
     """
@@ -132,7 +135,7 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
         conn (sqlite3.Connection): Database connection.
         keepers_data (list): List of keeper data dictionaries.
         position_data (dict): Aggregated position data.
-        stats_to_track (list): List of stats to track.
+        stats_to_track (list): List of stats to track for avg, min, and max.
         season (int): The season year.
     """
     cursor = conn.cursor()
