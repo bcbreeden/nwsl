@@ -68,7 +68,7 @@ def insert_goalkeeper_goals_added_by_season(season): # pragma: no cover
         'sweeping_count_actions',
     ]
 
-    keepers_data = fetch_keeper_xgoal_data(season)
+    keepers_data = fetch_keeper_goals_added_data(season)
     filtered_players = calculate_player_statistics(keepers_data)
     position_data = aggregate_position_data(filtered_players, stats_to_track)
     insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season)
@@ -76,7 +76,7 @@ def insert_goalkeeper_goals_added_by_season(season): # pragma: no cover
     conn.close()
     print(f'Keeper goals added data for season {season} inserted successfully.')
 
-def fetch_keeper_xgoal_data(season: int): # pragma: no cover
+def fetch_keeper_goals_added_data(season: int):
     """
     Fetch keeper data from the API for a specific season.
 
@@ -97,10 +97,14 @@ def fetch_keeper_xgoal_data(season: int): # pragma: no cover
             keeper[f"{action_type}_goals_added_above_avg"] = action['goals_added_above_avg']
             keeper[f"{action_type}_count_actions"] = action['count_actions']
 
-    # Filter out passed in positions and return
-    return [keeper for keeper in keepers_data]
+    data = [keeper for keeper in keepers_data]
 
-def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500): # pragma: no cover
+    if len(data) == 0:
+        print('WARNING: No data returned when fetching api data for goalkeeper goals added.')
+
+    return data
+
+def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
     """
     Return a list of player statistics. This function is where any custome
 
@@ -111,7 +115,13 @@ def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
     Returns:
         list: Filtered list of player data dictionaries with calculated statistics.
     """
-    return [player for player in keepers_data if player.get('minutes_played', 0) >= minimum_minutes]
+
+    data = [player for player in keepers_data if player.get('minutes_played', 0) >= minimum_minutes]
+
+    if len(data) == 0:
+        print('WARNING: No data returned when calculating player statistics in goalkeeper goals added.')
+
+    return data
 
 def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season): # pragma: no cover
     """

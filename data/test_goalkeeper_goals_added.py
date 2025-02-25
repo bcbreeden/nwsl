@@ -1,11 +1,12 @@
 import unittest
-from .db_goalkeeper_goals_added import get_goalkeeper_goals_added_by_season
+from .db_goalkeeper_goals_added import get_goalkeeper_goals_added_by_season, fetch_keeper_goals_added_data, calculate_player_statistics
 
 class TestKeeperGoalsAdded(unittest.TestCase):
     def setUp(self):
         self.test_player_id = 'ljqE2r4oQx'
         self.test_season = 2023
         self.length_limit = 3
+        self.valid_api_data = fetch_keeper_goals_added_data(self.test_season)
         self.expected_player_data = {
             "id": "ljqE2r4oQx2023",
             "player_id": "ljqE2r4oQx",
@@ -110,6 +111,29 @@ class TestKeeperGoalsAdded(unittest.TestCase):
         self.assertIsNone(data)
         data = get_goalkeeper_goals_added_by_season(player_id=self.test_player_id, season=1912)
         self.assertIsNone(data)
+    
+    def test_fetch_keeper_goals_added(self):
+        data = self.valid_api_data
+        self.assertIsNotNone(data)
+        self.assertEqual(len(data), 23)
+    
+    def test_invalid_fetch_keeper_goals_added(self):
+        invalid_data = fetch_keeper_goals_added_data(1999)
+        self.assertEqual(len(invalid_data), 0)
+    
+    def test_calculate_keeper_xgoal_stats(self):
+        data = self.valid_api_data
+        stats_default = calculate_player_statistics(data)
+        for player in stats_default:
+            self.assertGreaterEqual(player['minutes_played'], 500)
+        stats_diff = calculate_player_statistics(data, 50)
+        for player in stats_diff:
+            self.assertGreaterEqual(player['minutes_played'], 50)
+    
+    def test_invalid_calculate_keeper_goals_added(self):
+        data = self.valid_api_data
+        stats_invalid = calculate_player_statistics(data, 9999999)
+        self.assertEqual(len(stats_invalid), 0)
 
 if __name__ == '__main__':
     unittest.main()

@@ -81,7 +81,7 @@ class TestKeeperXGoal(unittest.TestCase):
         self.assertIsNotNone(data)
         self.assertEqual(24, len(data))
     
-    def test_invalid_get_keepers_by_season(self):
+    def test_invalid_get_keepers_xgoals_by_season(self):
         data = get_all_goalkeepers_xgoals_by_season(season=1999)
         self.assertEqual(len(data), 0)
     
@@ -90,7 +90,7 @@ class TestKeeperXGoal(unittest.TestCase):
         self.assertIsNotNone(data)
         self.assertEqual(24, len(data))
     
-    def test_calculate_keeper_stats(self):
+    def test_calculate_keeper_xgoal_stats(self):
         data = self.valid_api_data
         stats_default = calculate_player_statistics(data)
         for player in stats_default:
@@ -99,7 +99,7 @@ class TestKeeperXGoal(unittest.TestCase):
         for player in stats_diff:
             self.assertGreaterEqual(player['minutes_played'], 50)
     
-    def test_invalid_calculate_keeper_stats(self):
+    def test_invalid_calculate_keeper_xgoal_stats(self):
         data = self.valid_api_data
         stats_invalid = calculate_player_statistics(data, 9999999)
         self.assertEqual(len(stats_invalid), 0)
