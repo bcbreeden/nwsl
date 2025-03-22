@@ -49,11 +49,11 @@ def index():
 @app.route('/teams')
 def teams():
     team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
-    plt_team_goals_points = plot_team_goals_points()
+    plt_team_goals_points = plot_team_goals_points(season_manager.season)
     plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
-    plt_team_points_diff = plot_team_points_diff()
+    plt_team_points_diff = plot_team_points_diff(season_manager.season)
     plt_team_points_diff_html = pio.to_html(plt_team_points_diff, full_html=False)
-    plt_team_goal_xgoal_diff = plot_goal_vs_xgoal()
+    plt_team_goal_xgoal_diff = plot_goal_vs_xgoal(season_manager.season)
     plt_team_goal_xgoal_diff_html =  pio.to_html(plt_team_goal_xgoal_diff, full_html=False)
     return render_template('teams.html',
                            teams = team_data,

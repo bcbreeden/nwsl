@@ -5,8 +5,8 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
 import plotly
 import json
 
-def plot_team_goals_points():
-    rows = db_team_xgoals.get_top_team_xgoals_stat(2024, 'points')
+def plot_team_goals_points(season):
+    rows = db_team_xgoals.get_top_team_xgoals_stat(season, 'points')
 
     goals_data = [row['goals_for'] for row in rows]
     points_data = [row['points'] for row in rows]
@@ -50,8 +50,8 @@ def plot_team_goals_points():
 
     return fig
 
-def plot_team_points_diff():
-    rows = db_team_xgoals.get_top_team_xgoals_stat(2024, 'point_diff')
+def plot_team_points_diff(season):
+    rows = db_team_xgoals.get_top_team_xgoals_stat(season, 'point_diff')
     point_diff_data = [row['point_diff'] for row in rows]
     team_labels = [row['team_name'] for row in rows]
     team_abbr = [row['team_abbreviation'] for row in rows]
@@ -90,8 +90,8 @@ def plot_team_points_diff():
     fig.update_yaxes(showgrid=False)
     return fig
 
-def plot_goal_vs_xgoal():
-    rows = db_team_xgoals.get_top_team_xgoals_stat(2024, 'goalfor_xgoalfor_diff')
+def plot_goal_vs_xgoal(season):
+    rows = db_team_xgoals.get_top_team_xgoals_stat(season, 'goalfor_xgoalfor_diff')
     goals_for = [row['goals_for'] for row in rows]
     xgoals_for = [row['xgoals_for'] for row in rows]
     goals_xgoals_for_diff = [row['goalfor_xgoalfor_diff'] for row in rows]
