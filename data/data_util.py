@@ -1,5 +1,8 @@
 from collections import defaultdict
 
+# Constants
+MINIMUM_MINUTES = 450 # ~5 full games
+
 def aggregate_position_data(filtered_players, stats_to_track):
     """
     Calculate averages, minimums, and maximums for players grouped by position.
@@ -37,4 +40,15 @@ def aggregate_position_data(filtered_players, stats_to_track):
     }
 
 def generate_player_season_id(player_id, season):
+    """
+    Creates a player id for a specific season.
+
+    Args:
+        player_id (int): The player's id.
+        season (int): The season.
+    
+    Returns:
+        str: The player id for a specific
+        season.
+    """
     return (str(player_id) + str(season))

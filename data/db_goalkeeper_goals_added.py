@@ -1,5 +1,5 @@
 from api import make_asa_api_call
-from .data_util import generate_player_season_id, aggregate_position_data
+from .data_util import generate_player_season_id, aggregate_position_data, MINIMUM_MINUTES
 import sqlite3
 
 def get_goalkeeper_goals_added_by_season(player_id, season):
@@ -104,19 +104,18 @@ def fetch_keeper_goals_added_data(season: int):
 
     return data
 
-def calculate_player_statistics(keepers_data: list, minimum_minutes: int = 500):
+def calculate_player_statistics(keepers_data: list):
     """
-    Return a list of player statistics. This function is where any custome
+    Return a list of player statistics. Any custom filtering should be done in this function.
 
     Args:
         keepers_data (list): List of keeper data dictionaries.
-        minimum_minutes (int): minimum required minutes for statistics to be returned.
 
     Returns:
         list: Filtered list of player data dictionaries with calculated statistics.
     """
 
-    data = [player for player in keepers_data if player.get('minutes_played', 0) >= minimum_minutes]
+    data = [player for player in keepers_data if player.get('minutes_played', 0) >= MINIMUM_MINUTES]
 
     if len(data) == 0:
         print('WARNING: No data returned when calculating player statistics in goalkeeper goals added.')

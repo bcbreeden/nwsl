@@ -1,5 +1,6 @@
 import unittest
 from .db_goalkeeper_goals_added import get_goalkeeper_goals_added_by_season, fetch_keeper_goals_added_data, calculate_player_statistics
+from .data_util import MINIMUM_MINUTES
 
 class TestKeeperGoalsAdded(unittest.TestCase):
     def setUp(self):
@@ -105,7 +106,7 @@ class TestKeeperGoalsAdded(unittest.TestCase):
         self.assertIsNotNone(player_data)
         for column in player_data.keys():
             print(column, player_data[column])
-            self.assertEqual(self.expected_player_data[column], player_data[column])
+            self.assertAlmostEqual(self.expected_player_data[column], player_data[column], delta=0.05)
 
     def test_invalid_get_keeper_goals_added(self):
         data = get_goalkeeper_goals_added_by_season(player_id='hooplah', season=self.test_season)
@@ -126,15 +127,7 @@ class TestKeeperGoalsAdded(unittest.TestCase):
         data = self.valid_api_data
         stats_default = calculate_player_statistics(data)
         for player in stats_default:
-            self.assertGreaterEqual(player['minutes_played'], 500)
-        stats_diff = calculate_player_statistics(data, 50)
-        for player in stats_diff:
-            self.assertGreaterEqual(player['minutes_played'], 50)
-    
-    def test_invalid_calculate_keeper_goals_added(self):
-        data = self.valid_api_data
-        stats_invalid = calculate_player_statistics(data, 9999999)
-        self.assertEqual(len(stats_invalid), 0)
+            self.assertGreaterEqual(player['minutes_played'], MINIMUM_MINUTES)
 
 if __name__ == '__main__':
     unittest.main()

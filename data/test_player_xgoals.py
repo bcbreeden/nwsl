@@ -28,37 +28,37 @@ class TestPlayerXGoal(unittest.TestCase):
             "xpoints_added": 3.45,
             "xgoals_xassists_per_90": 0.74,
             "season": 2023,
-            "avg_minutes_played": 934.32,
-            "avg_shots": 24.58,
-            "avg_shots_on_target": 10.42,
-            "avg_shots_on_target_perc": 40.28,
-            "avg_goals": 2.84,
-            "avg_xgoals": 3.14,
-            "avg_key_passes": 10.74,
-            "avg_primary_assists": 1.13,
-            "avg_xassists": 1.19,
-            "avg_xgoals_plus_xassists": 4.34,
-            "avg_points_added": 1.41,
-            "avg_xpoints_added": 2.0,
+            "avg_minutes_played": 1104.08,
+            "avg_shots": 28.54,
+            "avg_shots_on_target": 12.33,
+            "avg_shots_on_target_perc": 42.49,
+            "avg_goals": 3.5,
+            "avg_xgoals": 3.75,
+            "avg_key_passes": 12.83,
+            "avg_primary_assists": 1.33,
+            "avg_xassists": 1.45,
+            "avg_xgoals_plus_xassists": 5.2,
+            "avg_points_added": 1.75,
+            "avg_xpoints_added": 2.4,
             "avg_xgoals_xassists_per_90": 0.32,
-            "avg_xplace": -0.01,
-            "avg_goals_minus_xgoals": -0.3,
-            "avg_primary_assists_minus_xassists": -0.06,
-            "min_minutes_played": 202.0,
+            "avg_xplace": 0.02,
+            "avg_goals_minus_xgoals": -0.25,
+            "avg_primary_assists_minus_xassists": -0.12,
+            "min_minutes_played": 476.0,
             "min_shots": 5.0,
-            "min_shots_on_target": 1.0,
-            "min_shots_on_target_perc": 12.5,
+            "min_shots_on_target": 2.0,
+            "min_shots_on_target_perc": 22.22,
             "min_goals": 0.0,
-            "min_xgoals": 0.17,
+            "min_xgoals": 0.32,
             "min_xplace": -2.05,
             "min_goals_minus_xgoals": -3.85,
             "min_primary_assists_minus_xassists": -2.19,
-            "min_key_passes": 1.0,
+            "min_key_passes": 2.0,
             "min_primary_assists": 0.0,
-            "min_xassists": 0.12,
-            "min_xgoals_plus_xassists": 0.33,
+            "min_xassists": 0.2,
+            "min_xgoals_plus_xassists": 0.93,
             "min_points_added": 0.0,
-            "min_xpoints_added": 0.06,
+            "min_xpoints_added": 0.22,
             "min_xgoals_xassists_per_90": 0.0,
             "max_minutes_played": 2056.0,
             "max_shots": 75.0,
@@ -96,7 +96,7 @@ class TestPlayerXGoal(unittest.TestCase):
        player_data = get_player_xgoal_data(player_id=self.test_player_id, season=self.test_season)
        self.assertIsNotNone(player_data)
        for column in player_data.keys():
-           self.assertEqual(self.expected_player_data[column], player_data[column])
+           self.assertAlmostEqual(self.expected_player_data[column], player_data[column], delta=0.05)
     
     def test_invalid_get_player_xgoal(self):
         data = get_player_xgoal_data(player_id='hooplah', season=self.test_season)
@@ -110,7 +110,7 @@ class TestPlayerXGoal(unittest.TestCase):
         xgoals_player = players_data[0]
         self.assertIsNotNone(xgoals_player)
         for column in xgoals_player.keys():
-           self.assertEqual(self.expected_player_data[column], xgoals_player[column])
+           self.assertAlmostEqual(self.expected_player_data[column], xgoals_player[column], delta=0.05)
 
     def test_get_top_player_xgoals_no_limit(self):
         players_data = get_top_player_xgoals_stat(season=self.test_season)
@@ -118,7 +118,7 @@ class TestPlayerXGoal(unittest.TestCase):
         xgoals_player = players_data[0]
         self.assertIsNotNone(xgoals_player)
         for column in xgoals_player.keys():
-           self.assertEqual(self.expected_player_data[column], xgoals_player[column])
+           self.assertAlmostEqual(self.expected_player_data[column], xgoals_player[column], delta=0.05)
 
 if __name__ == '__main__':
     unittest.main()

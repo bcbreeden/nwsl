@@ -1,5 +1,5 @@
 from api import make_asa_api_call
-from .data_util import aggregate_position_data, generate_player_season_id
+from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES
 import sqlite3
 
 def insert_player_xpass_by_season(season, conn=None):
@@ -34,13 +34,13 @@ def insert_player_xpass_by_season(season, conn=None):
         conn.close()
     print(f'Player xpass data for season {season} inserted successfully.')
 
-def calculate_player_statistics(players_data: list, minimum_minutes: int = 180):
+def calculate_player_statistics(players_data: list):
     stats_to_calculate = ['pass_completion_percentage', 'xpass_completion_percentage', 'share_team_touches']
     for player in players_data:
         for stat in stats_to_calculate:
             stat_value = player.get(stat, 0)
             player[stat] = round((stat_value * 100), 2)
-    return [player for player in players_data if player.get('minutes_played', 0) >= minimum_minutes]
+    return [player for player in players_data if player.get('minutes_played', 0) >= MINIMUM_MINUTES]
 
 def fetch_players_xpass_data(season: int, excluded_positions: list = None):
     if excluded_positions is None:

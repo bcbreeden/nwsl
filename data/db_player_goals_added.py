@@ -1,6 +1,6 @@
 from api import make_asa_api_call
 import sqlite3
-from .data_util import aggregate_position_data, generate_player_season_id 
+from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES
 
 def insert_player_goals_added_by_season(season, conn=None):
         print(f'Inserting data for players (goals added) for season: {season}')
@@ -72,19 +72,18 @@ def fetch_players_goals_added_data(season: int, excluded_positions: list = None)
     # Filter out passed in positions and return
     return [player for player in players_data if player.get('general_position') not in excluded_positions]
 
-def calculate_player_statistics(players_data: list, minimum_minutes: int = 180):
+def calculate_player_statistics(players_data: list):
     """
-    Calculate `shots_on_target_perc` and filter players by minutes played.
+    Return a list of player statistics. Any custom filtering should be done in this function.
 
     Args:
         players_data (list): List of player data dictionaries.
-        minimum_minutes (int): minimum required minutes for statistics to be returned.
 
     Returns:
         list: Filtered list of player data dictionaries with calculated statistics.
     """
     # Filter players with minutes >= the minimum
-    return [player for player in players_data if player.get('minutes_played', 0) >= minimum_minutes]
+    return [player for player in players_data if player.get('minutes_played', 0) >= MINIMUM_MINUTES]
 
 def insert_player_data(conn, players_data, position_data, stats_to_track, season):
     cursor = conn.cursor()

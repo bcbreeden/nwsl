@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from .data_util import MINIMUM_MINUTES
 import sqlite3
 
 EXCLUDED_METRICS = {
@@ -11,8 +12,6 @@ EXCLUDED_METRICS = {
     "goals_minus_xgoals",
     "shots_on_target_perc"
 }
-
-MIN_PLAYING_TIME_THRESHOLD = 400  # Minimum minutes played to calculate meaningful xGoal strength
 
 def calculate_player_xgoal_strength(normalized_player_stats, xgoals_weight=None):
     """
@@ -47,7 +46,7 @@ def calculate_player_xgoal_strength(normalized_player_stats, xgoals_weight=None)
     minutes_played = normalized_player_stats.get("minutes_played", 0)
 
     # Return 0 if the player hasn't met the minimum minutes threshold
-    if minutes_played < MIN_PLAYING_TIME_THRESHOLD:
+    if minutes_played < MINIMUM_MINUTES:
         return 0
 
     # Convert stats to per-90 values (ignore EXCLUDED_METRICS)
@@ -81,7 +80,7 @@ def calculate_xgoals_xassists(player_stats):
     minutes_played = player_stats.get('minutes_played', 0)
     
     # Avoid division by zero and handle players with very low minutes
-    if minutes_played < 400:  # Threshold for meaningful minutes played
+    if minutes_played < MINIMUM_MINUTES:  # Threshold for meaningful minutes played
         return 0
 
     # Calculate per-90 metric

@@ -186,7 +186,7 @@
         ('points_added', 'PA', 'Points Added'),
         ('xpoints_added', 'xPA', 'Expected Points Added')
     ] %}
-        {{ stat }}: {{ player_xgoals_data[stat] }}  (Position Average: {{ player_xgoals_data['avg_' + stat] }})
+        {{ stat }}: {{ player_xgoals_data[stat] }}  (Position Average: {{ player_xgoals_data['avg_' + stat] }} Position Minimum: {{ player_xgoals_data['min_' + stat] }} Position Maximum: {{ player_xgoals_data['max_' + stat] }})
     {% endfor %}
 
     {% for stat, abr, label in [
@@ -200,7 +200,7 @@
         ('avg_vertical_distance_yds', 'AvgVD', 'Average Vertical Distance (yds)'),
         ('share_team_touches', 'SoTT %', 'Share of Team Touches')
     ] %}
-        {{ stat }}: {{ player_xpass_data[stat] }}  (Position Average: {{ player_xpass_data['avg_' + stat] }})
+        {{ stat }}: {{ player_xpass_data[stat] }}  (Position Average: {{ player_xpass_data['avg_' + stat] }} Position Minimum: {{ player_xpass_data['min_' + stat] }} Position Maximum: {{ player_xpass_data['max_' + stat] }})
     {% endfor %}
 
     {% for stat, abr,  label in [
@@ -223,7 +223,7 @@
         ('shooting_goals_added_above_avg', 'SGA(AA)', 'Shooting Goals Added (Above Avg)'),
         ('shooting_count_actions', 'SA', 'Shooting Actions')
     ] %}
-        {{ stat }}: {{ player_goals_added_data[stat] }} (Position Average: {{ player_goals_added_data['avg_' + stat] }})
+        {{ stat }}: {{ player_goals_added_data[stat] }} (Position Average: {{ player_goals_added_data['avg_' + stat] }} Position Minimum: {{ player_goals_added_data['min_' + stat] }} Position Maximum: {{ player_goals_added_data['max_' + stat] }})
     {% endfor %}
 </div>
 {% endblock %}
