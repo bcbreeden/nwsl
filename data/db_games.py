@@ -51,6 +51,8 @@ def get_all_games_by_season(season):
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM games WHERE season = ?', (season,))
     rows = cursor.fetchall()
+    # for row in rows:
+    #     print(dict(row))
     conn.commit()
     conn.close()
     print('Games returned.')

@@ -65,7 +65,11 @@ def teams():
 
 @app.route('/games')
 def games():
+    games_data = db_games.get_all_games_by_season(season_manager.season)
+    games_xgoals_data = db_games_xgoals.get_all_games_xgoals_by_season(season_manager.season)
     return render_template('games.html',
+                           games_data = games_data,
+                           games_xgoals_data = games_xgoals_data,
                            season = season_manager.season,
                            seasons = season_manager.seasons)
 

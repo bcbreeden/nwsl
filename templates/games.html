@@ -1,5 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Games</h1>
+    <h2>Games</h2>
+    <div class="stat-table-container">
+        <table id="games">
+            <thead>
+                <tr>
+                    <th>Details</th>
+                    <th>Game ID</th>
+                    <th>Game Time</th>
+                    <th>Home Team</th>
+                    <th>Away Team</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in games_data %}
+                <tr>
+                    <td>
+                        <form action="/game" method="POST">
+                            <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
+                            <input type="submit" class="grid_button" value="Game Details">
+                        </form>
+                    </td>
+                    <td>{{ game['game_id'] }}</td>
+                    <td>{{ game['date_time_utc'] }}</td>
+                    <td>{{ game['home_team_id'] }}</td>
+                    <td>{{ game['away_team_id'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
+            <script>
+                $(document).ready( function () {
+                    $('#games').DataTable();
+                } );
+    </script>
 {% endblock %}
