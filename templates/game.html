@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Game</h2>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
+            <script>
+                $(document).ready( function () {
+                    $('#game').DataTable();
+                } );
+    </script>
+{% endblock %}

@@ -73,6 +73,14 @@ def games():
                            season = season_manager.season,
                            seasons = season_manager.seasons)
 
+@app.route('/game', methods=['GET', 'POST'])
+def game():
+    return render_template('game.html')
+    # if request.method == 'POST':
+    #     return redirect(url_for('games'))
+    # else:
+    #     return redirect(url_for('games'))
+
 @app.route('/players')
 def players():
     players_xgoals_data = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season)
