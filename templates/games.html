@@ -8,7 +8,8 @@
                 <tr>
                     <th>Details</th>
                     <th>Game ID</th>
-                    <th>Game Time</th>
+                    <th>Game Time (UTC)</th>
+                    <th>Game Time (EST)</th>
                     <th>Home Team</th>
                     <th>Away Team</th>
                 </tr>
@@ -24,8 +25,15 @@
                     </td>
                     <td>{{ game['game_id'] }}</td>
                     <td>{{ game['date_time_utc'] }}</td>
-                    <td>{{ game['home_team_id'] }}</td>
-                    <td>{{ game['away_team_id'] }}</td>
+                    <td>{{ game['date_time_est'] }}</td>
+                    <td>
+                        {{ game['home_team_name'] }} <br>
+                        {{ game['home_score']}}
+                    </td>
+                    <td>
+                        {{ game['away_team_name'] }} <br>
+                        {{ game['away_score'] }}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

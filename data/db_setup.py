@@ -480,6 +480,7 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS games (
         game_id TEXT PRIMARY KEY,
         date_time_utc TEXT,
+        date_time_est TEXT,
         home_score INTEGER,
         away_score INTEGER,
         home_team_id TEXT,
@@ -494,6 +495,7 @@ def create_tables():
         attendance INTEGER,
         knockout_game BOOLEAN,
         last_updated_utc TEXT,
+        last_updated_est TEXT,
         season INTEGER,
         FOREIGN KEY (home_team_id) REFERENCES team_info(team_id)
         FOREIGN KEY (away_team_id) REFERENCES team_info(team_id)
