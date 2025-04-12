@@ -39,7 +39,24 @@ def get_game_flow_by_game_id(game_id):
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
-        SELECT * FROM game_flow WHERE game_id = ?
+        SELECT 
+            gf.*,
+            home_team.team_abbreviation AS home_abbreviation,
+            home_team.team_name AS home_team_name,
+            away_team.team_abbreviation AS away_abbreviation,
+            away_team.team_name AS away_team_name
+        FROM
+            game_flow AS gf
+        JOIN
+            team_info AS home_team 
+        ON
+            gf.home_team_id = home_team.team_id
+        JOIN 
+            team_info AS away_team 
+        ON 
+            gf.away_team_id = away_team.team_id
+        WHERE gf.game_id = ?
+        ORDER BY gf.expanded_minute
     '''
     cursor.execute(query, (game_id,))
     rows = cursor.fetchall()
@@ -47,256 +64,3 @@ def get_game_flow_by_game_id(game_id):
     cursor.close()
     print('Game flow fetched for game ID:', game_id)
     return rows
-
-
-# PLOT STUFF, MOVE
-import plotly.graph_objects as go
-def plot_game_flow(game_id):
-    conn = sqlite3.connect('data/nwsl.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM game_flow WHERE game_id = ? ORDER BY expanded_minute", (game_id,))
-    rows = cursor.fetchall()
-
-    # Extract data
-    minutes = []
-    home_values = []
-    away_values = []
-    home_team = None
-    away_team = None
-
-    for row in rows:
-        minutes.append(row['expanded_minute'])
-        home_values.append(row['home_team_value'])
-        away_values.append(row['away_team_value'])
-        home_team = row['home_team_id']
-        away_team = row['away_team_id']
-
-    home_values_smoothed = moving_average(home_values, window_size=5)
-    away_values_smoothed = moving_average(away_values, window_size=5)
-
-    halftime_minute = None
-    for row in rows:
-        if row['period_id'] == 2:
-            halftime_minute = row['expanded_minute']
-            break
-
-    # Create figure
-    fig = go.Figure()
-
-    # Home team line
-    fig.add_trace(go.Scatter(
-        x=minutes,
-        y=home_values_smoothed,
-        mode='lines',
-        name=f'Home ({home_team})',
-        line_shape='spline',
-        fill='tozeroy'
-    ))
-
-    # Away team line
-    fig.add_trace(go.Scatter(
-        x=minutes,
-        y=away_values_smoothed,
-        mode='lines',
-        name=f'Away ({away_team})',
-        line_shape='spline',
-        fill='tozeroy'
-    ))
-
-    shapes = []
-    annotations = []
-
-    # Add halftime line and annotation
-    if halftime_minute is not None:
-        shapes.append(dict(
-            type='line',
-            x0=halftime_minute,
-            x1=halftime_minute,
-            y0=0,
-            y1=1,
-            xref='x',
-            yref='paper',
-            line=dict(
-                color='black',
-                width=2,
-                dash='dash'
-            )
-        ))
-
-        annotations.append(dict(
-            x=halftime_minute,
-            y=1,
-            xref='x',
-            yref='paper',
-            text='Halftime',
-            showarrow=False,
-            font=dict(color='black'),
-            xanchor='left',
-            yanchor='bottom'
-        ))
-
-    
-    # Full-time line at minute 90
-    shapes.append(dict(
-        type='line',
-        x0=90,
-        x1=90,
-        y0=0,
-        y1=1,
-        xref='x',
-        yref='paper',
-        line=dict(
-            color='black',
-            width=2,
-            dash='dash'
-        )
-    ))
-
-    annotations.append(dict(
-        x=90,
-        y=1,
-        xref='x',
-        yref='paper',
-        text='Full Time',
-        showarrow=False,
-        font=dict(color='black'),
-        xanchor='left',
-        yanchor='bottom'
-    ))
-
-    # Customize layout
-    fig.update_layout(
-        title=f"Game Flow for Game ID: {game_id}",
-        xaxis_title="Minute",
-        yaxis_title="Momentum Value",
-        hovermode="x unified",
-        template="plotly_white",
-        shapes=shapes
-    )
-
-    for annotation in annotations:
-        fig.add_annotation(**annotation)
-        fig.show()
-    
-    return fig
-
-def plot_net_game_flow(game_id):
-    conn = sqlite3.connect('data/nwsl.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM game_flow WHERE game_id = ? ORDER BY expanded_minute", (game_id,))
-    rows = cursor.fetchall()
-
-    minutes = []
-    net_values = []
-    halftime_minute = None
-
-    for row in rows:
-        minute = row['expanded_minute']
-        home = row['home_team_value']
-        away = row['away_team_value']
-        net = home - away
-
-        minutes.append(minute)
-        net_values.append(net)
-
-        if halftime_minute is None and row['period_id'] == 2:
-            halftime_minute = minute
-
-    fig = go.Figure()
-
-    # Plot net momentum wave
-    fig.add_trace(go.Scatter(
-        x=minutes,
-        y=net_values,
-        mode='lines',
-        name='Net Momentum (Home - Away)',
-        line_shape='spline',
-        fill='tozeroy',
-        fillcolor='rgba(0, 100, 255, 0.2)',
-        line=dict(color='blue')
-    ))
-
-    # Add zero baseline
-    fig.add_trace(go.Scatter(
-        x=[min(minutes), max(minutes)],
-        y=[0, 0],
-        mode='lines',
-        line=dict(color='black', dash='dash'),
-        showlegend=False
-    ))
-
-    # Add halftime line
-    shapes = []
-    annotations = []
-
-    if halftime_minute:
-        shapes.append(dict(
-            type='line',
-            x0=halftime_minute,
-            x1=halftime_minute,
-            y0=0,
-            y1=1,
-            xref='x',
-            yref='paper',
-            line=dict(color='gray', width=2, dash='dot')
-        ))
-
-        annotations.append(dict(
-            x=halftime_minute,
-            y=1,
-            xref='x',
-            yref='paper',
-            text='Halftime',
-            showarrow=False,
-            font=dict(color='gray'),
-            xanchor='left',
-            yanchor='bottom'
-        ))
-
-    # Add full-time line at 90
-    shapes.append(dict(
-        type='line',
-        x0=90,
-        x1=90,
-        y0=0,
-        y1=1,
-        xref='x',
-        yref='paper',
-        line=dict(color='black', width=2, dash='dash')
-    ))
-
-    annotations.append(dict(
-        x=90,
-        y=1,
-        xref='x',
-        yref='paper',
-        text='Full Time',
-        showarrow=False,
-        font=dict(color='black'),
-        xanchor='left',
-        yanchor='bottom'
-    ))
-
-    fig.update_layout(
-        title=f"Net Momentum for Game ID: {game_id}",
-        xaxis_title="Minute",
-        yaxis_title="Net Momentum (Home - Away)",
-        hovermode="x unified",
-        template="plotly_white",
-        shapes=shapes
-    )
-
-    for annotation in annotations:
-        fig.add_annotation(**annotation)
-
-    fig.show()
-
-
-def moving_average(data, window_size=3):
-    return [
-        sum(data[max(0, i - window_size + 1):i + 1]) / (i - max(0, i - window_size + 1) + 1)
-        for i in range(len(data))
-    ]
-

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow)
-from plots import plot_team_goals_points, plot_team_points_diff, plot_goal_vs_xgoal, plot_spider
+from plots import plot_team_goals_points, plot_team_points_diff, plot_goal_vs_xgoal, plot_spider, plot_net_game_flow
 import plotly.graph_objects as go
 import plotly.io as pio
 from datetime import datetime
@@ -79,10 +79,14 @@ def game():
         game_data = db_games.get_game_by_id(request.form.get('game_id'))
         game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
         game_flow_data = db_game_flow.get_game_flow_by_game_id(request.form.get('game_id'))
+
+        game_flow_json, game_flow_config = plot_net_game_flow(request.form.get('game_id'))
         return render_template('game.html',
                                 game_data = game_data,
                                 game_xgoals_data = game_xgoals_data,
-                                game_flow_data = game_flow_data)
+                                game_flow_data = game_flow_data,
+                                game_flow_json = game_flow_json, 
+                                game_flow_config = game_flow_config)
     else:
         return redirect(url_for('games'))
 
