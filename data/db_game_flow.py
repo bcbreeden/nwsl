@@ -107,6 +107,8 @@ def plot_game_flow(game_id):
 
     shapes = []
     annotations = []
+
+    # Add halftime line and annotation
     if halftime_minute is not None:
         shapes.append(dict(
             type='line',
@@ -117,9 +119,9 @@ def plot_game_flow(game_id):
             xref='x',
             yref='paper',
             line=dict(
-                color='gray',
+                color='black',
                 width=2,
-                dash='dashdot'
+                dash='dash'
             )
         ))
 
@@ -130,10 +132,39 @@ def plot_game_flow(game_id):
             yref='paper',
             text='Halftime',
             showarrow=False,
-            font=dict(color='gray'),
+            font=dict(color='black'),
             xanchor='left',
             yanchor='bottom'
         ))
+
+    
+    # Full-time line at minute 90
+    shapes.append(dict(
+        type='line',
+        x0=90,
+        x1=90,
+        y0=0,
+        y1=1,
+        xref='x',
+        yref='paper',
+        line=dict(
+            color='black',
+            width=2,
+            dash='dash'
+        )
+    ))
+
+    annotations.append(dict(
+        x=90,
+        y=1,
+        xref='x',
+        yref='paper',
+        text='Full Time',
+        showarrow=False,
+        font=dict(color='black'),
+        xanchor='left',
+        yanchor='bottom'
+    ))
 
     # Customize layout
     fig.update_layout(
@@ -144,7 +175,7 @@ def plot_game_flow(game_id):
         template="plotly_white",
         shapes=shapes
     )
-    
+
     for annotation in annotations:
         fig.add_annotation(**annotation)
         fig.show()
