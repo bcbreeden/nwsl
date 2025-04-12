@@ -115,6 +115,26 @@ def get_game_by_id(game_id):
     print('Game returned.')
     return row
 
+def get_game_ids_by_season(season):
+    print('Fetching game IDs for: {}'.format(season))
+    conn = sqlite3.connect('data/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT
+            gm.game_id
+        FROM
+            games AS gm
+        WHERE
+            gm.season = ?
+    '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    game_ids = [row['game_id'] for row in rows]
+    conn.commit()
+    conn.close()
+    return game_ids
+
 def _convert_utc_to_est(utc_str):
     if utc_str == 'Unknown Last Updated Time':
         return None

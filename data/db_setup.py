@@ -542,6 +542,21 @@ def create_tables():
     )
 ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS game_flow (
+        game_id TEXT,
+        period_id INTEGER,
+        expanded_minute INTEGER,
+        home_team_id TEXT,
+        home_team_value REAL,
+        away_team_id TEXT,
+        away_team_value REAL,
+        PRIMARY KEY (game_id, period_id, expanded_minute),
+        FOREIGN KEY (home_team_id) REFERENCES team_info(team_id),
+        FOREIGN KEY (away_team_id) REFERENCES team_info(team_id)
+    )
+''')
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()

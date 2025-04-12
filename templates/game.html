@@ -64,6 +64,32 @@
                 </table>
             </section>
 
+            <h1>Game Flow</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Expanded Minute</th>
+                        <th>Period</th>
+                        <th>Home Team ID</th>
+                        <th>Home Value</th>
+                        <th>Away Team ID</th>
+                        <th>Away Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in game_flow_data %}
+                    <tr>
+                        <td>{{ row['expanded_minute'] }}</td>
+                        <td>{{ row['period_id'] }}</td>
+                        <td>{{ row['home_team_id'] }}</td>
+                        <td>{{ row['home_team_value'] }}</td>
+                        <td>{{ row['away_team_id'] }}</td>
+                        <td>{{ row['away_team_value'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
         </section>
     </section>
 
