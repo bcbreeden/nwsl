@@ -74,8 +74,6 @@ def get_all_games_by_season(season):
             gm.season = ?
     '''
 
-
-    # cursor.execute('SELECT * FROM games WHERE season = ?', (season,))
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
     # for row in rows:
@@ -84,6 +82,38 @@ def get_all_games_by_season(season):
     conn.close()
     print('Games returned.')
     return rows
+
+def get_game_by_id(game_id):
+    print('Fetching game: {}'.format(game_id))
+    conn = sqlite3.connect('data/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT
+            gm.*,
+            home_team.team_name AS home_team_name,
+            home_team.team_short_name AS home_team_short_name,
+            home_team.team_abbreviation AS home_team_abbreviation,
+            away_team.team_name AS away_team_name,
+            away_team.team_short_name AS away_team_short_name,
+            away_team.team_abbreviation AS away_team_abbreviation
+        FROM
+            games AS gm
+        JOIN
+            team_info AS home_team
+            ON gm.home_team_id = home_team.team_id
+        JOIN
+            team_info AS away_team
+            ON gm.away_team_id = away_team.team_id
+        WHERE
+            gm.game_id = ?
+    '''
+    cursor.execute(query, (game_id,))
+    row = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    print('Game returned.')
+    return row
 
 def _convert_utc_to_est(utc_str):
     if utc_str == 'Unknown Last Updated Time':

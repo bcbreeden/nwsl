@@ -2,6 +2,11 @@
 
 {% block content %}
     <h2>Game</h2>
+    {{game_data['home_team_name']}} vs {{game_data['away_team_name']}}
+    {{game_data['home_team_abbreviation']}} vs {{game_data['away_team_abbreviation']}}
+    <img class="team_logo" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
+    vs
+    <img class="team_logo" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
             <script>

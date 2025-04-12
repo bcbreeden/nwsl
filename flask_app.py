@@ -75,11 +75,12 @@ def games():
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
-    return render_template('game.html')
-    # if request.method == 'POST':
-    #     return redirect(url_for('games'))
-    # else:
-    #     return redirect(url_for('games'))
+    if request.method == 'POST':
+        game_data = db_games.get_game_by_id(request.form.get('game_id'))
+        return render_template('game.html',
+                                game_data = game_data)
+    else:
+        return redirect(url_for('games'))
 
 @app.route('/players')
 def players():
