@@ -1,12 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Game</h2>
-    {{game_data['home_team_name']}} vs {{game_data['away_team_name']}}
-    {{game_data['home_team_abbreviation']}} vs {{game_data['away_team_abbreviation']}}
-    <img class="team_logo" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
-    vs
-    <img class="team_logo" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
+    <section id="game_report_outer_container">
+        <section id="game_report">
+            <section class="game_report_row">
+                <h2>{{ game_data['home_team_name'] }} vs {{ game_data['away_team_name'] }}</h2>
+            </section>
+            <section class="game_report_row">
+                <h3 class="player_report_name_subheader">{{ game_data['date_time_est'] }} EST</h3>
+            </section>
+            <section class="game_report_row">
+                <h3 class="player_report_name_subheader">{{ game_data['season_name'] }} Season</h3>
+            </section>
+            <section class="game_report_row">
+                <table>
+                    <tr>
+                        <td><img class="team_logo game_report_team_logo" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}"></td>
+                        <td><img class="team_logo game_report_team_logo" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}"></td>
+                    </tr>
+                    <tr>
+                        <td class="game_report_cell"><p class="game_report_score">{{game_data['home_score']}}</p></td>
+                        <td class="game_report_cell"><p class="game_report_score">{{game_data['away_score']}}</p></td>
+                    </tr>
+                </table>
+            </section>
+
+        </section>
+    </section>
+
+
+
+
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
             <script>

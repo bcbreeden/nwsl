@@ -392,3 +392,34 @@ ul {
     background-color: var(--contrast-alt);
     color: white;
 }
+
+/* Game Card Styling */
+
+#game_report_outer_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+#game_report {
+    display: flex;
+    flex-direction: column;
+    width: 650px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    align-items: center;
+}
+
+.game_report_team_logo{
+    margin: 30px;
+}
+
+.game_report_score {
+    font-weight: bolder;
+    font-size: 36px;
+}
+
+.game_report_cell {
+    text-align: center;
+}
