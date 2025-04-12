@@ -77,8 +77,10 @@ def games():
 def game():
     if request.method == 'POST':
         game_data = db_games.get_game_by_id(request.form.get('game_id'))
+        game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
         return render_template('game.html',
-                                game_data = game_data)
+                                game_data = game_data,
+                                game_xgoals_data = game_xgoals_data)
     else:
         return redirect(url_for('games'))
 

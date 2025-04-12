@@ -12,18 +12,18 @@ def insert_all_games_xgoals_by_season(season): # pragma: no cover
         date_time_utc = game.get('date_time_utc', 'Unknown Date/Time')
         home_team_id = game.get('home_team_id', 'Unknown Home Team ID')
         home_goals = game.get('home_goals', 0)
-        home_team_xgoals = game.get('home_team_xgoals', 0.0)
-        home_player_xgoals = game.get('home_player_xgoals', 0.0)
+        home_team_xgoals = round(game.get('home_team_xgoals', 0.0), 2)
+        home_player_xgoals = round(game.get('home_player_xgoals', 0.0), 2)
         away_team_id = game.get('away_team_id', 'Unknown Away Team ID')
         away_goals = game.get('away_goals', 0)
-        away_team_xgoals = game.get('away_team_xgoals', 0.0)
-        away_player_xgoals = game.get('away_player_xgoals', 0.0)
+        away_team_xgoals = round(game.get('away_team_xgoals', 0.0), 2)
+        away_player_xgoals = round(game.get('away_player_xgoals', 0.0), 2)
         goal_difference = game.get('goal_difference', 0)
         team_xgoal_difference = game.get('team_xgoal_difference', 0.0)
         player_xgoal_difference = game.get('player_xgoal_difference', 0.0)
         final_score_difference = game.get('final_score_difference', 0)
-        home_xpoints = game.get('home_xpoints', 0.0)
-        away_xpoints = game.get('away_xpoints', 0.0)
+        home_xpoints = round(game.get('home_xpoints', 0.0), 2)
+        away_xpoints = round(game.get('away_xpoints', 0.0), 2)
     
         cursor.execute('''
         INSERT OR REPLACE INTO games_xgoals (
@@ -53,3 +53,15 @@ def get_all_games_xgoals_by_season(season):
     conn.close()
     print('Games xgoals returned.')
     return rows
+
+def get_game_xgoals_by_id(game_id):
+    print('Fetching game xgoals for: {}'.format(game_id))
+    conn = sqlite3.connect('data/nwsl.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM games_xgoals WHERE game_id = ?', (game_id,))
+    row = cursor.fetchone()
+    conn.commit()
+    conn.close()
+    print('Game xgoals returned.')
+    return row

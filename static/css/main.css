@@ -423,3 +423,7 @@ ul {
 .game_report_cell {
     text-align: center;
 }
+
+.game_stat {
+    font-weight: bolder;
+}
