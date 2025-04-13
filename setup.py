@@ -23,11 +23,11 @@ if __name__ == '__main__':
         db_team_goals_added.insert_team_goals_added_by_season(season)
         db_team_xgoals.insert_teams_xgoals_by_season(season)
         db_team_xpass.insert_teams_xpass_by_season(season)
+        print('Adding game flow data...')
+        game_ids = db_games.get_game_ids_by_season(season)
+        for game_id in game_ids:
+            db_game_flow.insert_flow_by_game_id(game_id)
+        print('Game flow data added.')
         print(str(season), 'season setup complete.')
     
-    print('Adding game flow data...')
-    game_ids = db_games.get_game_ids_by_season(2025)
-    for game_id in game_ids:
-        db_game_flow.insert_flow_by_game_id(game_id)
-    print('Game flow data added.')
     print('Initial setup completed.')
