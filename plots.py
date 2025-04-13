@@ -238,6 +238,43 @@ def plot_net_game_flow(game_id):
     net_values = []
     halftime_minute = None
 
+    # Logo Configuration
+    home_abbr = rows[0]['home_abbreviation']
+    away_abbr = rows[0]['away_abbreviation']
+    home_logo_path = f"/static/img/{home_abbr}.png"
+    away_logo_path = f"/static/img/{away_abbr}.png"
+    images = [
+        # Home team logo — top half
+        dict(
+            source=home_logo_path,
+            xref="paper",
+            yref="y domain",
+            x=0.05,
+            y=0.92,  # align top of image to top of chart
+            sizex=0.3,
+            sizey=0.3,  # occupy the top half
+            xanchor="left",
+            yanchor="top",
+            opacity=0.5,
+            layer="below"
+        ),
+        # Away team logo — bottom half
+        dict(
+            source=away_logo_path,
+            xref="paper",
+            yref="y domain",
+            x=0.05,
+            y=0.3,  # align top of image to the center line (0.5)
+            sizex=0.3,
+            sizey=0.3,  # occupy the bottom half
+            xanchor="left",
+            yanchor="top",  # this aligns the *top* of the image with y=0.5
+            opacity=0.5,
+            layer="below"
+        )
+    ]
+
+    # Extract data from rows
     for row in rows:
         minute = row['expanded_minute']
         home = row['home_team_value']
@@ -252,16 +289,44 @@ def plot_net_game_flow(game_id):
 
     fig = go.Figure()
 
-    # Plot net momentum wave
+    # Split net values into positive and negative traces
+    positive_minutes = []
+    positive_values = []
+    negative_minutes = []
+    negative_values = []
+
+    for i in range(len(net_values)):
+        if net_values[i] >= 0:
+            positive_minutes.append(minutes[i])
+            positive_values.append(net_values[i])
+            negative_minutes.append(minutes[i])
+            negative_values.append(None)  # maintain alignment
+        else:
+            positive_minutes.append(minutes[i])
+            positive_values.append(None)
+            negative_minutes.append(minutes[i])
+            negative_values.append(net_values[i])
+
+    # Add positive (home-dominant) momentum trace
     fig.add_trace(go.Scatter(
-        x=minutes,
-        y=net_values,
-        mode='lines',
-        name='Net Momentum (Home - Away)',
-        line_shape='spline',
+        x=positive_minutes,
+        y=positive_values,
+        mode='none',
         fill='tozeroy',
-        fillcolor='rgba(0, 100, 255, 0.2)',
-        line=dict(color='blue')
+        line=dict(color='blue'),
+        fillcolor='rgba(0, 100, 255, 0.5)',
+        name='Home Momentum',
+    ))
+
+    # Add negative (away-dominant) momentum trace
+    fig.add_trace(go.Scatter(
+        x=negative_minutes,
+        y=negative_values,
+        mode='none',
+        fill='tozeroy',
+        line=dict(color='red'),
+        fillcolor='rgba(255, 0, 0, 0.5)',
+        name='Away Momentum',
     ))
 
     # Add zero baseline
@@ -286,7 +351,7 @@ def plot_net_game_flow(game_id):
             y1=1,
             xref='x',
             yref='paper',
-            line=dict(color='gray', width=2, dash='dot')
+            line=dict(color='black', width=2, dash='dash')
         ))
 
         annotations.append(dict(
@@ -296,7 +361,7 @@ def plot_net_game_flow(game_id):
             yref='paper',
             text='Halftime',
             showarrow=False,
-            font=dict(color='gray'),
+            font=dict(color='black'),
             xanchor='left',
             yanchor='bottom'
         ))
@@ -328,10 +393,16 @@ def plot_net_game_flow(game_id):
     fig.update_layout(
         title=f"Net Momentum for Game ID: {game_id}",
         xaxis_title="Minute",
-        yaxis_title="Net Momentum (Home - Away)",
+        yaxis_title="Game Momentum",
         hovermode="x unified",
         template="plotly_white",
-        shapes=shapes
+        shapes=shapes,
+        images=images,
+        showlegend=False,
+        yaxis=dict(
+            title="Game Momentum",
+            range=[-.75, .75],  # or [-0.5, 0.5], depending on your typical net value scale
+        )
     )
 
     for annotation in annotations:

@@ -63,16 +63,15 @@
                     </tr>
                 </table>
             </section>
-
-            <h1>Game Flow</h1>
-            <div class="plot_container" id="game_flow_plot">
-            </div>
-            <script>
-                var flowJson = {{ game_flow_json|safe }};
-                var flowConfig = {{ game_flow_config|safe }};
-                Plotly.newPlot('game_flow_plot', flowJson.data, flowJson.layout, flowConfig);
-            </script>
         </section>
+        <h1>Game Flow</h1>
+        <div id="game_flow_plot">
+        </div>
+        <script>
+            var flowJson = {{ game_flow_json|safe }};
+            var flowConfig = {{ game_flow_config|safe }};
+            Plotly.newPlot('game_flow_plot', flowJson.data, flowJson.layout, flowConfig);
+        </script>
     </section>
 
 
