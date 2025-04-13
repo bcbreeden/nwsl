@@ -264,22 +264,22 @@ def plot_net_game_flow(game_id):
     fig = go.Figure()
 
     # Split net values into positive and negative traces
-    positive_minutes = []
-    positive_values = []
-    negative_minutes = []
-    negative_values = []
+    positive_minutes, positive_values, negative_minutes,  negative_values = _split_positive_negative(minutes, net_values)
+    # positive_values = []
+    # negative_minutes = []
+    # negative_values = []
 
-    for i in range(len(net_values)):
-        if net_values[i] >= 0:
-            positive_minutes.append(minutes[i])
-            positive_values.append(net_values[i])
-            negative_minutes.append(minutes[i])
-            negative_values.append(None)  # maintain alignment
-        else:
-            positive_minutes.append(minutes[i])
-            positive_values.append(None)
-            negative_minutes.append(minutes[i])
-            negative_values.append(net_values[i])
+    # for i in range(len(net_values)):
+    #     if net_values[i] >= 0:
+    #         positive_minutes.append(minutes[i])
+    #         positive_values.append(net_values[i])
+    #         negative_minutes.append(minutes[i])
+    #         negative_values.append(None)  # maintain alignment
+    #     else:
+    #         positive_minutes.append(minutes[i])
+    #         positive_values.append(None)
+    #         negative_minutes.append(minutes[i])
+    #         negative_values.append(net_values[i])
 
     # Add positive (home-dominant) momentum trace
     fig.add_trace(go.Scatter(
@@ -411,3 +411,18 @@ def _make_logo_image(path, x, y, xanchor="left", yanchor="top"):
         opacity=0.5,
         layer="below"
     )
+
+def _split_positive_negative(x_vals, y_vals):
+    pos_x, pos_y, neg_x, neg_y = [], [], [], []
+    for x, y in zip(x_vals, y_vals):
+        if y >= 0:
+            pos_x.append(x)
+            pos_y.append(y)
+            neg_x.append(x)
+            neg_y.append(None)
+        else:
+            pos_x.append(x)
+            pos_y.append(None)
+            neg_x.append(x)
+            neg_y.append(y)
+    return pos_x, pos_y, neg_x, neg_y
