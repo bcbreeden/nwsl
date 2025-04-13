@@ -244,34 +244,8 @@ def plot_net_game_flow(game_id):
     home_logo_path = f"/static/img/{home_abbr}.png"
     away_logo_path = f"/static/img/{away_abbr}.png"
     images = [
-        # Home team logo — top half
-        dict(
-            source=home_logo_path,
-            xref="paper",
-            yref="y domain",
-            x=0.05,
-            y=0.92,  # align top of image to top of chart
-            sizex=0.3,
-            sizey=0.3,  # occupy the top half
-            xanchor="left",
-            yanchor="top",
-            opacity=0.5,
-            layer="below"
-        ),
-        # Away team logo — bottom half
-        dict(
-            source=away_logo_path,
-            xref="paper",
-            yref="y domain",
-            x=0.05,
-            y=0.3,  # align top of image to the center line (0.5)
-            sizex=0.3,
-            sizey=0.3,  # occupy the bottom half
-            xanchor="left",
-            yanchor="top",  # this aligns the *top* of the image with y=0.5
-            opacity=0.5,
-            layer="below"
-        )
+        _make_logo_image(home_logo_path, x=0.05, y=0.92),
+        _make_logo_image(away_logo_path, x=0.05, y=0.3)
     ]
 
     # Extract data from rows
@@ -391,7 +365,7 @@ def plot_net_game_flow(game_id):
     ))
 
     fig.update_layout(
-        title=f"Net Momentum for Game ID: {game_id}",
+        title=f"Momentum Chart {home_abbr} vs {away_abbr}",
         xaxis_title="Minute",
         yaxis_title="Game Momentum",
         hovermode="x unified",
@@ -401,7 +375,12 @@ def plot_net_game_flow(game_id):
         showlegend=False,
         yaxis=dict(
             title="Game Momentum",
-            range=[-.75, .75],  # or [-0.5, 0.5], depending on your typical net value scale
+            range=[-.75, .75],
+            tickvals=[],
+            ticks='',
+            showticklabels=False,
+            showgrid=False,
+            zeroline=False
         )
     )
 
@@ -417,3 +396,18 @@ def plot_net_game_flow(game_id):
     })
 
     return fig_json, config
+
+def _make_logo_image(path, x, y, xanchor="left", yanchor="top"):
+    return dict(
+        source=path,
+        xref="paper",
+        yref="y domain",
+        x=x,
+        y=y,
+        sizex=0.3,
+        sizey=0.3,
+        xanchor=xanchor,
+        yanchor=yanchor,
+        opacity=0.5,
+        layer="below"
+    )
