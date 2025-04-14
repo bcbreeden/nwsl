@@ -2,7 +2,7 @@ from api import make_asa_api_call
 from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES
 import sqlite3
 
-MINUTE_LIMIT = 180
+# MINUTE_LIMIT = 180
 
 def get_player_xgoal_data_all_seasons(player_id: str):
     """
@@ -486,7 +486,7 @@ def calculate_and_update_xgxa90(season):
         xassists = player_stats.get('xassists', 0)
         minutes_played = player_stats.get('minutes_played', 0)
 
-        if minutes_played >= MINUTE_LIMIT:
+        if minutes_played >= MINIMUM_MINUTES:
             xgoals_xassists_per_90 = round(((xgoals + xassists) / minutes_played) * 90, 2)
         else:
             xgoals_xassists_per_90 = 0

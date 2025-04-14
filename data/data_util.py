@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 # Constants
-MINIMUM_MINUTES = 450 # ~5 full games
+MINIMUM_MINUTES = 270 # ~3 full games
 
 def aggregate_position_data(filtered_players, stats_to_track):
     """
