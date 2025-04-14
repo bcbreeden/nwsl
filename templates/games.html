@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Games</h2>
+    
     <div class="stat-table-container">
+        <h2>Games</h2>
         <table id="games">
             <thead>
                 <tr>
                     <th>Details</th>
                     <th>Game ID</th>
-                    <th>Game Time (UTC)</th>
                     <th>Game Time (EST)</th>
+                    <th>Status</th>
                     <th>Home Team</th>
                     <th>Away Team</th>
                 </tr>
@@ -23,16 +24,23 @@
                             <input type="submit" class="grid_button" value="Game Details">
                         </form>
                     </td>
+
                     <td>{{ game['game_id'] }}</td>
-                    <td>{{ game['date_time_utc'] }}</td>
-                    <td>{{ game['date_time_est'] }}</td>
-                    <td>
-                        {{ game['home_team_name'] }} <br>
-                        {{ game['home_score']}}
+
+                    <td><p class="player_report_name_subheader">{{ game['date_time_est'] }}</p></td>
+
+                    <td><p class="player_report_name_subheader">{{ game['status'] }}</p></td>
+
+                    <td class="stat">
+                        <div class="hidden">{{ game['home_team_name'] }}</div>
+                        <img class="team-icon" src="{{ url_for('static', filename='img/' + game['home_team_abbreviation'] + '.png') }}"> <br>
+                        <p class="player_report_name_subheader">{{ game['home_score']}}</p>
                     </td>
-                    <td>
-                        {{ game['away_team_name'] }} <br>
-                        {{ game['away_score'] }}
+
+                    <td class="stat">
+                        <div class="hidden">{{ game['away_team_name'] }}</div>
+                        <img class="team-icon" src="{{ url_for('static', filename='img/' + game['away_team_abbreviation'] + '.png') }}"> <br>
+                        <p class="player_report_name_subheader">{{ game['away_score'] }}</p>
                     </td>
                 </tr>
                 {% endfor %}

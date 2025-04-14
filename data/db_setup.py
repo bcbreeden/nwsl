@@ -494,6 +494,7 @@ def create_tables():
         matchday INTEGER,
         attendance INTEGER,
         knockout_game BOOLEAN,
+        status TEXT,
         last_updated_utc TEXT,
         last_updated_est TEXT,
         season INTEGER,

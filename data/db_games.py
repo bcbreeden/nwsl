@@ -26,6 +26,7 @@ def insert_all_games_by_season(season):
         matchday = game.get('matchday', 0)
         attendance = game.get('attendance', 0)
         knockout_game = game.get('knockout_game', False)
+        status = game.get('status', 'Unknown Status')
         last_updated_utc = game.get('last_updated_utc', 'Unknown Last Updated Time')
         last_updated_est = _convert_utc_to_est(last_updated_utc)
 
@@ -34,14 +35,14 @@ def insert_all_games_by_season(season):
             game_id, date_time_utc, date_time_est, home_score, away_score, 
             home_team_id, away_team_id, referee_id, stadium_id, 
             home_manager_id, away_manager_id, expanded_minutes, 
-            season_name, matchday, attendance, knockout_game, 
+            season_name, matchday, attendance, knockout_game, status,
             last_updated_utc, last_updated_est, season
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             game_id, date_time_utc, date_time_est, home_score, away_score, 
             home_team_id, away_team_id, referee_id, stadium_id, 
             home_manager_id, away_manager_id, expanded_minutes, 
-            season_name, matchday, attendance, knockout_game, 
+            season_name, matchday, attendance, knockout_game, status,
             last_updated_utc, last_updated_est, int(season)
         ))
         conn.commit()

@@ -10,7 +10,10 @@
                 <h3 class="player_report_name_subheader">{{ game_data['date_time_est'] }} EST</h3>
             </section>
             <section class="game_report_row">
-                <h3 class="player_report_name_subheader">{{ game_data['season_name'] }} Season</h3>
+                <h3 class="player_report_name_subheader">{{ game_data['season_name'] }} Season - Matchday {{ game_data['matchday'] }}</h3>
+            </section>
+            <section class="game_report_row">
+                <h3 class="player_report_name_subheader">Attendance -  {{ game_data['attendance'] }}</h3>
             </section>
             <section class="game_report_row">
                 <table>
