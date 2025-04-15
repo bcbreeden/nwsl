@@ -410,6 +410,7 @@ def create_tables():
         predicted_points REAL,
         point_diff REAL,
         goalfor_xgoalfor_diff REAL,
+        power_score REAL,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id)
     )
     ''')
