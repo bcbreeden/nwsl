@@ -1,4 +1,5 @@
 from api import make_asa_api_call
+from .data_util import get_db_path
 import sqlite3
 
 def insert_all_games_xgoals_by_season(season): # pragma: no cover
@@ -44,7 +45,8 @@ def insert_all_games_xgoals_by_season(season): # pragma: no cover
 
 def get_all_games_xgoals_by_season(season):
     print('Fetching games xgoals for: {}'.format(season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM games_xgoals WHERE season = ?', (season,))
@@ -56,7 +58,8 @@ def get_all_games_xgoals_by_season(season):
 
 def get_game_xgoals_by_id(game_id):
     print('Fetching game xgoals for: {}'.format(game_id))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM games_xgoals WHERE game_id = ?', (game_id,))

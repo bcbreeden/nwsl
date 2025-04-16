@@ -1,5 +1,5 @@
 from api import make_asa_api_call
-from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES
+from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES, get_db_path
 import sqlite3
 
 # MINUTE_LIMIT = 180
@@ -19,7 +19,8 @@ def get_player_xgoal_data_all_seasons(player_id: str):
         PlayerDataNotFoundError: If no data is found for the given player and season.
     """
     print('Fetching player xgoals for:{}, All Seasons'.format(player_id))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -69,7 +70,8 @@ def get_player_xgoal_data(player_id: str, season: int):
     """
     print('Fetching player xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = generate_player_season_id(player_id=player_id, season=str(season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -116,7 +118,8 @@ def get_top_player_xgoals_stat(season, sorting_stat: str='goals', limit: int=Non
         list[sqlite3.Row]: A list of rows containing player data, sorted and limited as specified.
     """
     print('Players - Fetching top {} sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -167,7 +170,8 @@ def get_player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
         list[sqlite3.Row]: A list of rows containing player data, limited, filtered, and sorted as specified.
     """
     print('Players - Fetching {} shots on target% sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -212,7 +216,8 @@ def get_defender_minutes_played(season, sorting_stat, limit):
         list[sqlite3.Row]: A list of rows containing player data, limited and sorted as specified.
     """
     print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -263,7 +268,8 @@ def get_minutes_played_non_df(season, sorting_stat, limit):
         list: A list of rows (SQLite Row objects) containing player data that matches the query.
     """
     print('Players - Fetching {} minutes played sorted by {} for: {}.'.format(limit, sorting_stat, season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''
@@ -307,7 +313,8 @@ def get_player_xgoals_ids_by_season(season):
         list: A list of IDs from the player_xgoals table for the specified season.
     """
     print(f"Fetching all player xgoals IDs for season: {season}")
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = lambda cursor, row: row[0]  # Return only the first column (id)
     cursor = conn.cursor()
     
@@ -478,7 +485,8 @@ def calculate_and_update_xgxa90(season):
     Calculate xGoals + xAssists per 90 and update the database for each player.
     """
     rows = get_top_player_xgoals_stat(season)
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     for row in rows:
         player_stats = dict(row)
@@ -504,7 +512,8 @@ def update_position_aggregates(rows, position_data):
     """
     Update position-specific averages, minimums, and maximums in the database.
     """
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     for row in rows:
         player_stats = dict(row)

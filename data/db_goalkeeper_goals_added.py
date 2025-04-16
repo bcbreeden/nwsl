@@ -1,11 +1,12 @@
 from api import make_asa_api_call
-from .data_util import generate_player_season_id, aggregate_position_data, MINIMUM_MINUTES
+from .data_util import generate_player_season_id, aggregate_position_data, MINIMUM_MINUTES, get_db_path
 import sqlite3
 
 def get_goalkeeper_goals_added_by_season(player_id, season):
     print('Fetching goalkeeper xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = generate_player_season_id(player_id=player_id, season=str(season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''

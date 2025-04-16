@@ -1,5 +1,5 @@
 from api import make_asa_api_call
-from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES
+from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES, get_db_path
 import sqlite3
 
 def insert_player_xpass_by_season(season, conn=None):
@@ -16,7 +16,8 @@ def insert_player_xpass_by_season(season, conn=None):
     print(f'Inserting data for players (xpass) for season: {season}')
     close_connection = False
     if conn is None:
-        conn = sqlite3.connect('data/nwsl.db')
+        db_path = get_db_path()
+        conn = sqlite3.connect(db_path)
         close_connection = True
 
     stats_to_track = [
@@ -121,7 +122,8 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
 def get_player_xpass(player_id, season):
     print('Fetching player xpass for:{}, Season: {}'.format(player_id, season))
     obj_id = generate_player_season_id(player_id=player_id, season=str(season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -153,7 +155,8 @@ def get_player_xpass(player_id, season):
 
 def get_all_player_xpass(season):
     print('Fetching all players xpass for season: {}'.format(season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''

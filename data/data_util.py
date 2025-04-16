@@ -1,4 +1,5 @@
 from collections import defaultdict
+import os
 
 # Constants
 MINIMUM_MINUTES = 270 # ~3 full games
@@ -52,3 +53,8 @@ def generate_player_season_id(player_id, season):
         season.
     """
     return (str(player_id) + str(season))
+
+def get_db_path():
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(BASE_DIR, 'nwsl.db')
+    return db_path

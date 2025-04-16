@@ -1,4 +1,5 @@
 from api import make_asa_api_call
+from .data_util import get_db_path
 import sqlite3
 from datetime import datetime
 import pytz
@@ -51,7 +52,8 @@ def insert_all_games_by_season(season):
 
 def get_all_games_by_season(season):
     print('Fetching games for: {}'.format(season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -86,7 +88,8 @@ def get_all_games_by_season(season):
 
 def get_game_by_id(game_id):
     print('Fetching game: {}'.format(game_id))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''
@@ -118,7 +121,8 @@ def get_game_by_id(game_id):
 
 def get_game_ids_by_season(season):
     print('Fetching game IDs for: {}'.format(season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = '''

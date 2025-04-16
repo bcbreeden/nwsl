@@ -1,4 +1,5 @@
 from api import make_asa_api_call
+from .data_util import get_db_path
 import sqlite3
 
 def insert_all_players_info():
@@ -14,7 +15,8 @@ def insert_all_players_info():
     """
     print('Attempting  to insert all players info...')
     players_data = make_asa_api_call('nwsl/players')[1]
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     for player in players_data:
         player_id = player.get('player_id', 'Unknown ID')
@@ -122,7 +124,8 @@ def get_all_players_info():
         list: A list of SQLite Row objects containing player information.
     """
     print('Fetching all players info from the database...')
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_info')
@@ -146,7 +149,8 @@ def get_all_player_seasons():
         list: A list of SQLite Row objects containing player season data.
     """
     print('Fetching all player seasons from the database...')
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_seasons')
@@ -169,7 +173,8 @@ def get_player_seasons(player_id):
         list: A list of SQLite Row objects containing season data for the specified player.
     """
     print('Fetching seasons for:', player_id)
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_seasons WHERE player_id = ?', (player_id,))
@@ -193,7 +198,8 @@ def get_player_info_by_id(player_id):
                      if no matching record is found.
     """
     print('Fetching player info for:', player_id)
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM player_info WHERE player_id = ?', (player_id,))

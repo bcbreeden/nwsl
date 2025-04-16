@@ -1,6 +1,7 @@
 from api import make_asa_api_call
 import sqlite3
 from sklearn.preprocessing import MinMaxScaler
+from .data_util import get_db_path
 
 def insert_teams_xgoals_by_season(season):
     print('Inserting teams data (xgoals) for season:', season)
@@ -69,7 +70,8 @@ def insert_teams_xgoals_by_season(season):
 
 def get_top_team_xgoals_stat(season, sorting_stat):
     print('Teams - Xgoals in {} for: {}.'.format(sorting_stat, season))
-    conn = sqlite3.connect('data/nwsl.db')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     query = f'''

@@ -87,7 +87,9 @@ def game():
                                 game_xgoals_data = game_xgoals_data,
                                 game_flow_data = game_flow_data,
                                 game_flow_json = game_flow_json, 
-                                game_flow_config = game_flow_config)
+                                game_flow_config = game_flow_config,
+                                season = season_manager.season,
+                                seasons = season_manager.seasons)
     else:
         return redirect(url_for('games'))
 
