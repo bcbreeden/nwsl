@@ -30,7 +30,7 @@ if __name__ == '__main__':
         for game_id in game_ids:
             db_game_flow.insert_flow_by_game_id(game_id)
         print(str(season), 'season setup complete.')
-        print('Buffering, next season will begin in 90 seconds.')
-        time.sleep(90)
+        print('Buffering, next season will begin in 15 seconds.')
+        time.sleep(15)
     
     print('Initial setup completed.')
