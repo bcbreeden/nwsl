@@ -150,4 +150,4 @@ def calculate_power_score(team, feature_mins, feature_maxs):
         0.05 * normalized['goalfor_xgoalfor_diff']
     )
     
-    return round(power_score, 4)
+    return round(power_score * 100, 1)
