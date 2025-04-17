@@ -6,7 +6,7 @@ def insert_player_goals_added_by_season(season, conn=None):
         print(f'Inserting data for players (goals added) for season: {season}')
         close_connection = False
         if conn is None:
-            conn = sqlite3.connect('data/nwsl.db')
+            conn = sqlite3.connect(get_db_path())
             close_connection = True
 
         stats_to_track = [

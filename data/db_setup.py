@@ -1,8 +1,9 @@
 import sqlite3
+from .data_util import get_db_path
 
 def create_tables():
     # Connect to SQLite database (or create it if it doesn't exist)
-    conn = sqlite3.connect('data/nwsl.db')
+    conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
 
     print('Starting to build tables...')
@@ -410,7 +411,7 @@ def create_tables():
         predicted_points REAL,
         point_diff REAL,
         goalfor_xgoalfor_diff REAL,
-        power_score REAL,
+        team_strength REAL,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id)
     )
     ''')

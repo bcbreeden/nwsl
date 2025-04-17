@@ -77,7 +77,7 @@ INSERT XGOALS DATA
 '''
 def insert_goalkeeper_xgoals_by_season(season): # pragma: no cover
     print(f'Inserting data for goalkeepers (xgoal) for season: {season}')
-    conn = sqlite3.connect('data/nwsl.db')
+    conn = sqlite3.connect(get_db_path())
 
     stats_to_track = [
     'minutes_played', 'shots_faced', 'goals_conceded', 'saves', 'share_headed_shots',

@@ -8,7 +8,7 @@ def insert_all_games_by_season(season):
     print('Inserting games by season for:', season)
     api_string = 'nwsl/games?season_name={}&stage_name=Regular Season'.format(str(season))
     games_data = make_asa_api_call(api_string)[1]
-    conn = sqlite3.connect('data/nwsl.db')
+    conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     for game in games_data:
         game_id = game.get('game_id', 'Unknown Game ID')

@@ -41,7 +41,7 @@ INSERT GOALS ADDED DATA
 '''
 def insert_goalkeeper_goals_added_by_season(season): # pragma: no cover
     print(f'Inserting data for goalkeepers (goals added) for season: {season}')
-    conn = sqlite3.connect('data/nwsl.db')
+    conn = sqlite3.connect(get_db_path())
 
     stats_to_track = [
         'claiming_goals_added_raw',

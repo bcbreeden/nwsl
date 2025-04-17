@@ -26,7 +26,7 @@ def insert_teams_xgoals_by_season(season):
     # Calculate min/max for normalization
     feature_mins, feature_maxs = calculate_feature_min_max(teams_data)
 
-    conn = sqlite3.connect('data/nwsl.db')
+    conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
 
     for team in teams_data:
@@ -49,20 +49,20 @@ def insert_teams_xgoals_by_season(season):
         goalfor_xgoalfor_diff = team['goalfor_xgoalfor_diff']
 
         # Calculate power score
-        power_score = calculate_power_score(team, feature_mins, feature_maxs)
+        team_strength = calculate_team_strength(team, feature_mins, feature_maxs)
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xgoals (
                 id, team_id, count_games, shots_for, shots_against, goals_for, 
                 goals_against, goal_difference, xgoals_for, xgoals_against, 
                 xgoal_difference, goal_difference_minus_xgoal_difference, 
-                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff, power_score
+                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff, team_strength
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             obj_id, team_id, count_games, shots_for, shots_against, goals_for,
             goals_against, goal_difference, xgoals_for, xgoals_against,
             xgoal_difference, goal_difference_minus_xgoal_difference,
-            points, xpoints, int(season), predicted_points, point_diff, goalfor_xgoalfor_diff, power_score
+            points, xpoints, int(season), predicted_points, point_diff, goalfor_xgoalfor_diff, team_strength
         ))
 
         conn.commit()
@@ -125,7 +125,7 @@ def calculate_feature_min_max(teams_data):
                 feature_maxs[key] = val
     return feature_mins, feature_maxs
 
-def calculate_power_score(team, feature_mins, feature_maxs):
+def calculate_team_strength(team, feature_mins, feature_maxs):
     features = {
         'xgoal_difference': team.get('xgoal_difference', 0),
         'goal_difference': team.get('goal_difference', 0),
@@ -143,7 +143,7 @@ def calculate_power_score(team, feature_mins, feature_maxs):
         val = features[key]
         normalized[key] = (val - min_val) / (max_val - min_val) if max_val != min_val else 0.5
 
-    power_score = (
+    team_strength = (
         0.30 * normalized['xgoal_difference'] +
         0.20 * normalized['goal_difference'] +
         0.15 * normalized['xpoints'] +
@@ -153,7 +153,7 @@ def calculate_power_score(team, feature_mins, feature_maxs):
         0.05 * normalized['goalfor_xgoalfor_diff']
     )
     
-    return round(power_score * 100, 1)
+    return round(team_strength * 100, 1)
 
 def insert_team_strength_history(season):
     # check time stamp from team_strength_history table
@@ -180,9 +180,9 @@ def insert_team_strength_history(season):
     if needs_update:
         print("Data is missing or stale, updating...")
         if season:
-            rows = get_power_scores_for_season(cursor, season)
+            rows = get_team_strength_for_season(cursor, season)
             if rows:
-                sorted_rows = sorted(rows, key=lambda r: r['power_score'], reverse=True)
+                sorted_rows = sorted(rows, key=lambda r: r['team_strength'], reverse=True)
                 today = datetime.now().strftime('%Y-%m-%d')
 
                 for rank, row in enumerate(sorted_rows, start=1):
@@ -197,7 +197,7 @@ def insert_team_strength_history(season):
                     ''', (
                         row['team_id'],
                         season,
-                        row['power_score'],
+                        row['team_strength'],
                         rank,
                         today
                     ))
@@ -219,9 +219,9 @@ def get_latest_team_strength_date(cursor):
     ''')
     return cursor.fetchone()
 
-def get_power_scores_for_season(cursor, season):
+def get_team_strength_for_season(cursor, season):
     cursor.execute('''
-        SELECT team_id, power_score 
+        SELECT team_id, team_strength 
         FROM team_xgoals 
         WHERE season = ?;
     ''', (season,))

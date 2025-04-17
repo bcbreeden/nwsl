@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from .data_util import MINIMUM_MINUTES
+from .data_util import MINIMUM_MINUTES, get_db_path
 import sqlite3
 
 EXCLUDED_METRICS = {
@@ -126,7 +126,7 @@ def generate_player_stat_weights():
     return weights
 
 def _get_player_xgoal_data():
-    conn = sqlite3.connect('data/nwsl.db')
+    conn = sqlite3.connect(get_db_path())
     query = '''
         SELECT 
             minutes_played, shots, shots_on_target, shots_on_target_perc, goals,

@@ -8,7 +8,7 @@ def insert_flow_by_game_id(game_id):
     print('Inserting game flow for game ID:', game_id)
     api_string = 'nwsl/games/game-flow?game_id={}'.format(str(game_id))
     game_flow_data = make_asa_api_call(api_string)[1]
-    conn = sqlite3.connect('data/nwsl.db')
+    conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     for flow in game_flow_data:
         game_id = flow.get('game_id', 'Unknown Game ID')
