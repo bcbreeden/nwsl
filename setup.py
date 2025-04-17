@@ -1,6 +1,7 @@
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
-                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow)
+                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
+                db_manager_info)
 
 import time
 
@@ -10,6 +11,8 @@ if __name__ == '__main__':
     db_setup.create_tables()
     db_player_info.insert_all_players_info()
     db_team_info.insert_team_info()
+    db_manager_info.insert_all_manager_info()
+
     for season in SEASONS:
         db_games_xgoals.insert_all_games_xgoals_by_season(season)
         db_games.insert_all_games_by_season(season)

@@ -43,6 +43,15 @@ def create_tables():
     ''')
 
     cursor.execute('''
+    CREATE TABLE IF NOT EXISTS manager_info (
+        manager_id TEXT PRIMARY KEY,
+        manager_name TEXT,
+        nationality TEXT
+    )
+    ''')
+
+
+    cursor.execute('''
         CREATE TABLE IF NOT EXISTS player_xgoals (
             id TEXT PRIMARY KEY,
             player_id TEXT,
