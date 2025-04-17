@@ -9,7 +9,6 @@ def insert_all_referee_info():
     cursor = conn.cursor()
 
     for referee in referees_data:
-        print(referee)
         referee_id = referee.get('referee_id', 'Unknown ID')
         referee_name = referee.get('referee_name', 'Unknown Name')
         nationality = referee.get('nationality', 'Unknown Nationality')

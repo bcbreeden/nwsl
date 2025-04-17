@@ -15,6 +15,7 @@ if __name__ == '__main__':
     db_team_info.insert_team_info()
     db_manager_info.insert_all_manager_info()
     db_referee_info.insert_all_referee_info()
+    db_stadium_info.insert_all_stadium_info()
 
     db_games_xgoals.insert_all_games_xgoals_by_season(season)
     db_games.insert_all_games_by_season(season)

@@ -58,6 +58,26 @@ def create_tables():
     )
     ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS stadium_info (
+            stadium_id TEXT PRIMARY KEY,
+            stadium_name TEXT,
+            capacity INTEGER,
+            year_built INTEGER,
+            roof BOOLEAN,
+            turf BOOLEAN,
+            street TEXT,
+            city TEXT,
+            province TEXT,
+            country TEXT,
+            postal_code TEXT,
+            latitude REAL,
+            longitude REAL,
+            field_x INTEGER,
+            field_y INTEGER
+        )
+    ''')
+
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS player_xgoals (
@@ -519,6 +539,10 @@ def create_tables():
         season INTEGER,
         FOREIGN KEY (home_team_id) REFERENCES team_info(team_id)
         FOREIGN KEY (away_team_id) REFERENCES team_info(team_id)
+        FOREIGN KEY (referee_id) REFERENCES referee_info(referee_id)
+        FOREIGN KEY (stadium_id) REFERENCES stadium_info(stadium_id)
+        FOREIGN KEY (home_manager_id) REFERENCES manager_info(manager_id)
+        FOREIGN KEY (away_manager_id) REFERENCES manager_info(manager_id)
     )
     ''')
 
