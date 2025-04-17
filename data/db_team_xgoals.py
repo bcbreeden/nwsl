@@ -178,7 +178,7 @@ def insert_team_strength_history(season):
             needs_update = True
 
     if needs_update:
-        print("🔄 Data is missing or stale, updating...")
+        print("Data is missing or stale, updating...")
         if season:
             rows = get_power_scores_for_season(cursor, season)
             if rows:
@@ -202,13 +202,13 @@ def insert_team_strength_history(season):
                         today
                     ))
                 conn.commit()
-                print(f"✅ Inserted {len(sorted_rows)} records for season {season}")
+                print(f"Inserted {len(sorted_rows)} records for season {season}")
             else:
-                print("⚠️ No power score rows found.")
+                print("No power score rows found.")
         else:
-            print("⚠️ No season value found in team_xgoals.")
+            print("No season value found in team_xgoals.")
     else:
-        print("✅ Data is fresh. No update needed.")
+        print("Data is fresh. No update needed.")
 
 def get_latest_team_strength_date(cursor):
     cursor.execute('''
