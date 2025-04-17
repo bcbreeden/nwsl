@@ -50,6 +50,14 @@ def create_tables():
     )
     ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS referee_info (
+        referee_id TEXT PRIMARY KEY,
+        referee_name TEXT,
+        nationality TEXT
+    )
+    ''')
+
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS player_xgoals (
