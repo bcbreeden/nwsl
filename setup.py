@@ -22,8 +22,10 @@ if __name__ == '__main__':
         db_player_xgoals.update_xgoals_xassists_per_90(season)
         
         db_player_xpass.insert_player_xpass_by_season(season)
+
         db_team_goals_added.insert_team_goals_added_by_season(season)
         db_team_xgoals.insert_teams_xgoals_by_season(season)
+        db_team_xgoals.insert_team_strength_history(season)
         db_team_xpass.insert_teams_xpass_by_season(season)
 
         game_ids = db_games.get_game_ids_by_season(season)

@@ -208,7 +208,7 @@ def insert_team_strength_history(season):
         else:
             print("No season value found in team_xgoals.")
     else:
-        print("Data is fresh. No update needed.")
+        print("Data is fresh. No team strength update needed.")
 
 def get_latest_team_strength_date(cursor):
     cursor.execute('''
