@@ -1,4 +1,5 @@
 from api import make_asa_api_call
+from datetime import datetime, timedelta
 import sqlite3
 from sklearn.preprocessing import MinMaxScaler
 from .data_util import get_db_path
@@ -153,3 +154,117 @@ def calculate_power_score(team, feature_mins, feature_maxs):
     )
     
     return round(power_score * 100, 1)
+
+def insert_team_strength_history(season):
+    # check time stamp from team_strength_history table
+    # if it is older than 1 week or the table is empty update the table
+    # otherwise do nothing
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Check latest date
+    row = get_latest_team_strength_date(cursor)
+
+    # Check if there's no data or the latest date is stale
+    needs_update = False
+
+    if row is None:
+        needs_update = True
+    else:
+        latest_date = datetime.strptime(row['date_stamp'], "%Y-%m-%d")
+        one_week_ago = datetime.now() - timedelta(days=7)
+        if latest_date < one_week_ago:
+            needs_update = True
+
+    if needs_update:
+        print("🔄 Data is missing or stale, updating...")
+        if season:
+            rows = get_power_scores_for_season(cursor, season)
+            if rows:
+                sorted_rows = sorted(rows, key=lambda r: r['power_score'], reverse=True)
+                today = datetime.now().strftime('%Y-%m-%d')
+
+                for rank, row in enumerate(sorted_rows, start=1):
+                    cursor.execute('''
+                        INSERT INTO team_strength_history (
+                            team_id,
+                            season,
+                            team_strength,
+                            team_rank,
+                            date_stamp
+                        ) VALUES (?, ?, ?, ?, ?);
+                    ''', (
+                        row['team_id'],
+                        season,
+                        row['power_score'],
+                        rank,
+                        today
+                    ))
+                conn.commit()
+                print(f"✅ Inserted {len(sorted_rows)} records for season {season}")
+            else:
+                print("⚠️ No power score rows found.")
+        else:
+            print("⚠️ No season value found in team_xgoals.")
+    else:
+        print("✅ Data is fresh. No update needed.")
+
+def get_latest_team_strength_date(cursor):
+    cursor.execute('''
+        SELECT date_stamp 
+        FROM team_strength_history 
+        ORDER BY date_stamp DESC 
+        LIMIT 1;
+    ''')
+    return cursor.fetchone()
+
+def get_power_scores_for_season(cursor, season):
+    cursor.execute('''
+        SELECT team_id, power_score 
+        FROM team_xgoals 
+        WHERE season = ?;
+    ''', (season,))
+    return cursor.fetchall()
+
+def get_team_strength_by_season(season):
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT * 
+        FROM team_strength_history 
+        WHERE season = ?
+        ORDER BY team_rank ASC;
+    ''', (season,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+def get_team_strength_by_season(season):
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT 
+            tsh.*,
+            ti.*
+        FROM 
+            team_strength_history AS tsh
+        JOIN 
+            team_info AS ti
+        ON 
+            tsh.team_id = ti.team_id
+        WHERE 
+            tsh.season = ?
+        ORDER BY 
+            tsh.date_stamp DESC,
+            tsh.team_rank ASC;
+    ''', (season,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+    return rows

@@ -559,6 +559,17 @@ def create_tables():
     )
 ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS team_strength_history (
+        team_id TEXT,
+        season INTEGER,
+        team_strength REAL,
+        team_rank INTEGER,
+        date_stamp TEXT,
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id)
+    )
+''')
+
     # Commit the changes and close the connection
     conn.commit()
     conn.close()
