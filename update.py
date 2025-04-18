@@ -1,7 +1,7 @@
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
-                db_manager_info)
+                db_manager_info, db_referee_info, db_stadium_info)
 from datetime import datetime
 
 '''
