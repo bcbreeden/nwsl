@@ -169,7 +169,7 @@ def insert_team_strength_history(season):
     # Check if there's no data or the latest date is stale
     needs_update = False
 
-    if row is None or row['latest_date'] is None::
+    if row is None or row['latest_date'] is None:
         needs_update = True
     else:
         latest_date = datetime.strptime(row['date_stamp'], "%Y-%m-%d")
