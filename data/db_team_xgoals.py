@@ -164,12 +164,12 @@ def insert_team_strength_history(season):
     cursor = conn.cursor()
 
     # Check latest date
-    row = get_latest_team_strength_date(cursor)
+    row = get_latest_team_strength_date(cursor, season)
 
     # Check if there's no data or the latest date is stale
     needs_update = False
 
-    if row is None:
+    if row is None or row['latest_date'] is None::
         needs_update = True
     else:
         latest_date = datetime.strptime(row['date_stamp'], "%Y-%m-%d")
@@ -210,13 +210,12 @@ def insert_team_strength_history(season):
     else:
         print("Data is fresh. No team strength update needed.")
 
-def get_latest_team_strength_date(cursor):
+def get_latest_team_strength_date(cursor, season):
     cursor.execute('''
-        SELECT date_stamp 
-        FROM team_strength_history 
-        ORDER BY date_stamp DESC 
-        LIMIT 1;
-    ''')
+        SELECT MAX(date_stamp) AS latest_date
+        FROM team_strength_history
+        WHERE season = ?
+    ''', (season,))
     return cursor.fetchone()
 
 def get_team_strength_for_season(cursor, season):
