@@ -156,67 +156,46 @@ def calculate_team_strength(team, feature_mins, feature_maxs):
     return round(team_strength * 100, 1)
 
 def insert_team_strength_history(season):
-    # check time stamp from team_strength_history table
-    # if it is older than 1 week or the table is empty update the table
-    # otherwise do nothing
+    # Only run on Tuesdays
+    if datetime.now().weekday() != 1:  # 1 = Tuesday
+        print("Today is not Tuesday. Skipping update.")
+        return
+
+    print(f"Running weekly update for season {season}...")
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    # Check latest date
-    row = get_latest_team_strength_date(cursor, season)
+    if season:
+        rows = get_team_strength_for_season(cursor, season)
+        if rows:
+            sorted_rows = sorted(rows, key=lambda r: r['team_strength'], reverse=True)
+            today = datetime.now().strftime('%Y-%m-%d')
 
-    # Check if there's no data or the latest date is stale
-    needs_update = False
-
-    if row is None or row['latest_date'] is None:
-        needs_update = True
-    else:
-        latest_date = datetime.strptime(row['date_stamp'], "%Y-%m-%d")
-        one_week_ago = datetime.now() - timedelta(days=7)
-        if latest_date < one_week_ago:
-            needs_update = True
-
-    if needs_update:
-        print("Data is missing or stale, updating...")
-        if season:
-            rows = get_team_strength_for_season(cursor, season)
-            if rows:
-                sorted_rows = sorted(rows, key=lambda r: r['team_strength'], reverse=True)
-                today = datetime.now().strftime('%Y-%m-%d')
-
-                for rank, row in enumerate(sorted_rows, start=1):
-                    cursor.execute('''
-                        INSERT INTO team_strength_history (
-                            team_id,
-                            season,
-                            team_strength,
-                            team_rank,
-                            date_stamp
-                        ) VALUES (?, ?, ?, ?, ?);
-                    ''', (
-                        row['team_id'],
+            for rank, row in enumerate(sorted_rows, start=1):
+                cursor.execute('''
+                    INSERT INTO team_strength_history (
+                        team_id,
                         season,
-                        row['team_strength'],
-                        rank,
-                        today
-                    ))
-                conn.commit()
-                print(f"Inserted {len(sorted_rows)} records for season {season}")
-            else:
-                print("No power score rows found.")
+                        team_strength,
+                        team_rank,
+                        date_stamp
+                    ) VALUES (?, ?, ?, ?, ?);
+                ''', (
+                    row['team_id'],
+                    season,
+                    row['team_strength'],
+                    rank,
+                    today
+                ))
+            conn.commit()
+            print(f"Inserted {len(sorted_rows)} records for season {season}")
         else:
-            print("No season value found in team_xgoals.")
+            print(f"No team strength data found for season {season}.")
     else:
-        print("Data is fresh. No team strength update needed.")
+        print("No season value provided.")
 
-def get_latest_team_strength_date(cursor, season):
-    cursor.execute('''
-        SELECT MAX(date_stamp) AS latest_date
-        FROM team_strength_history
-        WHERE season = ?
-    ''', (season,))
-    return cursor.fetchone()
+    conn.close()
 
 def get_team_strength_for_season(cursor, season):
     cursor.execute('''
