@@ -41,6 +41,14 @@
         </tbody>
     </table>
 
+    {% for team_strength in team_strength_history %}
+        {{team_strength['team_name']}}<br>
+        {{team_strength['count_games']}} <br>
+        {{team_strength['team_strength']}} <br>
+        {{team_strength['season']}} <br>
+
+    {% endfor %}
+
 
 
     <!-- PLOTS -->

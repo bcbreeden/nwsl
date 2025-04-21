@@ -608,6 +608,7 @@ def create_tables():
         team_strength REAL,
         team_rank INTEGER,
         date_stamp TEXT,
+        count_games INTEGER,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id)
     )
 ''')

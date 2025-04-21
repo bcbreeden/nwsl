@@ -156,70 +156,90 @@ def calculate_team_strength(team, feature_mins, feature_maxs):
     return round(team_strength * 100, 1)
 
 def insert_team_strength_history(season):
-    # Only run on Tuesdays
-    if datetime.now().weekday() != 1:  # 1 = Tuesday
-        print("Today is not Tuesday. Skipping update.")
-        return
-
-    print(f"Running weekly update for season {season}...")
+    print(f"Checking team strength update needs for season {season}...")
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    if season:
-        rows = get_team_strength_for_season(cursor, season)
-        if rows:
-            sorted_rows = sorted(rows, key=lambda r: r['team_strength'], reverse=True)
-            today = datetime.now().strftime('%Y-%m-%d')
-
-            for rank, row in enumerate(sorted_rows, start=1):
-                cursor.execute('''
-                    INSERT INTO team_strength_history (
-                        team_id,
-                        season,
-                        team_strength,
-                        team_rank,
-                        date_stamp
-                    ) VALUES (?, ?, ?, ?, ?);
-                ''', (
-                    row['team_id'],
-                    season,
-                    row['team_strength'],
-                    rank,
-                    today
-                ))
-            conn.commit()
-            print(f"Inserted {len(sorted_rows)} records for season {season}")
-        else:
-            print(f"No team strength data found for season {season}.")
-    else:
+    if not season:
         print("No season value provided.")
+        return
 
+    # Get strength data for the season
+    rows = get_team_strength_for_season(cursor, season)
+    if not rows:
+        print(f"No team strength data found for season {season}.")
+        return
+
+    # Check which teams need an update by comparing count_games
+    teams_to_update = []
+    for row in rows:
+        team_id = row['team_id']
+        cursor.execute('''
+            SELECT count_games FROM team_strength_history
+            WHERE season = ? AND team_id = ?
+        ''', (season, team_id))
+        existing = cursor.fetchone()
+
+        if existing is None or row['count_games'] > existing['count_games']:
+            teams_to_update.append(row)
+
+    if not teams_to_update:
+        print(f"No updates needed for season {season}.")
+        return
+
+    # Sort by strength and insert updated values
+    sorted_rows = sorted(teams_to_update, key=lambda r: r['team_strength'], reverse=True)
+    today = datetime.now().strftime('%Y-%m-%d')
+
+    for rank, row in enumerate(sorted_rows, start=1):
+        cursor.execute('''
+            INSERT OR REPLACE INTO team_strength_history (
+                team_id,
+                season,
+                team_strength,
+                team_rank,
+                date_stamp,
+                count_games
+            ) VALUES (?, ?, ?, ?, ?, ?);
+        ''', (
+            row['team_id'],
+            season,
+            row['team_strength'],
+            rank,
+            today,
+            row['count_games']
+        ))
+
+    conn.commit()
     conn.close()
+    print(f"Updated {len(teams_to_update)} teams for season {season}.")
+    print(f"Updated these teams: {teams_to_update}")
+
 
 def get_team_strength_for_season(cursor, season):
     cursor.execute('''
-        SELECT team_id, team_strength 
+        SELECT team_id, team_strength, count_games 
         FROM team_xgoals 
         WHERE season = ?;
     ''', (season,))
     return cursor.fetchall()
 
-def get_team_strength_by_season(season):
-    conn = sqlite3.connect(get_db_path())
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+# def get_team_strength_by_season(season):
+#     conn = sqlite3.connect(get_db_path())
+#     conn.row_factory = sqlite3.Row
+#     cursor = conn.cursor()
 
-    cursor.execute('''
-        SELECT * 
-        FROM team_strength_history 
-        WHERE season = ?
-        ORDER BY team_rank ASC;
-    ''', (season,))
+#     cursor.execute('''
+#         SELECT * 
+#         FROM team_strength_history 
+#         WHERE season = ?
+#         ORDER BY team_rank ASC;
+#     ''', (season,))
     
-    rows = cursor.fetchall()
-    conn.close()
-    return rows
+#     rows = cursor.fetchall()
+#     conn.close()
+#     return rows
 
 def get_team_strength_by_season(season):
     conn = sqlite3.connect(get_db_path())
@@ -239,7 +259,7 @@ def get_team_strength_by_season(season):
         WHERE 
             tsh.season = ?
         ORDER BY 
-            tsh.date_stamp DESC,
+            tsh.count_games DESC,
             tsh.team_rank ASC;
     ''', (season,))
     
