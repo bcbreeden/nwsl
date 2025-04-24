@@ -178,6 +178,8 @@ def insert_team_strength_history(season):
         cursor.execute('''
             SELECT count_games FROM team_strength_history
             WHERE season = ? AND team_id = ?
+            ORDER BY count_games DESC
+            LIMIT 1
         ''', (season, team_id))
         existing = cursor.fetchone()
 
@@ -224,22 +226,6 @@ def get_team_strength_for_season(cursor, season):
         WHERE season = ?;
     ''', (season,))
     return cursor.fetchall()
-
-# def get_team_strength_by_season(season):
-#     conn = sqlite3.connect(get_db_path())
-#     conn.row_factory = sqlite3.Row
-#     cursor = conn.cursor()
-
-#     cursor.execute('''
-#         SELECT * 
-#         FROM team_strength_history 
-#         WHERE season = ?
-#         ORDER BY team_rank ASC;
-#     ''', (season,))
-    
-#     rows = cursor.fetchall()
-#     conn.close()
-#     return rows
 
 def get_team_strength_by_season(season):
     conn = sqlite3.connect(get_db_path())
