@@ -1,79 +1,99 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <!-- DATA TABLE -->
-    <table id='teams'>
-        <thead>
-            <tr>
-                <th>Team</th>
-                <th>Matches</th>
-                <th>Team Strength</th>
-                <th>Points</th>
-                <th>Predicted Points</th>
-                <th>Points Diff</th>
-                <th>GF</th>
-                <th>GA</th>
-                <th>Goal Diff</th>
-                <th>xGF</th>
-                <th>xGA</th>
-                <th>xGoal Diff</th>
-                <th>Goal|XGoal Diff</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for team in teams %}
-            <tr>
-                <td>{{ team['team_name'] }}</td>
-                <td>{{ team['count_games'] }}</td>
-                <td>{{ team['team_strength'] }}</td>
-                <td>{{ team['points'] }}</td>
-                <td>{{ team['predicted_points'] }}</td>
-                <td>{{ team['point_diff'] }}</td>
-                <td>{{ team['goals_for'] }}</td>
-                <td>{{ team['goals_against'] }}</td>
-                <td>{{ team['goal_difference'] }}</td>
-                <td>{{ team['xgoals_for'] }}</td>
-                <td>{{ team['xgoals_against'] }}</td>
-                <td>{{ team['xgoal_difference'] }}</td>
-                <td>{{ team['goal_difference_minus_xgoal_difference'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="teams_container">
+        <!-- DATA TABLE -->
+        <table id='teams'>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Matches</th>
+                    <th>Team Strength</th>
+                    <th>Points</th>
+                    <th>Predicted Points</th>
+                    <th>Points Diff</th>
+                    <th>GF</th>
+                    <th>GA</th>
+                    <th>Goal Diff</th>
+                    <th>xGF</th>
+                    <th>xGA</th>
+                    <th>xGoal Diff</th>
+                    <th>Goal|XGoal Diff</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in teams %}
+                <tr>
+                    <td>{{ team['team_name'] }}</td>
+                    <td>{{ team['count_games'] }}</td>
+                    <td>{{ team['team_strength'] }}</td>
+                    <td>{{ team['points'] }}</td>
+                    <td>{{ team['predicted_points'] }}</td>
+                    <td>{{ team['point_diff'] }}</td>
+                    <td>{{ team['goals_for'] }}</td>
+                    <td>{{ team['goals_against'] }}</td>
+                    <td>{{ team['goal_difference'] }}</td>
+                    <td>{{ team['xgoals_for'] }}</td>
+                    <td>{{ team['xgoals_against'] }}</td>
+                    <td>{{ team['xgoal_difference'] }}</td>
+                    <td>{{ team['goal_difference_minus_xgoal_difference'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <div id="team_comparison_container">
-        <h2>Team Comparison</h2>
-        <p>Compare the performance of different teams.</p>
-        <form action="/team_comparison" method="POST">
-            <label for="team1">Select Option 1:</label>
-            <select id="team1" name="team1">
-                <option value="">--Please choose an option--</option>
-                {% for team in teams %}
-                    <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
-                {% endfor %}
-            </select>
-            <br><br>
-    
-            <label for="team2">Select Option 2:</label>
-            <select id="team2" name="team2">
-                <option value="">--Please choose an option--</option>
-                {% for team in teams %}
-                    <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
-                {% endfor %}
-            </select>
-            <br><br>
-    
-            <button type="submit">Submit</button>
-        </form>
-        <a class="nav-link" href="{{ url_for('team_comparison') }}">Compare Teams</a>
+        <div id="team_comparison_container">
+            <h2>Team Comparison</h2>
+            <p>Compare the performance of different teams.</p>
+            <form action="/team_comparison" method="POST">
+                <label for="team1">Select Option 1:</label>
+                <select id="team1" name="team1">
+                    <option value="">--Please choose an option--</option>
+                    {% for team in teams %}
+                        <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+        
+                <label for="team2">Select Option 2:</label>
+                <select id="team2" name="team2">
+                    <option value="">--Please choose an option--</option>
+                    {% for team in teams %}
+                        <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+        
+                <button type="submit">Submit</button>
+            </form>
+            <a class="nav-link" href="{{ url_for('team_comparison') }}">Compare Teams</a>
+        </div>
     </div>
 
-    {% for team_strength in team_strength_history %}
-        {{team_strength['team_name']}}<br>
-        {{team_strength['count_games']}} <br>
-        {{team_strength['team_strength']}} <br>
-        {{team_strength['season']}} <br>
 
-    {% endfor %}
+    <div class="hidden">
+        {% for team_strength in team_strength_history %}
+            {{team_strength['team_name']}}<br>
+            {{team_strength['count_games']}} <br>
+            {{team_strength['team_strength']}} <br>
+            {{team_strength['season']}} <br>
 
+        {% endfor %}
+    </div>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#teams').DataTable({
+                paging: false,
+                order: [[3, 'desc']],
+                info: false
+            });
+        });
+    
+        $.extend($.fn.dataTable.defaults, {
+            searching: false
+        });
+    </script>
+    
 {% endblock %}

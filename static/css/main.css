@@ -307,7 +307,7 @@ ul {
     color: var(--font-color);
 }
 
-.player_report_outer_container{
+.player_report_outer_container, .teams_container{
     display: flex;
     width: 100%;
     justify-content: center;
@@ -428,8 +428,17 @@ ul {
     font-weight: bolder;
 }
 
-/* Team Comparison Styling */
+/* Teams Styling */
 .stat_block_team_comparison {
     text-align: center;
-    
 }
+
+.teams_container {
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#teams {
+    width: 100% !important;
+}
+
