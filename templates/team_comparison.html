@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+    {% block content %}
+    <h2>Team Stats</h2>
+
+    {% for team in team1_data %}
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
+            <h3>{{ team['team_name'] }}</h3>
+            <ul>
+                <li>Games Played: {{ team['count_games'] }}</li>
+                <li>Shots For: {{ team['shots_for'] }}</li>
+                <li>Shots Against: {{ team['shots_against'] }}</li>
+                <li>Goals For: {{ team['goals_for'] }}</li>
+                <li>Goals Against: {{ team['goals_against'] }}</li>
+                <li>Goal Difference: {{ team['goal_difference'] }}</li>
+                <li>xG For: {{ team['xgoals_for'] | round(1) }}</li>
+                <li>xG Against: {{ team['xgoals_against'] | round(1) }}</li>
+                <li>xG Difference: {{ team['xgoal_difference'] | round(1) }}</li>
+                <li>GD - xGD: {{ team['goal_difference_minus_xgoal_difference'] | round(1) }}</li>
+                <li>Points: {{ team['points'] }}</li>
+                <li>xPoints: {{ team['xpoints'] }}</li>
+                <li>Predicted Points: {{ team['predicted_points'] }}</li>
+                <li>Point Difference: {{ team['point_diff'] }}</li>
+                <li>GF - xGF Diff: {{ team['goalfor_xgoalfor_diff'] }}</li>
+            </ul>
+        </div>
+    {% else %}
+        <p>No team data available.</p>
+    {% endfor %}
+
+    {% for team in team2_data %}
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
+            <h3>{{ team['team_name'] }}</h3>
+            <ul>
+                <li>Games Played: {{ team['count_games'] }}</li>
+                <li>Shots For: {{ team['shots_for'] }}</li>
+                <li>Shots Against: {{ team['shots_against'] }}</li>
+                <li>Goals For: {{ team['goals_for'] }}</li>
+                <li>Goals Against: {{ team['goals_against'] }}</li>
+                <li>Goal Difference: {{ team['goal_difference'] }}</li>
+                <li>xG For: {{ team['xgoals_for'] | round(1) }}</li>
+                <li>xG Against: {{ team['xgoals_against'] | round(1) }}</li>
+                <li>xG Difference: {{ team['xgoal_difference'] | round(1) }}</li>
+                <li>GD - xGD: {{ team['goal_difference_minus_xgoal_difference'] | round(1) }}</li>
+                <li>Points: {{ team['points'] }}</li>
+                <li>xPoints: {{ team['xpoints'] }}</li>
+                <li>Predicted Points: {{ team['predicted_points'] }}</li>
+                <li>Point Difference: {{ team['point_diff'] }}</li>
+                <li>GF - xGF Diff: {{ team['goalfor_xgoalfor_diff'] }}</li>
+            </ul>
+        </div>
+    {% else %}
+        <p>No team data available.</p>
+    {% endfor %}
+
+
+{% endblock %}

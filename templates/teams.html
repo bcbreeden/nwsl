@@ -41,6 +41,33 @@
         </tbody>
     </table>
 
+    <div id="team_comparison_container">
+        <h2>Team Comparison</h2>
+        <p>Compare the performance of different teams.</p>
+        <form action="/team_comparison" method="POST">
+            <label for="team1">Select Option 1:</label>
+            <select id="team1" name="team1">
+                <option value="">--Please choose an option--</option>
+                {% for team in teams %}
+                    <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+    
+            <label for="team2">Select Option 2:</label>
+            <select id="team2" name="team2">
+                <option value="">--Please choose an option--</option>
+                {% for team in teams %}
+                    <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+    
+            <button type="submit">Submit</button>
+        </form>
+        <a class="nav-link" href="{{ url_for('team_comparison') }}">Compare Teams</a>
+    </div>
+
     {% for team_strength in team_strength_history %}
         {{team_strength['team_name']}}<br>
         {{team_strength['count_games']}} <br>
@@ -48,6 +75,9 @@
         {{team_strength['season']}} <br>
 
     {% endfor %}
+
+
+    
 
 
 

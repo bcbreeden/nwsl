@@ -66,6 +66,32 @@ def teams():
                            season = season_manager.season,
                            seasons = season_manager.seasons)
 
+@app.route('/team_comparison', methods=['GET', 'POST'])
+def team_comparison():
+    if request.method == 'POST':
+        team1_id = request.form.get('team1')
+        team2_id = request.form.get('team2')
+        team1_data = db_team_xgoals.get_team_xgoals_by_season(team1_id, season_manager.season)
+        team2_data = db_team_xgoals.get_team_xgoals_by_season(team2_id, season_manager.season)
+        # team1_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team1, season_manager.season)
+        # team2_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team2, season_manager.season)
+
+        # team1_fig_json, team1_config = plot_spider(['xgoals', 'xassists', 'xplace', 'key_passes', 'primary_assists'], team1_data)
+        # team2_fig_json, team2_config = plot_spider(['xgoals', 'xassists', 'xplace', 'key_passes', 'primary_assists'], team2_data)
+
+        return render_template('team_comparison.html',
+                               team1_data = team1_data,
+                               team2_data = team2_data)
+                            #    team1_goals_added_data = team1_goals_added_data,
+                            #    team2_goals_added_data = team2_goals_added_data,
+                            #    season = season_manager.season,
+                            #    seasons = season_manager.seasons,
+                            #    fig_json_1=team1_fig_json,
+                            #    fig_config_1=team1_config,
+                            #    fig_json_2=team2_fig_json,
+                            #    fig_config_2=team2_config)
+    return redirect(url_for('teams'))
+
 @app.route('/games')
 def games():
     games_data = db_games.get_all_games_by_season(season_manager.season)
