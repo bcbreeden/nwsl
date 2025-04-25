@@ -76,40 +76,4 @@
 
     {% endfor %}
 
-
-    
-
-
-
-    <!-- PLOTS -->
-    <div class="plot_container">
-        {{ team_goal_point_plot | safe }}
-    </div>
-
-    <div class="plot_container">
-        {{ team_points_dif_plot | safe }}
-    </div>
-
-    <div class="plot_container">
-        {{ team_goal_xgoal_diff_plot | safe }}
-    </div>
-
-
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
-        <script>
-            $(document).ready( function () {
-                $('#teams').DataTable(
-                    {
-                        paging: false,
-                        order: [
-                            [3, 'dsc']
-                        ],
-                        info: false
-                    });
-            } );
-
-            $.extend( $.fn.dataTable.defaults, {
-                 searching: false
-                } );
-    </script>
 {% endblock %}

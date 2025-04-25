@@ -50,18 +50,9 @@ def index():
 @app.route('/teams')
 def teams():
     team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
-    plt_team_goals_points = plot_team_goals_points(season_manager.season)
-    plt_team_goals_points_html = pio.to_html(plt_team_goals_points, full_html=False)
-    plt_team_points_diff = plot_team_points_diff(season_manager.season)
-    plt_team_points_diff_html = pio.to_html(plt_team_points_diff, full_html=False)
-    plt_team_goal_xgoal_diff = plot_goal_vs_xgoal(season_manager.season)
-    plt_team_goal_xgoal_diff_html =  pio.to_html(plt_team_goal_xgoal_diff, full_html=False)
     team_strength_history = db_team_xgoals.get_team_strength_by_season(season_manager.season)
     return render_template('teams.html',
                            teams = team_data,
-                           team_goal_point_plot = plt_team_goals_points_html,
-                           team_points_dif_plot = plt_team_points_diff_html,
-                           team_goal_xgoal_diff_plot = plt_team_goal_xgoal_diff_html,
                            team_strength_history = team_strength_history,
                            season = season_manager.season,
                            seasons = season_manager.seasons)
