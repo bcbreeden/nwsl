@@ -1,57 +1,95 @@
 {% extends 'base.html' %}
 
     {% block content %}
-    <h2>Team Stats</h2>
+        <h2>Team Comparison</h2>
 
-    {% for team in team1_data %}
-        <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
-            <h3>{{ team['team_name'] }}</h3>
-            <ul>
-                <li>Games Played: {{ team['count_games'] }}</li>
-                <li>Shots For: {{ team['shots_for'] }}</li>
-                <li>Shots Against: {{ team['shots_against'] }}</li>
-                <li>Goals For: {{ team['goals_for'] }}</li>
-                <li>Goals Against: {{ team['goals_against'] }}</li>
-                <li>Goal Difference: {{ team['goal_difference'] }}</li>
-                <li>xG For: {{ team['xgoals_for'] | round(1) }}</li>
-                <li>xG Against: {{ team['xgoals_against'] | round(1) }}</li>
-                <li>xG Difference: {{ team['xgoal_difference'] | round(1) }}</li>
-                <li>GD - xGD: {{ team['goal_difference_minus_xgoal_difference'] | round(1) }}</li>
-                <li>Points: {{ team['points'] }}</li>
-                <li>xPoints: {{ team['xpoints'] }}</li>
-                <li>Predicted Points: {{ team['predicted_points'] }}</li>
-                <li>Point Difference: {{ team['point_diff'] }}</li>
-                <li>GF - xGF Diff: {{ team['goalfor_xgoalfor_diff'] }}</li>
-            </ul>
-        </div>
-    {% else %}
-        <p>No team data available.</p>
-    {% endfor %}
+        {% set team1 = team1_data[0] %}
+        {% set team2 = team2_data[0] %}
+        
+        <table border="1" cellpadding="8" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>{{ team1['team_name'] }}</th>
+                    <th>Stat</th>
+                    <th>{{ team2['team_name'] }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# Positive Stats Comparison #}
+                {% for stat in positive_stats %}
+                    <tr>
+                        <td class="stat_block_team_comparison
+                            {% if team1[stat] > team2[stat] %}
+                                advantage
+                            {% elif team1[stat] < team2[stat] %}
+                                disadvantage
+                            {% else %}
+                                neutral
+                            {% endif %}
+                        ">
+                            <p class="stat_text">{{ team1[stat] }}</p>
+                        </td>
+                        <td class="stat_block_team_comparison"><h4>{{ stat.replace('_', ' ').title() }}</h4></td>
+                        <td class="stat_block_team_comparison 
+                            {% if team2[stat] > team1[stat] %}
+                                advantage
+                            {% elif team2[stat] < team1[stat] %}
+                                disadvantage
+                            {% else %}
+                                neutral
+                            {% endif %}
+                        ">
+                        <p class="stat_text">{{ team2[stat] }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+        
+                {# Negative Stats Comparison #}
+                {% for stat in negative_stats %}
+                    <tr>
+                        <td class="stat_block_team_comparison 
+                            {% if team1[stat] < team2[stat] %}
+                                advantage
+                            {% elif team1[stat] > team2[stat] %}
+                                disadvantage
+                            {% else %}
+                                neutral
+                            {% endif %}
+                        ">
+                        <p class="stat_text">{{ team1[stat] }}</p>
+                        </td>
+                        <td class="stat_block_team_comparison"><h4>{{ stat.replace('_', ' ').title() }}</h4></td>
+                        <td class="stat_block_team_comparison 
+                            {% if team2[stat] < team1[stat] %}
+                                advantage
+                            {% elif team2[stat] > team1[stat] %}
+                                disadvantage
+                            {% else %}
+                                neutral
+                            {% endif %}
+                        ">
+                        <p class="stat_text">{{ team2[stat] }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+        
+                {# Neutral Stats #}
+                {% for stat in neutral_stats %}
+                    <tr>
+                        <td class="stat_block_team_comparison neutral">
+                            <p class="stat_text">{{ team1[stat] }}</p>
+                        </td>
+                        <td class="stat_block_team_comparison"><h4>{{ stat.replace('_', ' ').title() }}</h4></td>
+                        <td class="stat_block_team_comparison neutral">
+                            <p class="stat_text">{{ team2[stat] }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    
 
-    {% for team in team2_data %}
-        <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
-            <h3>{{ team['team_name'] }}</h3>
-            <ul>
-                <li>Games Played: {{ team['count_games'] }}</li>
-                <li>Shots For: {{ team['shots_for'] }}</li>
-                <li>Shots Against: {{ team['shots_against'] }}</li>
-                <li>Goals For: {{ team['goals_for'] }}</li>
-                <li>Goals Against: {{ team['goals_against'] }}</li>
-                <li>Goal Difference: {{ team['goal_difference'] }}</li>
-                <li>xG For: {{ team['xgoals_for'] | round(1) }}</li>
-                <li>xG Against: {{ team['xgoals_against'] | round(1) }}</li>
-                <li>xG Difference: {{ team['xgoal_difference'] | round(1) }}</li>
-                <li>GD - xGD: {{ team['goal_difference_minus_xgoal_difference'] | round(1) }}</li>
-                <li>Points: {{ team['points'] }}</li>
-                <li>xPoints: {{ team['xpoints'] }}</li>
-                <li>Predicted Points: {{ team['predicted_points'] }}</li>
-                <li>Point Difference: {{ team['point_diff'] }}</li>
-                <li>GF - xGF Diff: {{ team['goalfor_xgoalfor_diff'] }}</li>
-            </ul>
-        </div>
-    {% else %}
-        <p>No team data available.</p>
-    {% endfor %}
 
 
 {% endblock %}

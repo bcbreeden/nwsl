@@ -73,6 +73,12 @@ def team_comparison():
         team2_id = request.form.get('team2')
         team1_data = db_team_xgoals.get_team_xgoals_by_season(team1_id, season_manager.season)
         team2_data = db_team_xgoals.get_team_xgoals_by_season(team2_id, season_manager.season)
+        positive_stats = ['shots_for', 'goals_for', 'goal_difference', 
+            'xgoals_for', 'xgoal_difference', 
+            'points', 'xpoints', 'predicted_points', 
+            'goalfor_xgoalfor_diff']
+        negative_stats = ['shots_against', 'goals_against', 'xgoals_against']
+        neutral_stats = ['goal_difference_minus_xgoal_difference', 'point_diff']
         # team1_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team1, season_manager.season)
         # team2_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team2, season_manager.season)
 
@@ -81,7 +87,10 @@ def team_comparison():
 
         return render_template('team_comparison.html',
                                team1_data = team1_data,
-                               team2_data = team2_data)
+                               team2_data = team2_data,
+                               positive_stats=positive_stats,
+                               negative_stats=negative_stats,
+                               neutral_stats=neutral_stats)
                             #    team1_goals_added_data = team1_goals_added_data,
                             #    team2_goals_added_data = team2_goals_added_data,
                             #    season = season_manager.season,

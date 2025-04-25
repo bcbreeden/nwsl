@@ -383,12 +383,12 @@ ul {
     padding-top: 5px;
 }
 
-.above_avg {
+.above_avg, .advantage  {
     background-color: var(--dark-bg);
     color: white;
 }
 
-.below_avg {
+.below_avg, .disadvantage {
     background-color: var(--contrast-alt);
     color: white;
 }
@@ -426,4 +426,10 @@ ul {
 
 .game_stat {
     font-weight: bolder;
+}
+
+/* Team Comparison Styling */
+.stat_block_team_comparison {
+    text-align: center;
+    
 }
