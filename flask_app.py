@@ -59,35 +59,33 @@ def teams():
 
 @app.route('/team_comparison', methods=['GET', 'POST'])
 def team_comparison():
-    # if request.method == 'POST':
-        team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
-        team1_id = request.form.get('team1')
-        team2_id = request.form.get('team2')
-        team1_data = db_team_xgoals.get_team_xgoals_by_season(team1_id, season_manager.season)
-        team2_data = db_team_xgoals.get_team_xgoals_by_season(team2_id, season_manager.season)
-        ordered_stats = [
-            {'name': 'shots_for', 'type': 'positive'},
-            {'name': 'shots_against', 'type': 'negative'},
-            {'name': 'goals_for', 'type': 'positive'},
-            {'name': 'goals_against', 'type': 'negative'},
-            {'name': 'goal_difference', 'type': 'positive'},
-            {'name': 'xgoals_for', 'type': 'positive'},
-            {'name': 'xgoals_against', 'type': 'negative'},
-            {'name': 'xgoal_difference', 'type': 'positive'},
-            {'name': 'goal_difference_minus_xgoal_difference', 'type': 'neutral'},
-            {'name': 'points', 'type': 'positive'},
-            {'name': 'xpoints', 'type': 'positive'},
-            {'name': 'predicted_points', 'type': 'positive'},
-            {'name': 'point_diff', 'type': 'neutral'},
-            {'name': 'goalfor_xgoalfor_diff', 'type': 'positive'}
-        ]
+    team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
+    team1_id = request.form.get('team1')
+    team2_id = request.form.get('team2')
+    team1_data = db_team_xgoals.get_team_xgoals_by_season(team1_id, season_manager.season)
+    team2_data = db_team_xgoals.get_team_xgoals_by_season(team2_id, season_manager.season)
+    ordered_stats = [
+        {'name': 'shots_for', 'type': 'positive'},
+        {'name': 'shots_against', 'type': 'negative'},
+        {'name': 'goals_for', 'type': 'positive'},
+        {'name': 'goals_against', 'type': 'negative'},
+        {'name': 'goal_difference', 'type': 'positive'},
+        {'name': 'xgoals_for', 'type': 'positive'},
+        {'name': 'xgoals_against', 'type': 'negative'},
+        {'name': 'xgoal_difference', 'type': 'positive'},
+        {'name': 'goal_difference_minus_xgoal_difference', 'type': 'neutral'},
+        {'name': 'points', 'type': 'positive'},
+        {'name': 'xpoints', 'type': 'positive'},
+        {'name': 'predicted_points', 'type': 'positive'},
+        {'name': 'point_diff', 'type': 'neutral'},
+        {'name': 'goalfor_xgoalfor_diff', 'type': 'positive'}
+    ]
 
-        return render_template('team_comparison.html',
-                               team1_data = team1_data,
-                               team2_data = team2_data,
-                               ordered_stats = ordered_stats,
-                               teams = team_data)
-    # return redirect(url_for('teams'))
+    return render_template('team_comparison.html',
+                            team1_data = team1_data,
+                            team2_data = team2_data,
+                            ordered_stats = ordered_stats,
+                            teams = team_data)
 
 @app.route('/games')
 def games():
