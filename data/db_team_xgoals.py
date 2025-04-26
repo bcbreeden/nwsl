@@ -202,14 +202,18 @@ def insert_team_strength_history(season):
     for row in rows:
         team_id = row['team_id']
         cursor.execute('''
-            SELECT count_games FROM team_strength_history
+            SELECT count_games, team_strength FROM team_strength_history
             WHERE season = ? AND team_id = ?
             ORDER BY count_games DESC
             LIMIT 1
         ''', (season, team_id))
         existing = cursor.fetchone()
 
-        if existing is None or row['count_games'] > existing['count_games']:
+        if existing is None:
+            teams_to_update.append(row)
+        elif row['count_games'] > existing['count_games']:
+            teams_to_update.append(row)
+        elif row['count_games'] == existing['count_games'] and abs(row['team_strength'] - existing['team_strength']) > 0.001:
             teams_to_update.append(row)
 
     if not teams_to_update:
@@ -221,23 +225,46 @@ def insert_team_strength_history(season):
     today = datetime.now().strftime('%Y-%m-%d')
 
     for rank, row in enumerate(sorted_rows, start=1):
+        # Check if same count_games exists
         cursor.execute('''
-            INSERT OR REPLACE INTO team_strength_history (
-                team_id,
+            SELECT 1 FROM team_strength_history
+            WHERE team_id = ? AND season = ? AND count_games = ?
+        ''', (row['team_id'], season, row['count_games']))
+        exists = cursor.fetchone()
+
+        if exists:
+            # Update existing record
+            cursor.execute('''
+                UPDATE team_strength_history
+                SET team_strength = ?, team_rank = ?, date_stamp = ?
+                WHERE team_id = ? AND season = ? AND count_games = ?
+            ''', (
+                row['team_strength'],
+                rank,
+                today,
+                row['team_id'],
                 season,
-                team_strength,
-                team_rank,
-                date_stamp,
-                count_games
-            ) VALUES (?, ?, ?, ?, ?, ?);
-        ''', (
-            row['team_id'],
-            season,
-            row['team_strength'],
-            rank,
-            today,
-            row['count_games']
-        ))
+                row['count_games']
+            ))
+        else:
+            # Insert new record
+            cursor.execute('''
+                INSERT INTO team_strength_history (
+                    team_id,
+                    season,
+                    team_strength,
+                    team_rank,
+                    date_stamp,
+                    count_games
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                row['team_id'],
+                season,
+                row['team_strength'],
+                rank,
+                today,
+                row['count_games']
+            ))
 
     conn.commit()
     conn.close()
