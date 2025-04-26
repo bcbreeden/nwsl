@@ -5,7 +5,7 @@
 
         {% set team1 = team1_data[0] %}
         {% set team2 = team2_data[0] %}
-        
+
         <table border="1" cellpadding="8" cellspacing="0">
             <thead>
                 <tr>
@@ -15,81 +15,64 @@
                 </tr>
             </thead>
             <tbody>
-                {# Positive Stats Comparison #}
-                {% for stat in positive_stats %}
+                {% for stat in ordered_stats %}
                     <tr>
+                        {# Team 1 Stat Cell #}
                         <td class="stat_block_team_comparison
-                            {% if team1[stat] > team2[stat] %}
-                                advantage
-                            {% elif team1[stat] < team2[stat] %}
-                                disadvantage
+                            {% if stat.type == 'positive' %}
+                                {% if team1[stat.name] > team2[stat.name] %}
+                                    advantage
+                                {% elif team1[stat.name] < team2[stat.name] %}
+                                    disadvantage
+                                {% else %}
+                                    neutral
+                                {% endif %}
+                            {% elif stat.type == 'negative' %}
+                                {% if team1[stat.name] < team2[stat.name] %}
+                                    advantage
+                                {% elif team1[stat.name] > team2[stat.name] %}
+                                    disadvantage
+                                {% else %}
+                                    neutral
+                                {% endif %}
                             {% else %}
                                 neutral
                             {% endif %}
                         ">
-                            <p class="stat_text">{{ team1[stat] }}</p>
+                            <p class="stat_text">{{ team1[stat.name] }}</p>
                         </td>
-                        <td class="stat_block_team_comparison"><h4>{{ stat.replace('_', ' ').title() }}</h4></td>
-                        <td class="stat_block_team_comparison 
-                            {% if team2[stat] > team1[stat] %}
-                                advantage
-                            {% elif team2[stat] < team1[stat] %}
-                                disadvantage
-                            {% else %}
-                                neutral
-                            {% endif %}
-                        ">
-                        <p class="stat_text">{{ team2[stat] }}</p>
-                        </td>
-                    </tr>
-                {% endfor %}
         
-                {# Negative Stats Comparison #}
-                {% for stat in negative_stats %}
-                    <tr>
-                        <td class="stat_block_team_comparison 
-                            {% if team1[stat] < team2[stat] %}
-                                advantage
-                            {% elif team1[stat] > team2[stat] %}
-                                disadvantage
-                            {% else %}
-                                neutral
-                            {% endif %}
-                        ">
-                        <p class="stat_text">{{ team1[stat] }}</p>
+                        {# Stat Name Cell #}
+                        <td class="stat_block_team_comparison">
+                            <h4>{{ stat.name.replace('_', ' ').title() }}</h4>
                         </td>
-                        <td class="stat_block_team_comparison"><h4>{{ stat.replace('_', ' ').title() }}</h4></td>
-                        <td class="stat_block_team_comparison 
-                            {% if team2[stat] < team1[stat] %}
-                                advantage
-                            {% elif team2[stat] > team1[stat] %}
-                                disadvantage
-                            {% else %}
-                                neutral
-                            {% endif %}
-                        ">
-                        <p class="stat_text">{{ team2[stat] }}</p>
-                        </td>
-                    </tr>
-                {% endfor %}
         
-                {# Neutral Stats #}
-                {% for stat in neutral_stats %}
-                    <tr>
-                        <td class="stat_block_team_comparison neutral">
-                            <p class="stat_text">{{ team1[stat] }}</p>
-                        </td>
-                        <td class="stat_block_team_comparison"><h4>{{ stat.replace('_', ' ').title() }}</h4></td>
-                        <td class="stat_block_team_comparison neutral">
-                            <p class="stat_text">{{ team2[stat] }}</p>
+                        {# Team 2 Stat Cell #}
+                        <td class="stat_block_team_comparison
+                            {% if stat.type == 'positive' %}
+                                {% if team2[stat.name] > team1[stat.name] %}
+                                    advantage
+                                {% elif team2[stat.name] < team1[stat.name] %}
+                                    disadvantage
+                                {% else %}
+                                    neutral
+                                {% endif %}
+                            {% elif stat.type == 'negative' %}
+                                {% if team2[stat.name] < team1[stat.name] %}
+                                    advantage
+                                {% elif team2[stat.name] > team1[stat.name] %}
+                                    disadvantage
+                                {% else %}
+                                    neutral
+                                {% endif %}
+                            {% else %}
+                                neutral
+                            {% endif %}
+                        ">
+                            <p class="stat_text">{{ team2[stat.name] }}</p>
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
-    
-
-
-
 {% endblock %}

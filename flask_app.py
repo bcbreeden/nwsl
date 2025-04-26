@@ -64,32 +64,27 @@ def team_comparison():
         team2_id = request.form.get('team2')
         team1_data = db_team_xgoals.get_team_xgoals_by_season(team1_id, season_manager.season)
         team2_data = db_team_xgoals.get_team_xgoals_by_season(team2_id, season_manager.season)
-        positive_stats = ['shots_for', 'goals_for', 'goal_difference', 
-            'xgoals_for', 'xgoal_difference', 
-            'points', 'xpoints', 'predicted_points', 
-            'goalfor_xgoalfor_diff']
-        negative_stats = ['shots_against', 'goals_against', 'xgoals_against']
-        neutral_stats = ['goal_difference_minus_xgoal_difference', 'point_diff']
-        # team1_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team1, season_manager.season)
-        # team2_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team2, season_manager.season)
-
-        # team1_fig_json, team1_config = plot_spider(['xgoals', 'xassists', 'xplace', 'key_passes', 'primary_assists'], team1_data)
-        # team2_fig_json, team2_config = plot_spider(['xgoals', 'xassists', 'xplace', 'key_passes', 'primary_assists'], team2_data)
+        ordered_stats = [
+            {'name': 'shots_for', 'type': 'positive'},
+            {'name': 'shots_against', 'type': 'negative'},
+            {'name': 'goals_for', 'type': 'positive'},
+            {'name': 'goals_against', 'type': 'negative'},
+            {'name': 'goal_difference', 'type': 'positive'},
+            {'name': 'xgoals_for', 'type': 'positive'},
+            {'name': 'xgoals_against', 'type': 'negative'},
+            {'name': 'xgoal_difference', 'type': 'positive'},
+            {'name': 'goal_difference_minus_xgoal_difference', 'type': 'neutral'},
+            {'name': 'points', 'type': 'positive'},
+            {'name': 'xpoints', 'type': 'positive'},
+            {'name': 'predicted_points', 'type': 'positive'},
+            {'name': 'point_diff', 'type': 'neutral'},
+            {'name': 'goalfor_xgoalfor_diff', 'type': 'positive'}
+        ]
 
         return render_template('team_comparison.html',
                                team1_data = team1_data,
                                team2_data = team2_data,
-                               positive_stats=positive_stats,
-                               negative_stats=negative_stats,
-                               neutral_stats=neutral_stats)
-                            #    team1_goals_added_data = team1_goals_added_data,
-                            #    team2_goals_added_data = team2_goals_added_data,
-                            #    season = season_manager.season,
-                            #    seasons = season_manager.seasons,
-                            #    fig_json_1=team1_fig_json,
-                            #    fig_config_1=team1_config,
-                            #    fig_json_2=team2_fig_json,
-                            #    fig_config_2=team2_config)
+                               ordered_stats = ordered_stats)
     return redirect(url_for('teams'))
 
 @app.route('/games')
