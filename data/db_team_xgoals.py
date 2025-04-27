@@ -43,7 +43,7 @@ def insert_teams_xgoals_by_season(season):
         xgoal_difference = round(team.get('xgoal_difference', 0), 1)
         goal_difference_minus_xgoal_difference = round(team.get('goal_difference_minus_xgoal_difference', 0), 1)
         points = team.get('points', 0)
-        xpoints = team.get('xpoints', 0)
+        xpoints = round(team.get('xpoints', 0), 1)
         predicted_points = team['predicted_points']
         point_diff = team['point_diff']
         goalfor_xgoalfor_diff = team['goalfor_xgoalfor_diff']

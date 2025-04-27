@@ -11,8 +11,6 @@
                     <th>Team Strength</th>
                     <th>Points</th>
                     <th>xPoints</th>
-                    <!-- <th>Predicted Points</th>
-                    <th>Points Diff</th> -->
                     <th>GF</th>
                     <th>GA</th>
                     <th>Goal Diff</th>
@@ -30,8 +28,6 @@
                     <td>{{ team['team_strength'] }}</td>
                     <td>{{ team['points'] }}</td>
                     <td>{{ team['xpoints'] }}</td>
-                    <!-- <td>{{ team['predicted_points'] }}</td>
-                    <td>{{ team['point_diff'] }}</td> -->
                     <td>{{ team['goals_for'] }}</td>
                     <td>{{ team['goals_against'] }}</td>
                     <td>{{ team['goal_difference'] }}</td>
@@ -43,33 +39,6 @@
                 {% endfor %}
             </tbody>
         </table>
-
-        <div id="team_comparison_container">
-            <h2>Team Comparison</h2>
-            <p>Compare the performance of different teams.</p>
-            <form action="/team_comparison" method="POST">
-                <label for="team1">Select Option 1:</label>
-                <select id="team1" name="team1">
-                    <option value="">--Please choose an option--</option>
-                    {% for team in teams %}
-                        <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
-                    {% endfor %}
-                </select>
-                <br><br>
-        
-                <label for="team2">Select Option 2:</label>
-                <select id="team2" name="team2">
-                    <option value="">--Please choose an option--</option>
-                    {% for team in teams %}
-                        <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
-                    {% endfor %}
-                </select>
-                <br><br>
-        
-                <button type="submit">Submit</button>
-            </form>
-            <a class="nav-link" href="{{ url_for('team_comparison') }}">Compare Teams</a>
-        </div>
     </div>
 
 
