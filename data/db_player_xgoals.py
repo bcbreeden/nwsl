@@ -169,7 +169,7 @@ def get_player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
     Returns:
         list[sqlite3.Row]: A list of rows containing player data, limited, filtered, and sorted as specified.
     """
-    print('Players - Fetching {} shots on target% sorted by {} for: {}.'.format(limit, sorting_stat, season))
+    print('Players - Fetching {} player xgoals sorted by {} for: {} season.'.format(limit, sorting_stat, season))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -200,7 +200,7 @@ def get_player_xgoals_minimum_shots(season, sorting_stat, limit, minimum_shots):
     rows = cursor.fetchall()
     conn.commit()
     conn.close()
-    print('Top {} shots on target% sorted by {} for: {} returned'.format(limit, sorting_stat, season))
+    print('Top {} player xgoals sorted by {} for: {} season returned'.format(limit, sorting_stat, season))
     return rows
 
 def get_defender_minutes_played(season, sorting_stat, limit):
