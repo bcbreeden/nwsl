@@ -99,6 +99,9 @@ select {
     text-align: center;
     padding: 5px;
 }
+table, th, td, tr {
+    border: 0;
+}
 
 td, th {
     font-size: small;
@@ -457,6 +460,7 @@ ul {
 
 .stat_block_team_comparison {
     text-align: center;
+    padding: 8px;
 }
 
 .team_comparison_select {

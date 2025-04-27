@@ -65,21 +65,20 @@ def team_comparison():
     team1_data = db_team_xgoals.get_team_xgoals_by_season(team1_id, season_manager.season)
     team2_data = db_team_xgoals.get_team_xgoals_by_season(team2_id, season_manager.season)
     ordered_stats = [
-        {'name': 'count_games', 'type': 'neutral'},
-        {'name': 'shots_for', 'type': 'positive'},
-        {'name': 'shots_against', 'type': 'negative'},
-        {'name': 'goals_for', 'type': 'positive'},
-        {'name': 'goals_against', 'type': 'negative'},
-        {'name': 'goal_difference', 'type': 'positive'},
-        {'name': 'xgoals_for', 'type': 'positive'},
-        {'name': 'xgoals_against', 'type': 'negative'},
-        {'name': 'xgoal_difference', 'type': 'positive'},
-        {'name': 'goal_difference_minus_xgoal_difference', 'type': 'neutral'},
-        {'name': 'points', 'type': 'positive'},
-        {'name': 'xpoints', 'type': 'positive'},
-        {'name': 'predicted_points', 'type': 'positive'},
-        {'name': 'point_diff', 'type': 'neutral'},
-        {'name': 'goalfor_xgoalfor_diff', 'type': 'positive'}
+        {'name': 'count_games', 'label': 'Matches Played', 'type': 'neutral'},
+        {'name': 'shots_for', 'label': 'Shots For', 'type': 'positive'},
+        {'name': 'shots_against', 'label': 'Shots Against', 'type': 'negative'},
+        {'name': 'goals_for', 'label': 'Goals For', 'type': 'positive'},
+        {'name': 'goals_against', 'label': 'Goals Against', 'type': 'negative'},
+        {'name': 'goal_difference', 'label': 'Goal Differential', 'type': 'positive'},
+        {'name': 'xgoals_for', 'label': 'xGoals For', 'type': 'positive'},
+        {'name': 'xgoals_against', 'label': 'xGoals Against', 'type': 'negative'},
+        {'name': 'xgoal_difference', 'label': 'xGoals Differential', 'type': 'positive'},
+        {'name': 'goal_difference_minus_xgoal_difference', 'label': 'Goal Diff - xGoal Diff', 'type': 'neutral'},
+        {'name': 'points', 'label': 'Points', 'type': 'positive'},
+        {'name': 'xpoints', 'label': 'xPoints', 'type': 'positive'},
+        {'name': 'point_diff', 'label': 'Point Differential', 'type': 'neutral'},
+        {'name': 'goalfor_xgoalfor_diff', 'label': 'Goal For | xGoal For Diff', 'type': 'positive'}
     ]
 
     return render_template('team_comparison.html',

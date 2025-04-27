@@ -33,11 +33,11 @@
                 {% set team1 = team1_data[0] %}
                 {% set team2 = team2_data[0] %}
 
-                <table border="1" cellpadding="8" cellspacing="0">
+                <table id="team_comparison_table" border="1" cellpadding="8" cellspacing="0">
                     <thead>
                         <tr>
                             <th><img class="team_logo_comparison" src="{{ url_for('static', filename='img/' + team1['team_abbreviation'] + '.png') }}"></th>
-                            <th>Stat</th>
+                            <th></th>
                             <th><img class="team_logo_comparison" src="{{ url_for('static', filename='img/' + team2['team_abbreviation'] + '.png') }}"></th>
                         </tr>
                     </thead>
@@ -71,7 +71,7 @@
                 
                                 {# Stat Name Cell #}
                                 <td class="stat_block_team_comparison">
-                                    <h4>{{ stat.name.replace('_', ' ').title() }}</h4>
+                                    <h4>{{ stat.label }}</h4>
                                 </td>
                 
                                 {# Team 2 Stat Cell #}
