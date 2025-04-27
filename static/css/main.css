@@ -32,7 +32,7 @@ body {
     flex-direction: column;
 }
 
-a, h2, h3, th, .grid_button, .current, .dt-paging-button{
+a, h2, h3, th, .grid_button, .current, .dt-paging-button, .form_button{
     font-family: "Montserrat", serif;
     font-weight: 700;
     font-style: normal;
@@ -87,6 +87,17 @@ main {
 
 p, a {
     font-size: medium;
+}
+
+select {
+    border: 2px solid var(--dark-bg);
+    border-radius: 3px;
+    margin: 5px;
+    font-family: "Montserrat", serif;
+    background-color: var(--block-bg);
+    font-weight: 600;
+    text-align: center;
+    padding: 5px;
 }
 
 td, th {
@@ -307,7 +318,7 @@ ul {
     color: var(--font-color);
 }
 
-.player_report_outer_container, .teams_container{
+.player_report_outer_container, .teams_container, .compare_teams_outer_container {
     display: flex;
     width: 100%;
     justify-content: center;
@@ -429,8 +440,28 @@ ul {
 }
 
 /* Teams Styling */
+.form_button {
+    background-color: var(--white);
+    border: 3px solid var(--dark-bg);
+    border-radius: 5px;
+    color: var(--dark-bg);
+    cursor: pointer;
+    padding: 6px;
+
+}
+
+.form_button:hover {
+    background-color: var(--dark-bg);
+    color: var(--block-bg);
+}
+
 .stat_block_team_comparison {
     text-align: center;
+}
+
+.team_comparison_select {
+    display: flex;
+    flex-direction: row;
 }
 
 .teams_container {
@@ -438,7 +469,25 @@ ul {
     justify-content: flex-start;
 }
 
+.team_logo_comparison {
+    height: auto;
+    width: 150px;
+    margin: 15px;
+}
+
 #teams {
     width: 100% !important;
 }
 
+#team_comparison_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px;
+}
+
+#team_comparison_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

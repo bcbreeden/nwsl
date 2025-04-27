@@ -65,6 +65,7 @@ def team_comparison():
     team1_data = db_team_xgoals.get_team_xgoals_by_season(team1_id, season_manager.season)
     team2_data = db_team_xgoals.get_team_xgoals_by_season(team2_id, season_manager.season)
     ordered_stats = [
+        {'name': 'count_games', 'type': 'neutral'},
         {'name': 'shots_for', 'type': 'positive'},
         {'name': 'shots_against', 'type': 'negative'},
         {'name': 'goals_for', 'type': 'positive'},
