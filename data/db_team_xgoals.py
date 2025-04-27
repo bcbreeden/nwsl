@@ -136,7 +136,6 @@ def calculate_feature_min_max(teams_data):
         'xpoints',
         'points',
         'goal_difference_minus_xgoal_difference',
-        'point_diff',
         'goalfor_xgoalfor_diff'
     ]
     feature_mins = {key: float('inf') for key in keys}
@@ -158,7 +157,6 @@ def calculate_team_strength(team, feature_mins, feature_maxs):
         'xpoints': team.get('xpoints', 0),
         'points': team.get('points', 0),
         'goal_difference_minus_xgoal_difference': team.get('goal_difference_minus_xgoal_difference', 0),
-        'point_diff': team.get('point_diff', 0),
         'goalfor_xgoalfor_diff': team.get('goalfor_xgoalfor_diff', 0)
     }
 
@@ -167,16 +165,20 @@ def calculate_team_strength(team, feature_mins, feature_maxs):
         min_val = feature_mins[key]
         max_val = feature_maxs[key]
         val = features[key]
-        normalized[key] = (val - min_val) / (max_val - min_val) if max_val != min_val else 0.5
+        base_normalized = (val - min_val) / (max_val - min_val) if max_val != min_val else 0.5
+
+        if key == 'goalfor_xgoalfor_diff':
+            normalized[key] = adjust_goalfor_xgoalfor_diff(val)
+        else:
+            normalized[key] = base_normalized
 
     team_strength = (
-        0.30 * normalized['xgoal_difference'] +
-        0.20 * normalized['goal_difference'] +
-        0.15 * normalized['xpoints'] +
-        0.10 * normalized['points'] +
-        0.10 * normalized['goal_difference_minus_xgoal_difference'] +
-        0.10 * normalized['point_diff'] +
-        0.05 * normalized['goalfor_xgoalfor_diff']
+        0.333 * normalized['xgoal_difference'] +
+        0.222 * normalized['goal_difference'] +
+        0.167 * normalized['xpoints'] +
+        0.111 * normalized['points'] +
+        0.111 * normalized['goal_difference_minus_xgoal_difference'] +
+        0.056 * normalized['goalfor_xgoalfor_diff']
     )
     
     return round(team_strength * 100, 1)
@@ -305,3 +307,11 @@ def get_team_strength_by_season(season):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+def adjust_goalfor_xgoalfor_diff(value):
+    if value >= 0:
+        # Reward positive overperformance with a slight boost
+        return min(1.0, 0.6 + 0.4 * value)  # Caps at 1.0
+    else:
+        # Penalize underperformance but less harshly
+        return max(0.0, 0.5 + value)  # Doesn't drop too far
