@@ -166,11 +166,7 @@ def calculate_team_strength(team, feature_mins, feature_maxs):
         max_val = feature_maxs[key]
         val = features[key]
         base_normalized = (val - min_val) / (max_val - min_val) if max_val != min_val else 0.5
-
-        if key == 'goalfor_xgoalfor_diff':
-            normalized[key] = adjust_goalfor_xgoalfor_diff(val)
-        else:
-            normalized[key] = base_normalized
+        normalized[key] = base_normalized
 
     team_strength = (
         0.333 * normalized['xgoal_difference'] +
@@ -307,11 +303,3 @@ def get_team_strength_by_season(season):
     rows = cursor.fetchall()
     conn.close()
     return rows
-
-def adjust_goalfor_xgoalfor_diff(value):
-    if value >= 0:
-        # Reward positive overperformance with a slight boost
-        return min(1.0, 0.6 + 0.4 * value)  # Caps at 1.0
-    else:
-        # Penalize underperformance but less harshly
-        return max(0.0, 0.5 + value)  # Doesn't drop too far
