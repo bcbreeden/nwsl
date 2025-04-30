@@ -2,13 +2,24 @@
 
 {% block content %}
 <!-- Team Logos -->
- <section id="team_logo_contianer">
-    {% for team in teams_data %}
-        <img class="team-icon-medium" src="{{ url_for('static', filename='img/' + team['team_abbreviation'] + '.png') }}">
-    {% endfor %}
- </section>
+ <section id="index_container">
+    <section id="team_logo_contianer">
+        {% for team in teams_data %}
+            <img class="team-icon-medium" src="{{ url_for('static', filename='img/' + team['team_abbreviation'] + '.png') }}">
+        {% endfor %}
+    </section>
+    <h1 id="index_header">NWSL Insights</h1>
+    <section id="site_description">
+       <p>Welcome to your home for exploring the NWSL through data. This site offers detailed, season-by-season insights into the league, including comprehensive profiles for players, goalkeepers, teams, and individual games. Whether you're here to analyze trends, dive into team stats, or get a better understanding of your favorite club, everything is structured to make the numbers easy to explore and understand.</p>
 
-<div class="plot_container">
+        <p>You’ll find advanced metrics like expected goals, shot stopping efficiency, goal difference, and more, all designed to go beyond the final score. Curious about how two teams stack up? The Team Comparison Tool lets you directly compare clubs across multiple performance categories to see who really has the edge.</p>
+
+        <p>If you are interested in understanding the metrics that does beyond the scoreboard, you’re in the right place.</p>
+    </section>
+
+<!-- <div class="plot_container">
     {{ team_goal_point_plot | safe }}
-</div>
+</div> -->
+</section>
+
 {% endblock %}

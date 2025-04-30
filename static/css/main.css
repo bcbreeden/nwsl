@@ -135,6 +135,19 @@ ul {
     height: 100%;
     background-color: var(--block-bg);
     flex-wrap: wrap;
+    justify-content: center;
+}
+
+#index_container {
+    margin-top: 20px;
+    width: 80%;
+    text-align: center;
+}
+
+#index_header {
+    color: var(--dark-bg);
+    font-size: 60px;
+    margin: 20px;
 }
 
 #menu-icon {
@@ -149,8 +162,16 @@ ul {
     margin-top: 30px;
 }
 
+#site_description {
+    border: 2px solid var(--dark-bg);
+    border-radius: 5px;
+    margin-top: 20px;
+    padding: 20px;
+}
+
 #title, #block-content {
     padding-left: var(--padding-left);
+    padding-right: var(--padding-left);
 }
 
 #season_select_form {
@@ -297,7 +318,7 @@ ul {
 }
 
 .team-icon-medium {
-    height: 80px;
+    height: 60px;
     width: auto;
     margin: 15px;
 }
