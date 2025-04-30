@@ -29,7 +29,7 @@ def index():
     if request.method == 'POST':
         new_season = request.form.get('season_year')
         season_manager.set_season(new_season)
-    team_points_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
+    teams_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
     top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'goals', 5)
     top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'primary_assists', 5)
     shots_on_target = db_player_xgoals.get_player_xgoals_minimum_shots(season_manager.season, 'shots_on_target_perc', 5, 10)
@@ -37,7 +37,7 @@ def index():
     minutes_played_df = db_player_xgoals.get_defender_minutes_played(season_manager.season, 'minutes_played', 5)
     minutes_played_non_df = db_player_xgoals.get_minutes_played_non_df(season_manager.season, 'minutes_played', 5)
     return render_template('index.html',
-                           team_points_data = team_points_data,
+                           teams_data = teams_data,
                            top_scorers = top_5_goalscorers,
                            top_assists = top_5_assists,
                            shots_on_target = shots_on_target,
@@ -45,7 +45,25 @@ def index():
                            minutes_played_non_df = minutes_played_non_df,
                            total_shots = total_shots,
                            season = season_manager.season,
-                           seasons =season_manager.seasons)
+                           seasons = season_manager.seasons)
+
+@app.route('/league')
+def league():
+    top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'goals', 5)
+    top_5_assists = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'primary_assists', 5)
+    shots_on_target = db_player_xgoals.get_player_xgoals_minimum_shots(season_manager.season, 'shots_on_target_perc', 5, 10)
+    total_shots = db_player_xgoals.get_top_player_xgoals_stat(season_manager.season, 'shots', 5)
+    minutes_played_df = db_player_xgoals.get_defender_minutes_played(season_manager.season, 'minutes_played', 5)
+    minutes_played_non_df = db_player_xgoals.get_minutes_played_non_df(season_manager.season, 'minutes_played', 5)
+    return render_template('league.html',
+                            top_scorers = top_5_goalscorers,
+                            top_assists = top_5_assists,
+                            shots_on_target = shots_on_target,
+                            minutes_played_df = minutes_played_df,
+                            minutes_played_non_df = minutes_played_non_df,
+                            total_shots = total_shots,
+                            season = season_manager.season,
+                            seasons = season_manager.seasons)
 
 @app.route('/teams')
 def teams():
@@ -85,7 +103,9 @@ def team_comparison():
                             team1_data = team1_data,
                             team2_data = team2_data,
                             ordered_stats = ordered_stats,
-                            teams = team_data)
+                            teams = team_data,
+                            season = season_manager.season,
+                            seasons = season_manager.seasons)
 
 @app.route('/games')
 def games():

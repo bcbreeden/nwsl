@@ -167,7 +167,8 @@ ul {
 #season_year {
     background-color: var(--dark-bg);
     color: var(--block-bg);
-    border: 1 solid white;
+    border-color: white;
+    border: 1px solid;
     border-radius: 3px;
     width: auto;
     padding: 3px;
@@ -293,6 +294,16 @@ ul {
 .team-icon {
     height: 40px;
     width: auto;
+}
+
+.team-icon-medium {
+    height: 80px;
+    width: auto;
+    margin: 15px;
+}
+
+#team_logo_contianer {
+    text-align: center;
 }
 
 /* DATA TABLE STLYING */
