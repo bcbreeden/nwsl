@@ -118,49 +118,74 @@ def update_midfielder_strength(season):
 
 def update_attacker_strength(season):
     players_data = get_top_player_xgoals_stat(season)
+    goals_added_data = get_all_players_goals_added_by_season(season)
 
-    # Step 1: Filter for attackers (Wingers and Strikers)
-    # Convert rows to dicts for editing
-    all_attackers = [dict(p) for p in players_data if p['general_position'] in ('W', 'ST')]
+    # Convert and filter for attackers
+    xgoals_dict = {p['player_id']: dict(p) for p in players_data}
+    goals_added_dict = {p['player_id']: dict(p) for p in goals_added_data}
 
-    if not all_attackers:
-        print("No attackers found.")
-        return
+    attackers = []
+    for player_id, player in xgoals_dict.items():
+        if player['general_position'] not in ('W', 'ST'):
+            continue
+        if player_id not in goals_added_dict:
+            continue
 
-    # Split into two groups
-    qualified = [p for p in all_attackers if p['minutes_played'] >= MINIMUM_MINUTES]
-    unqualified = [p for p in all_attackers if p['minutes_played'] < MINIMUM_MINUTES]
+        ga = goals_added_dict[player_id]
+        combined = {
+            'player_id': player_id,
+            'season': player['season'],
+            'xgoals': player['xgoals'],
+            'goals': player['goals'],
+            'xassists': player['xassists'],
+            'shots_on_target': player['shots_on_target'],
+            'points_added': player['points_added'],
+            'shooting_ga': ga['shooting_goals_added_raw'],
+            'receiving_ga': ga['receiving_goals_added_raw'],
+            'dribbling_ga': ga['dribbling_goals_added_raw'],
+            'minutes_played': player['minutes_played']
+        }
+        attackers.append(combined)
 
-    # If none are qualified, skip scoring
+    qualified = [p for p in attackers if p['minutes_played'] >= MINIMUM_MINUTES]
+    unqualified = [p for p in attackers if p['minutes_played'] < MINIMUM_MINUTES]
+
     if not qualified:
         print("No qualified attackers to score.")
         return
 
-    # Compute min/max for normalization
+    # Normalize each metric
     min_xg, max_xg = get_range(qualified, 'xgoals')
     min_goals, max_goals = get_range(qualified, 'goals')
     min_xa, max_xa = get_range(qualified, 'xassists')
     min_sot, max_sot = get_range(qualified, 'shots_on_target')
     min_pts, max_pts = get_range(qualified, 'points_added')
+    min_shoot, max_shoot = get_range(qualified, 'shooting_ga')
+    min_recv, max_recv = get_range(qualified, 'receiving_ga')
+    min_drib, max_drib = get_range(qualified, 'dribbling_ga')
 
-    # Connect to DB
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
 
-    # Update qualified attackers
-    for player in qualified:
-        xg = normalize(player['xgoals'], min_xg, max_xg)
-        goals = normalize(player['goals'], min_goals, max_goals)
-        xa = normalize(player['xassists'], min_xa, max_xa)
-        sot = normalize(player['shots_on_target'], min_sot, max_sot)
-        pts = normalize(player['points_added'], min_pts, max_pts)
+    for p in qualified:
+        xg = normalize(p['xgoals'], min_xg, max_xg)
+        goals = normalize(p['goals'], min_goals, max_goals)
+        xa = normalize(p['xassists'], min_xa, max_xa)
+        sot = normalize(p['shots_on_target'], min_sot, max_sot)
+        pts = normalize(p['points_added'], min_pts, max_pts)
+        shoot = normalize(p['shooting_ga'], min_shoot, max_shoot)
+        recv = normalize(p['receiving_ga'], min_recv, max_recv)
+        drib = normalize(p['dribbling_ga'], min_drib, max_drib)
 
         strength_score = round((
-            0.30 * xg +
-            0.25 * goals +
-            0.20 * xa +
-            0.15 * sot +
-            0.10 * pts
+            0.25 * xg +
+            0.20 * goals +
+            0.15 * xa +
+            0.10 * sot +
+            0.10 * pts +
+            0.10 * shoot +
+            0.05 * recv +
+            0.05 * drib
         ) * 100, 1)
 
         cursor.execute(
@@ -169,20 +194,20 @@ def update_attacker_strength(season):
             SET player_strength = ?
             WHERE player_id = ? AND season = ?
             ''',
-            (strength_score, player['player_id'], player['season'])
+            (strength_score, p['player_id'], p['season'])
         )
 
-    # Set unqualified players to 0
-    for player in unqualified:
+    for p in unqualified:
         cursor.execute(
             '''
             UPDATE player_xgoals
             SET player_strength = 0
             WHERE player_id = ? AND season = ?
             ''',
-            (player['player_id'], player['season'])
+            (p['player_id'], p['season'])
         )
 
     conn.commit()
     conn.close()
-    print(f"Updated {len(qualified)} qualified attackers and set {len(unqualified)} unqualified to 0.")
+    print(f"Updated strength for {len(qualified)} attackers, reset {len(unqualified)} others.")
+
