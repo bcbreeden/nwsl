@@ -19,7 +19,18 @@
                 
             </div>
         </section>
-        <section class="player_report_stats_container">
+
+        {% if keeper_xgoal_data['minutes_played'] < 270 %}
+            <section id="player_report_warning">
+                <h2>{{keeper_xgoal_data['player_first_name']}} {{keeper_xgoal_data['player_last_name']}} has played less than 270 minutes this season.</h2>
+                <p>Players require at least three games of playing time before their detailed statistics can be calculated accurately.</p>
+                <p>Current Minutes: {{keeper_xgoal_data['minutes_played']}}</p>
+            </section>
+            <section class="player_report_stats_container hidden">
+        {% else %}
+            <section class="player_report_stats_container">
+        {% endif %}
+
             <div class="plot_container" id="keeper_plot">
             </div>
             <script>

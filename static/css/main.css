@@ -162,7 +162,13 @@ ul {
     margin-top: 30px;
 }
 
-#site_description {
+#player_report_warning {
+    text-align: center;
+    background-color: var(--dark-bg);
+    color: white;
+}
+
+#site_description, #player_report_warning {
     border: 2px solid var(--dark-bg);
     border-radius: 5px;
     margin-top: 20px;
