@@ -29,6 +29,7 @@ if __name__ == '__main__':
     db_player_xgoals.update_xgoals_xassists_per_90(season)
 
     db_player_strength.update_attacker_strength(season)
+    db_player_strength.update_midfielder_strength(season)
 
     db_player_xpass.insert_player_xpass_by_season(season)
 

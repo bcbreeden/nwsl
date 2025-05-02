@@ -249,3 +249,35 @@ def get_player_goals_added_by_season(player_id, season):
     conn.close()
     print('Player goals added returned.')
     return row
+
+def get_all_players_goals_added_by_season(season):
+    print('Fetching all players goals added. Season: {}'.format(season))
+    # obj_id = generate_player_season_id(player_id=player_id, season=str(season))
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = f'''
+        SELECT 
+            pga.*,
+            pi.*,
+            ti.*
+            FROM 
+                player_goals_added AS pga
+            JOIN 
+                player_info AS pi
+            ON 
+                pga.player_id = pi.player_id
+            JOIN
+                team_info AS ti
+            ON
+                pga.team_id = ti.team_id   
+            WHERE
+                pga.season = ?;
+        '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print('All players goals added returned.')
+    return rows
