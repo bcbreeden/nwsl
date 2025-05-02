@@ -150,6 +150,7 @@ def create_tables():
             max_points_added REAL,
             max_xpoints_added REAL,
             max_xgoals_xassists_per_90 REAL,
+            player_strength REAL,
             FOREIGN KEY (team_id) REFERENCES team_info(team_id),
             FOREIGN KEY (player_id) REFERENCES player_info(player_id)
         )
