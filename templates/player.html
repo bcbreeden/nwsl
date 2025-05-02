@@ -19,6 +19,7 @@
                 
             </div>
         </section>
+
         {% if player_xgoals_data['minutes_played'] < 270 %}
             <section id="player_report_warning">
                 <h2>{{player_xgoals_data['player_first_name']}} {{player_xgoals_data['player_last_name']}} has played less than 270 minutes this season.</h2>
@@ -29,6 +30,7 @@
         {% else %}
             <section class="player_report_stats_container">
         {% endif %}
+        
             <div class="plot_container" id="xgoals_plot">
             </div>
             <script>
