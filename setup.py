@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
         game_ids = db_games.get_game_ids_by_season(season)
         for game_id in game_ids:
-            db_game_shots.insert_all_game_shots(game_id)
+            db_game_shots.insert_all_game_shots(game_id, season)
             db_game_flow.insert_flow_by_game_id(game_id)
         print(str(season), 'season setup complete.')
         print('Buffering, next season will begin in 15 seconds.')

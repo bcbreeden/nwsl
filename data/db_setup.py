@@ -628,7 +628,9 @@ def create_tables():
             assist_cross INTEGER,
             pattern_of_play TEXT,
             shot_order INTEGER,
-            FOREIGN KEY (game_id) REFERENCES games(game_id)
+            season INTEGER,
+            FOREIGN KEY (game_id) REFERENCES games(game_id),
+            UNIQUE(game_id, shot_order)
         )
     ''')
 

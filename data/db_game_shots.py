@@ -2,8 +2,8 @@ from api import make_asa_api_call
 from .data_util import get_db_path
 import sqlite3
 
-def insert_all_game_shots(game_id):
-    print(f'Attempting to insert all shots for game {game_id}...')
+def insert_all_game_shots(game_id, season):
+    print(f'Attempting to insert all shots for game {game_id}, season: {season}...')
     shots_data = make_asa_api_call(f'nwsl/games/shots?game_id={game_id}')[1]
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
@@ -65,15 +65,16 @@ def insert_all_game_shots(game_id):
                 assist_through_ball,
                 assist_cross,
                 pattern_of_play,
-                shot_order
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                shot_order,
+                season
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             game_id_val, period_id, expanded_minute, game_minute, team_id,
             shooter_player_id, assist_player_id, shot_location_x, shot_location_y,
             shot_end_location_x, shot_end_location_y, distance_from_goal,
             distance_from_goal_yds, blocked, blocked_x, blocked_y,
             goal, own_goal, home_score, away_score, shot_xg, shot_psxg,
-            head, assist_through_ball, assist_cross, pattern_of_play, shot_order
+            head, assist_through_ball, assist_cross, pattern_of_play, shot_order, season
         ))
         conn.commit()
 

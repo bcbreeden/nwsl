@@ -1,7 +1,7 @@
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
-                db_manager_info, db_referee_info, db_stadium_info, db_player_strength)
+                db_manager_info, db_referee_info, db_stadium_info, db_player_strength, db_game_shots)
 from datetime import datetime
 
 '''
@@ -43,5 +43,6 @@ if __name__ == '__main__':
     print('Adding game flow data...')
     game_ids = db_games.get_game_ids_by_season(season)
     for game_id in game_ids:
+        db_game_shots.insert_all_game_shots(game_id, season)
         db_game_flow.insert_flow_by_game_id(game_id)
     print('Game flow data added.')
