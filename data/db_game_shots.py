@@ -74,7 +74,7 @@ def insert_all_game_shots(game_id, season):
             shot_end_location_x, shot_end_location_y, distance_from_goal,
             distance_from_goal_yds, blocked, blocked_x, blocked_y,
             goal, own_goal, home_score, away_score, shot_xg, shot_psxg,
-            head, assist_through_ball, assist_cross, pattern_of_play, shot_order, season
+            head, assist_through_ball, assist_cross, lower(pattern_of_play), shot_order, season
         ))
         conn.commit()
 
@@ -115,4 +115,29 @@ def get_goals_by_game_id(game_id):
     conn.close()
 
     print(f'{len(rows)} goals retrieved for game {game_id}.')
+    return rows
+
+def get_shots_by_type(shot_type):
+    print(f'Fetching all {shot_type} shots...')
+    available_shot_types = ['regular', 'set piece', 'fastbreak', 'free kick', 'penalty']
+    shot_type = shot_type.lower()
+
+
+    if shot_type not in available_shot_types:
+        raise ValueError(f"Invalid shot type. Available types are: {', '.join(available_shot_types)}")
+
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT * FROM game_shots
+        WHERE pattern_of_play = ?
+        ORDER BY shot_order ASC
+    ''', (shot_type,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    print(f'{len(rows)} {shot_type} shots retrieved.')
     return rows
