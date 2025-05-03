@@ -36,6 +36,39 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     print('Goalkeeper goals added returned.')
     return row
 
+def get_all_goalkeeper_goals_added_by_season(season):
+    print('Fetching all goalkeeper goals added for season: {}'.format(season))
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = '''
+        SELECT 
+            gkga.*,
+            pi.*,
+            ti.*
+            FROM 
+                goalkeeper_goals_added AS gkga
+            JOIN 
+                player_info AS pi
+            ON 
+                gkga.player_id = pi.player_id
+            JOIN
+                team_info AS ti
+            ON
+                gkga.team_id = ti.team_id
+            WHERE
+                gkga.season = ?;
+    '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    if len(rows) == 0:
+        print(f"WARNING: No goalkeeper goals added data found for season={season}.")
+    conn.commit()
+    conn.close()
+    print('Goalkeeper goals added returned.')
+    return rows
+
 '''
 INSERT GOALS ADDED DATA
 '''

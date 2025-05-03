@@ -310,6 +310,7 @@ def create_tables():
         goals_minus_xgoals_gk REAL,
         goals_divided_by_xgoals_gk REAL,
         save_perc REAL,
+        player_strength REAL,
 
         avg_minutes_played REAL,
         avg_shots_faced REAL,

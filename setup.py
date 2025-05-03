@@ -21,6 +21,7 @@ if __name__ == '__main__':
 
         db_goalkeeper_goals_added.insert_goalkeeper_goals_added_by_season(season)
         db_goalkeeper_xgoals.insert_goalkeeper_xgoals_by_season(season)
+        db_goalkeeper_xgoals.update_goalkeeper_strength(season)
         
         db_player_goals_added.insert_player_goals_added_by_season(season)
 
