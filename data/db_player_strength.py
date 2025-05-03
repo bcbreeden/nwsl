@@ -112,11 +112,18 @@ def update_defender_strength(season):
     players_xgoals = get_top_player_xgoals_stat(season)
     players_xpass = get_all_player_xpass(season)
     player_goals_added = get_all_players_goals_added_by_season(season)
+    penalty_shots = get_shots_by_type('penalty', season)
 
     # Create lookup dictionaries
     xgoals_dict = {p['player_id']: dict(p) for p in players_xgoals}
     xpass_dict = {p['player_id']: dict(p) for p in players_xpass}
     goals_added_dict = {p['player_id']: dict(p) for p in player_goals_added}
+
+    # Sum penalty xG per player
+    penalty_xg_by_player = {}
+    for shot in penalty_shots:
+        pid = shot['shooter_player_id']
+        penalty_xg_by_player[pid] = penalty_xg_by_player.get(pid, 0) + shot['shot_xg']
 
     defenders = []
     for player_id, p_xpass in xpass_dict.items():
@@ -128,10 +135,15 @@ def update_defender_strength(season):
         xg_data = xgoals_dict[player_id]
         ga_data = goals_added_dict[player_id]
 
+        # Deduct penalty xG
+        original_xg = xg_data['xgoals']
+        pk_xg = penalty_xg_by_player.get(player_id, 0)
+        adjusted_xg = max(0, original_xg - pk_xg)
+
         combined = {
             'player_id': player_id,
             'season': p_xpass['season'],
-            'xgoals': xg_data['xgoals'],
+            'xgoals': adjusted_xg,
             'points_added': xg_data['points_added'],
             'passes_completed_over_expected': p_xpass['passes_completed_over_expected'],
             'pass_completion_percentage': p_xpass['pass_completion_percentage'],
@@ -211,16 +223,22 @@ def update_defender_strength(season):
     conn.close()
     print(f"Updated strength for {len(qualified)} defenders, reset {len(unqualified)} others.")
 
-
 def update_midfielder_strength(season):
     players_xgoals = get_top_player_xgoals_stat(season)
     players_xpass = get_all_player_xpass(season)
     player_goals_added = get_all_players_goals_added_by_season(season)
+    penalty_shots = get_shots_by_type('penalty', season)
 
     # Build dictionaries for joins
     xgoals_dict = {p['player_id']: dict(p) for p in players_xgoals}
     xpass_dict = {p['player_id']: dict(p) for p in players_xpass}
     goals_added_dict = {p['player_id']: dict(p) for p in player_goals_added}
+
+    # Sum penalty xG per player
+    penalty_xg_by_player = {}
+    for shot in penalty_shots:
+        pid = shot['shooter_player_id']
+        penalty_xg_by_player[pid] = penalty_xg_by_player.get(pid, 0) + shot['shot_xg']
 
     # Join and filter midfielders
     midfielders = []
@@ -230,19 +248,27 @@ def update_midfielder_strength(season):
         if player_id not in xgoals_dict or player_id not in goals_added_dict:
             continue
 
+        xg_data = xgoals_dict[player_id]
+        ga_data = goals_added_dict[player_id]
+
+        # Deduct penalty xG
+        original_pts = xg_data['points_added']
+        pk_xg = penalty_xg_by_player.get(player_id, 0)
+        adjusted_pts = max(0, original_pts - pk_xg)
+
         combined = {
             'player_id': player_id,
             'season': p_xpass['season'],
-            'xassists': xgoals_dict[player_id]['xassists'],
-            'points_added': xgoals_dict[player_id]['points_added'],
+            'xassists': xg_data['xassists'],
+            'points_added': adjusted_pts,
             'passes_completed_over_expected': p_xpass['passes_completed_over_expected'],
             'pass_completion_percentage': p_xpass['pass_completion_percentage'],
             'share_team_touches': p_xpass['share_team_touches'],
             'minutes_played': p_xpass['minutes_played'],
-            'passing_ga': goals_added_dict[player_id]['passing_goals_added_raw'],
-            'receiving_ga': goals_added_dict[player_id]['receiving_goals_added_raw'],
-            'interrupting_ga': goals_added_dict[player_id]['interrupting_goals_added_raw'],
-            'player_name': xgoals_dict[player_id].get('player_name', 'Unknown')
+            'passing_ga': ga_data['passing_goals_added_raw'],
+            'receiving_ga': ga_data['receiving_goals_added_raw'],
+            'interrupting_ga': ga_data['interrupting_goals_added_raw'],
+            'player_name': xg_data.get('player_name', 'Unknown')
         }
         midfielders.append(combined)
 
@@ -312,14 +338,23 @@ def update_midfielder_strength(season):
     conn.close()
     print(f"Updated strength for {len(qualified)} midfielders, reset {len(unqualified)} others.")
 
-
 def update_attacker_strength(season):
     players_data = get_top_player_xgoals_stat(season)
     goals_added_data = get_all_players_goals_added_by_season(season)
+    penalty_shots = get_shots_by_type('penalty', season)
 
     # Convert and filter for attackers
     xgoals_dict = {p['player_id']: dict(p) for p in players_data}
     goals_added_dict = {p['player_id']: dict(p) for p in goals_added_data}
+
+    # Tally PK goals and xG by player
+    penalty_xg_by_player = {}
+    penalty_goals_by_player = {}
+    for shot in penalty_shots:
+        pid = shot['shooter_player_id']
+        penalty_xg_by_player[pid] = penalty_xg_by_player.get(pid, 0) + shot['shot_xg']
+        if shot['goal']:
+            penalty_goals_by_player[pid] = penalty_goals_by_player.get(pid, 0) + 1
 
     attackers = []
     for player_id, player in xgoals_dict.items():
@@ -329,11 +364,16 @@ def update_attacker_strength(season):
             continue
 
         ga = goals_added_dict[player_id]
+
+        # Remove PK goals and xG
+        adjusted_xg = max(0, player['xgoals'] - penalty_xg_by_player.get(player_id, 0))
+        adjusted_goals = max(0, player['goals'] - penalty_goals_by_player.get(player_id, 0))
+
         combined = {
             'player_id': player_id,
             'season': player['season'],
-            'xgoals': player['xgoals'],
-            'goals': player['goals'],
+            'xgoals': adjusted_xg,
+            'goals': adjusted_goals,
             'xassists': player['xassists'],
             'shots_on_target': player['shots_on_target'],
             'points_added': player['points_added'],
@@ -407,4 +447,3 @@ def update_attacker_strength(season):
     conn.commit()
     conn.close()
     print(f"Updated strength for {len(qualified)} attackers, reset {len(unqualified)} others.")
-
