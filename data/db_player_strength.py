@@ -4,6 +4,7 @@ from .db_player_xpass import get_all_player_xpass
 from .db_player_goals_added import get_all_players_goals_added_by_season
 from .db_goalkeeper_goals_added import get_all_goalkeeper_goals_added_by_season
 from .db_goalkeeper_xgoals import get_all_goalkeepers_xgoals_by_season
+from .db_game_shots import get_shots_by_type
 import sqlite3
 
 def normalize(val, min_val, max_val):

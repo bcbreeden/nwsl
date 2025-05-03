@@ -117,7 +117,7 @@ def get_goals_by_game_id(game_id):
     print(f'{len(rows)} goals retrieved for game {game_id}.')
     return rows
 
-def get_shots_by_type(shot_type):
+def get_shots_by_type(shot_type, season):
     print(f'Fetching all {shot_type} shots...')
     available_shot_types = ['regular', 'set piece', 'fastbreak', 'free kick', 'penalty']
     shot_type = shot_type.lower()
@@ -132,9 +132,9 @@ def get_shots_by_type(shot_type):
 
     cursor.execute('''
         SELECT * FROM game_shots
-        WHERE pattern_of_play = ?
+        WHERE pattern_of_play = ? AND season = ?
         ORDER BY shot_order ASC
-    ''', (shot_type,))
+    ''', (shot_type,season))
     
     rows = cursor.fetchall()
     conn.close()
