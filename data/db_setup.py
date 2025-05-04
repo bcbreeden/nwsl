@@ -451,6 +451,7 @@ def create_tables():
         point_diff REAL,
         goalfor_xgoalfor_diff REAL,
         team_strength REAL,
+        total_goals_for INTEGER,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id)
     )
     ''')
