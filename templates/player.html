@@ -29,23 +29,30 @@
             </section>
             <section class="player_report_stats_container hidden">
         {% else %}
-            <section class="player_report_stats_container">
+            <section class="player_report_stats_container text-center">
         {% endif %}
-        
             <div class="plot_container" id="xgoals_plot">
             </div>
             <script>
-                var spiderChartData = {{ xgoals_fig_json|safe }};
-                var spiderChartConfig = {{ xgoals_config|safe }};
-                Plotly.newPlot('xgoals_plot', spiderChartData.data, spiderChartData.layout, spiderChartConfig);
+                document.addEventListener("DOMContentLoaded", function () {
+                    var spiderChartData = {{ xgoals_fig_json|safe }};
+                    var spiderChartConfig = {{ xgoals_config|safe }};
+                    Plotly.newPlot('xgoals_plot', spiderChartData.data, spiderChartData.layout, spiderChartConfig);
+                });
             </script>
             <!-- XGoals -->
             <h2>XGoals</h2>
             <section class="player_report_stats_block">
                 <table class="player_stats_table">
+                    <thead>
+                        <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                        <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                        <th class="small-padding dark-background white-text"></th>
+                        <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                    </thead>
                     <tbody>
                             {% for stat, abr,  label in [
-                                ('xgoals_xassists_per_90', 'XG/XA|90', 'XGoals/XAssists Per 90 Minutes'),
+                                ('xgoals_xassists_per_90', 'XG/XA|90', 'XGoals/XAssists/90'),
                                 ('minutes_played', 'MP', 'Minutes Played'),
                                 ('shots', 'S', 'Shots'),
                                 ('shots_on_target', 'SOT', 'Shots on Target'),
@@ -63,23 +70,22 @@
                                 ('xpoints_added', 'xPA', 'Expected Points Added')
                             ] %}
                                 <tr>
-                                    
-                                    
-                                    {% if player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}  
-                                        <td class="stat_block_team_comparison advantage">
-                                            {{ label }}
-                                        </td>
-                                        <td class="stat_block_team_comparison advantage">
-                                            {{ player_xgoals_data[stat] }} ({{ player_xgoals_data['avg_' + stat] }})
-                                        </td>
-                                    {% else %}
-                                        <td class="stat_block_team_comparison disadvantage">
-                                            {{ label }}
-                                        </td>
-                                        <td class="stat_block_team_comparison disadvantage">
-                                            {{ player_xgoals_data[stat] }} ({{ player_xgoals_data['avg_' + stat] }})
-                                        </td>
-                                    {% endif %}
+                                    <td class="text-left">
+                                        <p class="stat_label player_stat_text">{{ label }}</p>
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="player_stat_text">{{ player_xgoals_data[stat] }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}  
+                                            <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
+                                        {% else %}
+                                            <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
+                                        {% endif %}
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="player_stat_text">{{ player_xgoals_data['avg_' + stat] }}</p>
+                                    </td>
                                 </tr>
                             {% endfor %}
                     </tbody>
@@ -97,6 +103,12 @@
             <h2>XPass</h2>
                 <section class="player_report_stats_block">
                     <table class="player_stats_table">
+                        <thead>
+                            <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                            <th class="small-padding dark-background white-text"></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                        </thead>
                         <tbody>
                             {% for stat, abr, label in [
                                 ('count_games','GP', 'Games Played'),
@@ -104,28 +116,29 @@
                                 ('pass_completion_percentage', 'PC %', 'Pass Completion Percentage'),
                                 ('xpass_completion_percentage', 'xPC %', 'xPass Completion Percentage'),
                                 ('passes_completed_over_expected', 'PCOE', 'Passes Completed Over Expected'),
-                                ('passes_completed_over_expected_p100', 'PCOE 100', 'Passes Completed Over Expected per 100'),
+                                ('passes_completed_over_expected_p100', 'PCOE 100', 'Passes Completed Over Expected/100'),
                                 ('avg_distance_yds', 'AvgD',  'Average Distance (yds)'),
                                 ('avg_vertical_distance_yds', 'AvgVD', 'Average Vertical Distance (yds)'),
                                 ('share_team_touches', 'SoTT %', 'Share of Team Touches')
                             ] %}
-                                <tr>
-                                    {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}
-                                        <td class="stat_block_team_comparison advantage">
-                                            {{ label }}
-                                        </td>
-                                        <td class="stat_block_team_comparison advantage">
-                                            {{ player_xpass_data[stat] }} ({{ player_xpass_data['avg_' + stat] }})
-                                        </td>
+                            <tr>
+                                <td class="text-left">
+                                    <p class="stat_label player_stat_text">{{ label }}</p>
+                                </td>
+                                <td class="player_stat_cell">
+                                    <p class="player_stat_text">{{ player_xpass_data[stat] }}</p>
+                                </td>
+                                <td class="text-center">
+                                    {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}  
+                                        <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
                                     {% else %}
-                                        <td class="stat_block_team_comparison disadvantage">
-                                            {{ label }}
-                                        </td>
-                                        <td class="stat_block_team_comparison disadvantage">
-                                            {{ player_xpass_data[stat] }} ({{ player_xpass_data['avg_' + stat] }})
-                                        </td>
+                                        <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
                                     {% endif %}
-                                </tr>
+                                </td>
+                                <td class="player_stat_cell">
+                                    <p class="player_stat_text">{{ player_xpass_data['avg_' + stat] }}</p>
+                                </td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -141,6 +154,12 @@
             <h2>Goals Added</h2>
             <section class="player_report_stats_block">
                 <table class="player_stats_table">
+                    <thead>
+                        <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                        <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                        <th class="small-padding dark-background white-text"></th>
+                        <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                    </thead>
                     <tbody>
                         {% for stat, abr,  label in [
                             ('dribbling_goals_added_raw', 'DGA(R)', 'Dribbling Goals Added (Raw)'),
@@ -163,21 +182,22 @@
                             ('shooting_count_actions', 'SA', 'Shooting Actions')
                         ] %}
                         <tr>
-                            {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat] %}
-                                <td class="stat_block_team_comparison advantage">
-                                    {{ label }}
-                                </td>
-                                <td class="stat_block_team_comparison advantage">
-                                    {{ player_goals_added_data[stat] }} ({{ player_goals_added_data['avg_' + stat] }})
-                                </td>
-                            {% else %}
-                                <td class="stat_block_team_comparison disadvantage">
-                                    {{ label }}
-                                </td>
-                                <td class="stat_block_team_comparison disadvantage">
-                                    {{ player_goals_added_data[stat] }} ({{ player_goals_added_data['avg_' + stat] }})
-                                </td>
-                            {% endif %}
+                            <td class="text-left">
+                                <p class="stat_label player_stat_text">{{ label }}</p>
+                            </td>
+                            <td class="player_stat_cell">
+                                <p class="player_stat_text">{{ player_goals_added_data[stat] }}</p>
+                            </td>
+                            <td class="text-center">
+                                {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat] %}  
+                                    <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
+                                {% else %}
+                                    <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
+                                {% endif %}
+                            </td>
+                            <td class="player_stat_cell">
+                                <p class="player_stat_text">{{ player_goals_added_data['avg_' + stat] }}</p>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

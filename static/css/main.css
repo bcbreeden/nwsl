@@ -8,6 +8,10 @@
     --padding-left: 35px;
   }
 
+/* ======================
+   Base Elements
+====================== */
+
 a {
     text-decoration: none;
     color: var(--link);
@@ -123,6 +127,36 @@ ul {
     flex-direction: column;
 }
 
+/* ======================
+   Generic
+====================== */
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.no-padding-no-margin {
+    margin: 0;
+    padding: 0;
+}
+
+.dark-background {
+    background-color: var(--dark-bg);
+}
+
+.white-text {
+    color: var(--block-bg);
+}
+
+.small-padding {
+    padding: 5px;
+}
+
+
 #all-content {
     display: flex;
     flex-direction: row;
@@ -148,12 +182,6 @@ ul {
     color: var(--dark-bg);
     font-size: 60px;
     margin: 20px;
-}
-
-#menu-icon {
-    height: 175px;
-    width: 124px;
-    align-self: center;
 }
 
 #nav_form_container {
@@ -238,6 +266,12 @@ ul {
     display: none !important;
 }
 
+.icon {
+    height: 15px;
+    width: auto;
+    align-self: center;
+}
+
 .index-metric-heading {
     margin-bottom: 15px;
     width: 100%;
@@ -311,6 +345,10 @@ ul {
 
 .stat-icon {
     padding: 15px;
+}
+
+.stat_label {
+    font-weight: 600;
 }
 
 .team_logo {
@@ -395,9 +433,21 @@ ul {
     margin-left: 15px;
 }
 
-.player_stat_table{
-    table-layout: fixed;
+.player_stat_cell{
+    text-align: center;
+}
+
+.player_stats_table{
+    table-layout: auto;
     width: 100%;
+    border: 2px solid var(--dark-bg);
+    border-radius: 7px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.player_stat_text {
+    margin: 0;
 }
 
 .player_report_stats_block {

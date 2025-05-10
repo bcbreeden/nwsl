@@ -176,6 +176,7 @@ def plot_spider(stats_to_plot, player_data, label_font_size = 12):
 
             # Append data for plotting
             categories.append(stat.replace('_', ' ').title())
+            # categories.append(stat.replace('_', ' ').title().replace(' ', '<br>'))
             normalized_values.append(normalized_stat)
             hover_values.append(f"{stat.replace('_', ' ').title()}: {player_stat}")  # Add hover text
     
@@ -226,5 +227,5 @@ def plot_spider(stats_to_plot, player_data, label_font_size = 12):
         "dragMode": False,
         "staticPlot": True        # Make the plot fully static
     })
-
+    
     return fig_json, config
