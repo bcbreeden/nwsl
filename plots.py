@@ -341,7 +341,12 @@ def plot_deviation_from_average_chart(stats_to_plot, player_data):
         if max_val == min_val:
             continue
 
-        delta = val - avg
+        # Normalize values
+        val_norm = (val - min_val) / (max_val - min_val)
+        avg_norm = (avg - min_val) / (max_val - min_val)
+
+        delta = val_norm - avg_norm
+
         stat_label = stat.replace('_', ' ').title()
 
         categories.append(stat_label + "  ")
@@ -353,7 +358,6 @@ def plot_deviation_from_average_chart(stats_to_plot, player_data):
         y=categories,
         orientation='h',
         marker_color=['#003049' if d >= 0 else '#c1121f' for d in deltas],
-        text=[f"{d:+.2f}" for d in deltas],
         textposition='auto',
         hovertext=hover_text,
         hoverinfo='text'
