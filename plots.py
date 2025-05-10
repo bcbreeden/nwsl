@@ -229,3 +229,154 @@ def plot_spider(stats_to_plot, player_data, label_font_size = 12):
     })
     
     return fig_json, config
+
+
+def plot_bullet_chart(stats_to_plot, player_data):
+    """
+    Generates a normalized bullet chart (0–1 scale) comparing player stats to min, avg, and max values.
+
+    Args:
+        stats_to_plot (list): List of stat names (e.g., 'goals', 'xgoals').
+        player_data (sqlite3.Row): Row object with stat, min_, max_, and avg_ values.
+
+    Returns:
+        Tuple[str, str]: JSON-encoded Plotly figure and config.
+    """
+    fig = go.Figure()
+
+    for stat in stats_to_plot:
+        stat_label = stat.replace('_', ' ').title()
+
+        val = player_data[stat]
+        avg = player_data[f'avg_{stat}']
+        min_val = player_data[f'min_{stat}']
+        max_val = player_data[f'max_{stat}']
+
+        # Avoid divide-by-zero
+        if max_val == min_val:
+            continue
+
+        # Normalize all values to 0–1 scale
+        val_norm = (val - min_val) / (max_val - min_val)
+        avg_norm = (avg - min_val) / (max_val - min_val)
+
+        # Add light gray: min → avg
+        fig.add_trace(go.Bar(
+            x=[avg_norm],
+            y=[stat_label],
+            base=0,
+            orientation='h',
+            marker=dict(color='lightgray'),
+            showlegend=False,
+            hoverinfo='skip'
+        ))
+
+        # Add dark gray: avg → max
+        fig.add_trace(go.Bar(
+            x=[1 - avg_norm],
+            y=[stat_label],
+            base=avg_norm,
+            orientation='h',
+            marker=dict(color='darkgray'),
+            showlegend=False,
+            hoverinfo='skip'
+        ))
+
+        # Player value as a vertical marker
+        fig.add_trace(go.Scatter(
+            x=[val_norm],
+            y=[stat_label],
+            mode='markers+lines',
+            marker=dict(
+                color='#003049',
+                size=14,
+                symbol='diamond'
+            ),
+            line=dict(
+                color='#003049',
+                width=2
+            ),
+            name=player_data['player_name'],
+            hovertemplate=f"{stat_label}: {val:.2f}<extra></extra>"
+        ))
+
+    fig.update_layout(
+        barmode='stack',
+        xaxis=dict(range=[0, 1], showgrid=True),
+        yaxis=dict(autorange="reversed", tickfont=dict(size=12)),
+        height=40 * len(stats_to_plot) + 100,
+        margin=dict(l=120, r=40, t=60, b=40),
+        showlegend=False
+    )
+
+    fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    config = json.dumps({
+        "displayModeBar": False,
+        "staticPlot": True
+    })
+
+    return fig_json, config
+
+def plot_deviation_from_average_chart(stats_to_plot, player_data):
+    """
+    Generates a horizontal bar chart showing player stat deviations from league average.
+
+    Args:
+        stats_to_plot (list): List of stat names (e.g., 'goals', 'xgoals').
+        player_data (sqlite3.Row): Row object with stat, avg_, min_, and max_ values.
+
+    Returns:
+        Tuple[str, str]: JSON-encoded Plotly figure and config.
+    """
+    categories = []
+    deltas = []
+    hover_text = []
+
+    for stat in stats_to_plot:
+        val = player_data[stat]
+        avg = player_data[f'avg_{stat}']
+        min_val = player_data[f'min_{stat}']
+        max_val = player_data[f'max_{stat}']
+
+        if max_val == min_val:
+            continue
+
+        delta = val - avg
+        stat_label = stat.replace('_', ' ').title()
+
+        categories.append(stat_label)
+        deltas.append(delta)
+        hover_text.append(f"{stat_label}: {val:.2f} (avg {avg:.2f})")
+
+    fig = go.Figure(go.Bar(
+        x=deltas,
+        y=categories,
+        orientation='h',
+        marker_color=['#003049' if d >= 0 else '#c1121f' for d in deltas],
+        text=[f"{d:+.2f}" for d in deltas],
+        textposition='auto',
+        hovertext=hover_text,
+        hoverinfo='text'
+    ))
+
+    fig.update_layout(
+        xaxis=dict(
+            zeroline=True,
+            zerolinewidth=2,
+            zerolinecolor='gray'
+        ),
+        yaxis=dict(autorange='reversed'),
+        height=40 * len(stats_to_plot) + 100,
+        width=1000,
+        margin=dict(l=120, r=60, t=60, b=40),
+        showlegend=False
+    )
+
+    fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    config = json.dumps({
+        "displayModeBar": False,
+        "staticPlot": True
+    })
+
+    return fig_json, config
+
