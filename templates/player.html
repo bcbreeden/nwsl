@@ -20,6 +20,7 @@
             </div>
         </section>
 
+        <!-- Player Minute Check -->
         {% if player_xgoals_data['minutes_played'] < 270 %}
             <section id="player_report_warning">
                 <h2>{{player_xgoals_data['player_first_name']}} {{player_xgoals_data['player_last_name']}} has played less than 270 minutes this season.</h2>
@@ -63,14 +64,22 @@
                             ] %}
                                 <tr>
                                     
-                                    <td>{{ label }}</td>
+                                    
                                     {% if player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}  
                                         <td class="stat_block_team_comparison advantage">
-                                    {% else %}
-                                        <td class="stat_block_team_comparison disadvantage">
-                                    {% endif %}
+                                            {{ label }}
+                                        </td>
+                                        <td class="stat_block_team_comparison advantage">
                                             {{ player_xgoals_data[stat] }} ({{ player_xgoals_data['avg_' + stat] }})
                                         </td>
+                                    {% else %}
+                                        <td class="stat_block_team_comparison disadvantage">
+                                            {{ label }}
+                                        </td>
+                                        <td class="stat_block_team_comparison disadvantage">
+                                            {{ player_xgoals_data[stat] }} ({{ player_xgoals_data['avg_' + stat] }})
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                     </tbody>
@@ -86,7 +95,6 @@
             </script>
             <!-- XPass -->
             <h2>XPass</h2>
-            <section class="player_report_stats_block">
                 <section class="player_report_stats_block">
                     <table class="player_stats_table">
                         <tbody>
@@ -102,14 +110,21 @@
                                 ('share_team_touches', 'SoTT %', 'Share of Team Touches')
                             ] %}
                                 <tr>
-                                    <td>{{ label }}</td>
-                                    {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}  
+                                    {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}
                                         <td class="stat_block_team_comparison advantage">
-                                    {% else %}
-                                        <td class="stat_block_team_comparison disadvantage">
-                                    {% endif %}
+                                            {{ label }}
+                                        </td>
+                                        <td class="stat_block_team_comparison advantage">
                                             {{ player_xpass_data[stat] }} ({{ player_xpass_data['avg_' + stat] }})
                                         </td>
+                                    {% else %}
+                                        <td class="stat_block_team_comparison disadvantage">
+                                            {{ label }}
+                                        </td>
+                                        <td class="stat_block_team_comparison disadvantage">
+                                            {{ player_xpass_data[stat] }} ({{ player_xpass_data['avg_' + stat] }})
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -125,8 +140,6 @@
             <!-- Player Goals Added -->
             <h2>Goals Added</h2>
             <section class="player_report_stats_block">
-
-
                 <table class="player_stats_table">
                     <tbody>
                         {% for stat, abr,  label in [
@@ -150,50 +163,57 @@
                             ('shooting_count_actions', 'SA', 'Shooting Actions')
                         ] %}
                         <tr>
-                            <td>{{ label }}</td>
-                            {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat] %}  
+                            {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat] %}
                                 <td class="stat_block_team_comparison advantage">
-                            {% else %}
-                                <td class="stat_block_team_comparison disadvantage">
-                            {% endif %}
+                                    {{ label }}
+                                </td>
+                                <td class="stat_block_team_comparison advantage">
                                     {{ player_goals_added_data[stat] }} ({{ player_goals_added_data['avg_' + stat] }})
                                 </td>
+                            {% else %}
+                                <td class="stat_block_team_comparison disadvantage">
+                                    {{ label }}
+                                </td>
+                                <td class="stat_block_team_comparison disadvantage">
+                                    {{ player_goals_added_data[stat] }} ({{ player_goals_added_data['avg_' + stat] }})
+                                </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </section>
         <!-- All Seasons Data -->
-         <h2>All Seasons Data</h2>
-         <table>
-            <thead>
-                <tr>
-                    <th>Season</th>
-                    <th>Team</th>
-                    <th>Minutes</th>
-                    <th>G</th>
-                    <th>A</th>
-                    <th>xG</th>
-                    <th>xA</th>
-                    <th>xG/xA/90</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for season in player_season_data %}
-                <tr>
-                    <td>{{ season['season'] }}</td>
-                    <td>{{ season['team_abbreviation'] }}</td>
-                    <td>{{ season['minutes_played'] }}</td>
-                    <td>{{ season['goals'] }}</td>
-                    <td>{{ season['primary_assists'] }}</td>
-                    <td>{{ season['xgoals'] }}</td>
-                    <td>{{ season['xassists'] }}</td>
-                    <td>{{ season['xgoals_xassists_per_90'] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-         </table>
-           
+         <section>
+            <h2>All Seasons Data</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Season</th>
+                        <th>Team</th>
+                        <th>Minutes</th>
+                        <th>G</th>
+                        <th>A</th>
+                        <th>xG</th>
+                        <th>xA</th>
+                        <th>xG/xA/90</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for season in player_season_data %}
+                    <tr>
+                        <td>{{ season['season'] }}</td>
+                        <td>{{ season['team_abbreviation'] }}</td>
+                        <td>{{ season['minutes_played'] }}</td>
+                        <td>{{ season['goals'] }}</td>
+                        <td>{{ season['primary_assists'] }}</td>
+                        <td>{{ season['xgoals'] }}</td>
+                        <td>{{ season['xassists'] }}</td>
+                        <td>{{ season['xgoals_xassists_per_90'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </section>
     </section>
 </section>
