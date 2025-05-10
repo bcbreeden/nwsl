@@ -367,7 +367,8 @@ def plot_deviation_from_average_chart(stats_to_plot, player_data):
         xaxis=dict(
             zeroline=True,
             zerolinewidth=2,
-            zerolinecolor='gray'
+            zerolinecolor='gray',
+            showticklabels=False
         ),
         yaxis=dict(autorange='reversed'),
         height=40 * len(stats_to_plot) + 100,
