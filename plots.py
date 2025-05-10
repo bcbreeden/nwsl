@@ -344,7 +344,7 @@ def plot_deviation_from_average_chart(stats_to_plot, player_data):
         delta = val - avg
         stat_label = stat.replace('_', ' ').title()
 
-        categories.append(stat_label)
+        categories.append(stat_label + "  ")
         deltas.append(delta)
         hover_text.append(f"{stat_label}: {val:.2f} (avg {avg:.2f})")
 
