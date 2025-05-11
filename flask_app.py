@@ -219,11 +219,11 @@ def goalkeeper():
         combined_data = {**keeper_xgoal_data, **keeper_goals_added_data}
 
         # This value needs to be inverted since a negative value is better than a positive one
-        combined_data["goals_minus_xgoals_gk"] = abs(combined_data["goals_minus_xgoals_gk"])
+        # combined_data["goals_minus_xgoals_gk"] = abs(combined_data["goals_minus_xgoals_gk"])
         
         stats_to_plot = ['goals_minus_xgoals_gk', 'shotstopping_goals_added_above_avg', 'handling_goals_added_above_avg', 'claiming_goals_added_above_avg',
                          'sweeping_goals_added_above_avg', 'passing_goals_added_above_avg']
-        keeper_fig_json, keeper_config = plot_spider(stats_to_plot, combined_data)
+        keeper_fig_json, keeper_config = plot_deviation_from_average_chart(stats_to_plot, combined_data)
         
 
         return render_template('goalkeeper.html',

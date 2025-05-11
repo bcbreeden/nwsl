@@ -196,6 +196,12 @@ def plot_deviation_from_average_chart(stats_to_plot, player_data):
     categories = []
     deltas = []
     hover_text = []
+    lower_is_better_stats = {
+        "goals_conceded",
+        "xgoals_gk_faced",
+        "goals_minus_xgoals_gk",
+        "goals_divided_by_xgoals_gk"
+        }
 
     for stat in stats_to_plot:
         val = player_data[stat]
@@ -209,6 +215,11 @@ def plot_deviation_from_average_chart(stats_to_plot, player_data):
         # Normalize values
         val_norm = (val - min_val) / (max_val - min_val)
         avg_norm = (avg - min_val) / (max_val - min_val)
+
+        # Invert for "lower is better"
+        if stat in lower_is_better_stats:
+            val_norm = 1 - val_norm
+            avg_norm = 1 - avg_norm
 
         delta = val_norm - avg_norm
 
