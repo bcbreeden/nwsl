@@ -216,14 +216,38 @@ def goalkeeper():
         for key in keeper_xgoal_data.keys():
             print(f"{key}: {keeper_xgoal_data[key]}")
         
-        combined_data = {**keeper_xgoal_data, **keeper_goals_added_data}
+        xgoals_stats_to_plot = ['shots_faced',
+                                'goals_conceded',
+                                'saves',
+                                'share_headed_shots',
+                                'xgoals_gk_faced',
+                                'goals_minus_xgoals_gk',
+                                'goals_divided_by_xgoals_gk',
+                                'save_perc'
+                                ]
 
-        # This value needs to be inverted since a negative value is better than a positive one
-        # combined_data["goals_minus_xgoals_gk"] = abs(combined_data["goals_minus_xgoals_gk"])
-        
-        stats_to_plot = ['goals_minus_xgoals_gk', 'shotstopping_goals_added_above_avg', 'handling_goals_added_above_avg', 'claiming_goals_added_above_avg',
-                         'sweeping_goals_added_above_avg', 'passing_goals_added_above_avg']
-        keeper_fig_json, keeper_config = plot_deviation_from_average_chart(stats_to_plot, combined_data)
+        goals_added_stats_to_plot = ['claiming_goals_added_raw',
+            'claiming_goals_added_above_avg',
+            'claiming_count_actions',
+            'fielding_goals_added_raw',
+            'fielding_goals_added_above_avg',
+            'fielding_count_actions',
+            'handling_goals_added_raw',
+            'handling_goals_added_above_avg',
+            'handling_count_actions',
+            'passing_goals_added_raw',
+            'passing_goals_added_above_avg',
+            'passing_count_actions',
+            'shotstopping_goals_added_raw',
+            'shotstopping_goals_added_above_avg',
+            'shotstopping_count_actions',
+            'sweeping_goals_added_raw',
+            'sweeping_goals_added_above_avg',
+            'sweeping_count_actions'
+            ]
+
+        keeper_fig_json_xgoals, keeper_config_xgoals = plot_deviation_from_average_chart(xgoals_stats_to_plot, keeper_xgoal_data)
+        keeper_fig_json_goals_added, keeper_config_goals_added = plot_deviation_from_average_chart(goals_added_stats_to_plot, keeper_goals_added_data)
         
 
         return render_template('goalkeeper.html',
@@ -231,8 +255,10 @@ def goalkeeper():
                                 obj_id = obj_id,
                                 keeper_xgoal_data  = keeper_xgoal_data,
                                 keeper_goals_added_data = keeper_goals_added_data,
-                                keeper_fig_json = keeper_fig_json,
-                                keeper_config = keeper_config,
+                                keeper_fig_json_xgoals = keeper_fig_json_xgoals,
+                                keeper_config_xgoals = keeper_config_xgoals,
+                                keeper_fig_json_goals_added = keeper_fig_json_goals_added,
+                                keeper_config_goals_added = keeper_config_goals_added,
                                 season = season_manager.season,
                                 seasons = season_manager.seasons)
     
