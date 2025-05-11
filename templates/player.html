@@ -43,7 +43,7 @@
                 });
             </script>
             <!-- XGoals -->
-            <h2>XGoals</h2>
+            <h2>{{player_xgoals_data['player_name']}} - XGoals</h2>
             <section class="player_report_stats_block">
                 <table class="player_stats_table">
                     <thead>
@@ -79,7 +79,9 @@
                                         <p class="player_stat_text">{{ player_xgoals_data[stat] }}</p>
                                     </td>
                                     <td class="text-center">
-                                        {% if player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}  
+                                        {% if player_xgoals_data[stat] == player_xgoals_data['max_' + stat] %}  
+                                            <img class="icon" src="{{ url_for('static', filename='img/star.png') }}">
+                                        {% elif player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}  
                                             <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
                                         {% else %}
                                             <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
@@ -92,6 +94,7 @@
                             {% endfor %}
                     </tbody>
                 </table>
+                {% include 'stat_legend.html' %}
             </section>
 
             <div class="plot_container" id="xpass_plot">
@@ -102,7 +105,7 @@
                 Plotly.newPlot('xpass_plot', xpassSpiderChartData.data, xpassSpiderChartData.layout, xpassSpiderChartConfig);
             </script>
             <!-- XPass -->
-            <h2>XPass</h2>
+            <h2>{{player_xgoals_data['player_name']}} - XPass</h2>
                 <section class="player_report_stats_block">
                     <table class="player_stats_table">
                         <thead>
@@ -144,6 +147,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% include 'stat_legend.html' %}
                 </section>
             <div class="plot_container" id="defense_plot">
             </div>
@@ -153,7 +157,7 @@
                 Plotly.newPlot('defense_plot', defenseSpiderChartData.data, defenseSpiderChartData.layout, defenseSpiderChartConfig);
             </script>
             <!-- Player Goals Added -->
-            <h2>Goals Added</h2>
+            <h2>{{player_xgoals_data['player_name']}} - Goals Added</h2>
             <section class="player_report_stats_block">
                 <table class="player_stats_table">
                     <thead>
@@ -204,34 +208,35 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% include 'stat_legend.html' %}
             </section>
         <!-- All Seasons Data -->
-         <section>
-            <h2>All Seasons Data</h2>
-            <table>
+         <section class="player_report_stats_block">
+            <h2>{{player_xgoals_data['player_name']}} - All Seasons Data</h2>
+            <table class="player_stats_table">
                 <thead>
                     <tr>
-                        <th>Season</th>
-                        <th>Team</th>
-                        <th>Minutes</th>
-                        <th>G</th>
-                        <th>A</th>
-                        <th>xG</th>
-                        <th>xA</th>
-                        <th>xG/xA/90</th>
+                        <th class="small-padding dark-background white-text text-center">Season</th>
+                        <th class="small-padding dark-background white-text text-center">Team</th>
+                        <th class="small-padding dark-background white-text text-center">Minutes</th>
+                        <th class="small-padding dark-background white-text text-center">G</th>
+                        <th class="small-padding dark-background white-text text-center">A</th>
+                        <th class="small-padding dark-background white-text text-center">xG</th>
+                        <th class="small-padding dark-background white-text text-center">xA</th>
+                        <th class="small-padding dark-background white-text text-center">xG/xA/90</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for season in player_season_data %}
                     <tr>
-                        <td>{{ season['season'] }}</td>
-                        <td>{{ season['team_abbreviation'] }}</td>
-                        <td>{{ season['minutes_played'] }}</td>
-                        <td>{{ season['goals'] }}</td>
-                        <td>{{ season['primary_assists'] }}</td>
-                        <td>{{ season['xgoals'] }}</td>
-                        <td>{{ season['xassists'] }}</td>
-                        <td>{{ season['xgoals_xassists_per_90'] }}</td>
+                        <td><p class="player_stat_text">{{ season['season'] }}</p></td>
+                        <td><p class="player_stat_text">{{ season['team_abbreviation'] }}</p></td>
+                        <td><p class="player_stat_text">{{ season['minutes_played'] }}</p></td>
+                        <td><p class="player_stat_text">{{ season['goals'] }}</p></td>
+                        <td><p class="player_stat_text">{{ season['primary_assists'] }}</p></td>
+                        <td><p class="player_stat_text">{{ season['xgoals'] }}</p></td>
+                        <td><p class="player_stat_text">{{ season['xassists'] }}</p></td>
+                        <td><p class="player_stat_text">{{ season['xgoals_xassists_per_90'] }}</p></td>
                     </tr>
                     {% endfor %}
                 </tbody>

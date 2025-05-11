@@ -139,6 +139,10 @@ ul {
     text-align: left;
 }
 
+.text-small {
+    font-size: small;
+}
+
 .no-padding-no-margin {
     margin: 0;
     padding: 0;
