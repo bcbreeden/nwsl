@@ -67,7 +67,7 @@ def league():
 
 @app.route('/teams')
 def teams():
-    team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
+    team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'team_strength')
     team_strength_history = db_team_xgoals.get_team_strength_by_season(season_manager.season)
     return render_template('teams.html',
                            teams = team_data,
