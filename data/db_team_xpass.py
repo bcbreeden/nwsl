@@ -53,7 +53,7 @@ def insert_teams_xpass_by_season(season):
         conn.commit()
     conn.close()
 
-def get_team_xpass(team_id, season):
+def get_team_xpass_by_season(team_id, season):
     print('Fetching team xpasses for:{}, Season: {}'.format(team_id, season))
     obj_id = team_id + str(season)
     db_path = get_db_path()

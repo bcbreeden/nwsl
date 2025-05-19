@@ -75,6 +75,21 @@ def teams():
                            season = season_manager.season,
                            seasons = season_manager.seasons)
 
+@app.route('/team', methods=['GET', 'POST'])
+def team():
+    if request.method == 'POST':
+        team_id = request.form.get('team_id')
+        obj_id = request.form.get('obj_id')
+        team_xgoals_data = db_team_xgoals.get_team_xgoals_by_season(team_id, season_manager.season)
+        team_xpass_data = db_team_xpass.get_team_xpass_by_season(team_id, season_manager.season)
+        team_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team_id, season_manager.season)
+        return render_template('team.html',
+                                season = season_manager.season,
+                                seasons = season_manager.seasons)
+    if request.method == 'GET':
+        redirect(url_for('teams'))
+
+
 @app.route('/team_comparison', methods=['GET', 'POST'])
 def team_comparison():
     team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
