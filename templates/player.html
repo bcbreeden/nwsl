@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="player_report_outer_container">
+<section class="report_outer_container">
     <section class="player_report">
-        <section class="player_report_header">
-            <div class="player_report_team_container">
+        <section class="report_header">
+            <div class="report_team_container">
                 <img class="team_logo" src="{{ url_for('static', filename='img/' + player_xgoals_data['team_abbreviation'] + '.png') }}">
             </div>
-            <div class="player_report_name_container">
+            <div class="report_name_container">
                 <h1 class="player_name_report">
                     {{player_xgoals_data['player_first_name']}}<br/>
                 </h1>
