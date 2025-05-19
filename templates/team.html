@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-team!
+<section class="report_outer_container">
+    <section class="report">
+        <section class="report_header">
+            <img class="team_logo" src="{{ url_for('static', filename='img/' + team_xgoals_data['team_abbreviation'] + '.png') }}">
+        </section>
+
+    </section>
+</section>
 {% endblock %}

@@ -84,8 +84,10 @@ def team():
         team_xpass_data = db_team_xpass.get_team_xpass_by_season(team_id, season_manager.season)
         team_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team_id, season_manager.season)
         return render_template('team.html',
+                                team_xgoals_data=team_xgoals_data,
                                 season = season_manager.season,
-                                seasons = season_manager.seasons)
+                                seasons = season_manager.seasons
+                                )
     if request.method == 'GET':
         redirect(url_for('teams'))
 

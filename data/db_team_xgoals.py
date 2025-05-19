@@ -98,7 +98,7 @@ def get_top_team_xgoals_stat(season, sorting_stat):
     return rows
 
 def get_team_xgoals_by_season(team_id, season):
-    print('Teams - Xgoals in {} for: {}.'.format(team_id, season))
+    print('Team - Xgoals in {} for: {}.'.format(team_id, season))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
@@ -117,10 +117,10 @@ def get_team_xgoals_by_season(team_id, season):
             tx.season = ? AND tx.team_id = ?;
     '''
     cursor.execute(query, (season, team_id))
-    rows = cursor.fetchall()
+    rows = cursor.fetchone()
     conn.commit()
     conn.close()
-    print('Team XGoals sorted by {} for: {} returned'.format(team_id, season))
+    print('Team XGoals for {}: {} returned'.format(team_id, season))
     return rows
 
 def _calc_predicted_points(count_games, goals_for, goals_against):
