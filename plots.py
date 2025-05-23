@@ -386,3 +386,44 @@ def get_donut_plot_for_goals(goals_for, goals_against):
     config = {'displayModeBar': False}
 
     return fig_json, config
+
+def get_donut_plot_for_pass_completion(percentage):
+    percentage = max(0, min(100, percentage))  # Clamp between 0 and 100
+    incomplete = 100 - percentage
+
+    labels = ['Completed', 'Incomplete']
+    values = [percentage, incomplete]
+    colors = ['#003049', '#d3dbe3']  # Blue for completed, gray for incomplete
+
+    fig = go.Figure(go.Pie(
+        labels=labels,
+        values=values,
+        hole=0.6,
+        marker=dict(colors=colors),
+        textinfo='none',
+        sort=False,
+        hoverinfo='skip'
+    ))
+
+    fig.update_layout(
+        showlegend=False,
+        margin=dict(t=0, b=0, l=0, r=0),
+        annotations=[
+            dict(
+                text=f"<b>{percentage}%</b><br><span style='font-size:12px;'>PASS</span>",
+                x=0.5, y=0.5,
+                font_size=20,
+                showarrow=False,
+                align='center'
+            )
+        ],
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=250,
+        width=250
+    )
+
+    fig_json = fig.to_json()
+    config = {'displayModeBar': False}
+
+    return fig_json, config
