@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 from data import (db_games, db_team_xgoals)
 import plotly
 import json
+import matplotlib.pyplot as plt
 
 def plot_spider(stats_to_plot, player_data, label_font_size = 12):
     """
@@ -261,3 +262,52 @@ def plot_deviation_from_average_chart(stats_to_plot, player_data):
 
     return fig_json, config
 
+def plot_team_strength_donut(score):
+    """
+    Generates a donut chart with a discrete color based on team strength.
+    """
+    score = max(0, min(100, score))  # Clamp to [0, 100]
+    fill_color = strength_to_color(score)
+
+    fig = go.Figure(go.Pie(
+        values=[score, 100 - score],
+        hole=0.7,
+        marker_colors=[fill_color, "#d3dbe3"],
+        textinfo="none",
+        sort=False,
+        hoverinfo="skip",
+        hovertemplate=None
+    ))
+
+    fig.update_layout(
+        showlegend=False,
+        margin=dict(t=0, b=0, l=0, r=0),
+        annotations=[
+            dict(
+                text=f"<b>{score}</b><br><span style='font-size:14px;'>TEAM STRENGTH</span>", 
+                x=0.5, y=0.5, font_size=24, showarrow=False, align='center'
+            )
+        ],
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=250,
+        width=250
+    )
+
+    fig_json = fig.to_json()
+    config = {'displayModeBar': False}
+    return fig_json, config
+
+
+
+
+def strength_to_color(score):
+    """
+    Maps strength score to one of three discrete colors.
+    """
+    if score <= 33:
+        return "#c1121f"  # Red
+    elif score <= 66:
+        return "#f4a261"  # Amber
+    else:
+        return "#003049"  # Navy

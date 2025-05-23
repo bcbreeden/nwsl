@@ -7,6 +7,16 @@
             <img class="team_logo" src="{{ url_for('static', filename='img/' + team_xgoals_data['team_abbreviation'] + '.png') }}">
         </section>
 
+
+    <div id="strength_donut"></div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        const fig = {{ strength_fig_json|safe }};
+        const config = {{ strength_config|tojson }};
+        Plotly.newPlot('strength_donut', fig.data, fig.layout, config);
+    </script>
+
+
     </section>
 </section>
 {% endblock %}

@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow)
-from plots import plot_spider, plot_deviation_from_average_chart
+from plots import plot_spider, plot_deviation_from_average_chart, plot_team_strength_donut
 from momentum_plot import generate_momentum_plot
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -83,10 +83,17 @@ def team():
         team_xgoals_data = db_team_xgoals.get_team_xgoals_by_season(team_id, season_manager.season)
         team_xpass_data = db_team_xpass.get_team_xpass_by_season(team_id, season_manager.season)
         team_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team_id, season_manager.season)
+
+        team_strength = team_xgoals_data['team_strength']
+        strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
+
+
         return render_template('team.html',
                                 team_xgoals_data=team_xgoals_data,
                                 season = season_manager.season,
-                                seasons = season_manager.seasons
+                                seasons = season_manager.seasons,
+                                strength_fig_json = strength_fig_json, 
+                                strength_config = strength_config
                                 )
     if request.method == 'GET':
         redirect(url_for('teams'))
