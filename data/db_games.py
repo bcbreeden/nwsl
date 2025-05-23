@@ -79,8 +79,6 @@ def get_all_games_by_season(season):
 
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
-    # for row in rows:
-    #     print(dict(row))
     conn.commit()
     conn.close()
     print('Games returned.')
@@ -139,6 +137,33 @@ def get_game_ids_by_season(season):
     conn.commit()
     conn.close()
     return game_ids
+
+def get_latest_manager_id_by_team_and_season(team_id, season):
+    print(f'Fetching most recent manager for team: {team_id} in season: {season}')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    
+    query = '''
+        SELECT
+            CASE
+                WHEN home_team_id = ? THEN home_manager_id
+                ELSE away_manager_id
+            END AS manager_id
+        FROM games
+        WHERE season = ?
+          AND (home_team_id = ? OR away_team_id = ?)
+        ORDER BY date_time_utc DESC
+        LIMIT 1;
+    '''
+    
+    cursor.execute(query, (team_id, season, team_id, team_id))
+    result = cursor.fetchone()
+    
+    conn.close()
+    
+    return result[0] if result else None
+
 
 def _convert_utc_to_est(utc_str):
     if utc_str == 'Unknown Last Updated Time':

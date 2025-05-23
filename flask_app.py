@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
-                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow)
+                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
+                db_manager_info)
 from plots import plot_spider, plot_deviation_from_average_chart, plot_team_strength_donut
 from momentum_plot import generate_momentum_plot
 import plotly.graph_objects as go
@@ -87,13 +88,13 @@ def team():
         team_strength = team_xgoals_data['team_strength']
         strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
 
-
         return render_template('team.html',
                                 team_xgoals_data=team_xgoals_data,
                                 season = season_manager.season,
                                 seasons = season_manager.seasons,
                                 strength_fig_json = strength_fig_json, 
-                                strength_config = strength_config
+                                strength_config = strength_config,
+                                manager_info= manager_info
                                 )
     if request.method == 'GET':
         redirect(url_for('teams'))

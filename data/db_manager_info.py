@@ -25,7 +25,7 @@ def insert_all_manager_info():
 
 def get_manager_by_id(manager_id):
     print('Attempting to get manager info by ID:', manager_id)
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
