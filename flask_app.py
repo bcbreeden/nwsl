@@ -3,7 +3,7 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
                 db_stadium_info)
-from plots import plot_spider, plot_deviation_from_average_chart, plot_team_strength_donut
+from plots import plot_spider, plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results
 from momentum_plot import generate_momentum_plot
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -94,6 +94,13 @@ def team():
 
         stadium = db_stadium_info.get_stadium_by_id(db_games.get_most_recent_home_stadium_id(team_id, season_manager.season))
 
+        results_fig_json, results_config = get_donut_plot_for_team_results(
+                                                                        team_record['wins'],
+                                                                        team_record['losses'],
+                                                                        team_record['draws'],
+                                                                        team_xgoals_data['points']
+                                                                        )
+
         return render_template('team.html',
                                 team_xgoals_data = team_xgoals_data,
                                 season = season_manager.season,
@@ -103,8 +110,9 @@ def team():
                                 team_record = team_record,
                                 game_results = game_results,
                                 five_recent_games = five_recent_games,
-                                stadium = stadium
-                                )
+                                stadium = stadium,
+                                results_fig_json = results_fig_json,
+                                results_config = results_config)
     if request.method == 'GET':
         redirect(url_for('teams'))
 

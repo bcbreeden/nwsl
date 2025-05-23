@@ -132,6 +132,28 @@ ul {
    Generic
 ====================== */
 
+.dark-background {
+    background-color: var(--dark-bg);
+}
+
+.no-padding-no-margin {
+    margin: 0;
+    padding: 0;
+}
+
+.row_container {
+    display: flex;
+    flex-direction: row;
+}
+
+.small-padding {
+    padding: 5px;
+}
+
+.moderate-padding {
+    padding: 10px;
+}
+
 .text-center {
     text-align: center;
 }
@@ -144,23 +166,9 @@ ul {
     font-size: small;
 }
 
-.no-padding-no-margin {
-    margin: 0;
-    padding: 0;
-}
-
-.dark-background {
-    background-color: var(--dark-bg);
-}
-
 .white-text {
     color: var(--block-bg);
 }
-
-.small-padding {
-    padding: 5px;
-}
-
 
 #all-content {
     display: flex;

@@ -298,9 +298,6 @@ def plot_team_strength_donut(score):
     config = {'displayModeBar': False}
     return fig_json, config
 
-
-
-
 def strength_to_color(score):
     """
     Maps strength score to one of three discrete colors.
@@ -311,3 +308,42 @@ def strength_to_color(score):
         return "#f4a261"  # Amber
     else:
         return "#003049"  # Navy
+
+import plotly.graph_objects as go
+
+def get_donut_plot_for_team_results(wins, losses, draws, points):
+    labels = ['Wins', 'Losses', 'Draws']
+    values = [wins, losses, draws]
+    colors = ['#003049', '#c1121f', '#d3dbe3']
+
+    fig = go.Figure(go.Pie(
+        labels=labels,
+        values=values,
+        hole=0.6,
+        marker=dict(colors=colors),
+        textinfo='none',
+        sort=False,
+        hoverinfo='skip'  # Disable all hover text
+    ))
+
+    fig.update_layout(
+        showlegend=False,
+        margin=dict(t=0, b=0, l=0, r=0),
+        annotations=[
+            dict(
+                text=f"<b>{points}</b><br><span style='font-size:12px;'>POINTS</span>",
+                x=0.5, y=0.5,
+                font_size=22,
+                showarrow=False,
+                align='center'
+            )
+        ],
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=250,
+        width=250
+    )
+    fig_json = fig.to_json()
+    config = {'displayModeBar': False}
+
+    return fig_json, config
