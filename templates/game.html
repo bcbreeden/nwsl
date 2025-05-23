@@ -7,13 +7,13 @@
                 <h2>{{ game_data['home_team_name'] }} vs {{ game_data['away_team_name'] }}</h2>
             </section>
             <section class="game_report_row">
-                <h3 class="player_report_name_subheader">{{ game_data['date_time_est'] }} EST</h3>
+                <h3 class="report_name_subheader">{{ game_data['date_time_est'] }} EST</h3>
             </section>
             <section class="game_report_row">
-                <h3 class="player_report_name_subheader">{{ game_data['season_name'] }} Season - Matchday {{ game_data['matchday'] }}</h3>
+                <h3 class="report_name_subheader">{{ game_data['season_name'] }} Season - Matchday {{ game_data['matchday'] }}</h3>
             </section>
             <section class="game_report_row">
-                <h3 class="player_report_name_subheader">Attendance -  {{ game_data['attendance'] }}</h3>
+                <h3 class="report_name_subheader">Attendance -  {{ game_data['attendance'] }}</h3>
             </section>
             <section class="game_report_row">
                 <table>
@@ -27,41 +27,41 @@
                     <tr>
                         <td class="game_report_cell"><p class="game_report_score">{{game_data['home_score']}}</p></td>
                         <td class="game_report_cell">
-                            <p class="player_report_name_subheader">Goals</p>
+                            <p class="report_name_subheader">Goals</p>
                         </td>
                         <td class="game_report_cell"><p class="game_report_score">{{game_data['away_score']}}</p></td>
                     </tr>
                     <tr>
                         <td class="game_report_cell">
-                            <p class="player_report_name_subheader game_stat">{{game_xgoals_data['home_team_xgoals']}}</p>
+                            <p class="report_name_subheader game_stat">{{game_xgoals_data['home_team_xgoals']}}</p>
                         </td>
                         <td class="game_report_cell">
-                            <p class="player_report_name_subheader">xGoals</p>
+                            <p class="report_name_subheader">xGoals</p>
                         </td>
                         <td class="game_report_cell">
-                            <p class="player_report_name_subheader game_stat">{{game_xgoals_data['away_team_xgoals']}}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="game_report_cell">
-                            <p class="player_report_name_subheader game_stat">{{game_xgoals_data['home_player_xgoals']}}</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="player_report_name_subheader">Player xGoals</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="player_report_name_subheader game_stat">{{game_xgoals_data['away_player_xgoals']}}</p>
+                            <p class="report_name_subheader game_stat">{{game_xgoals_data['away_team_xgoals']}}</p>
                         </td>
                     </tr>
                     <tr>
                         <td class="game_report_cell">
-                            <p class="player_report_name_subheader game_stat">{{game_xgoals_data['home_xpoints']}}</p>
+                            <p class="report_name_subheader game_stat">{{game_xgoals_data['home_player_xgoals']}}</p>
                         </td>
                         <td class="game_report_cell">
-                            <p class="player_report_name_subheader">xPoints</p>
+                            <p class="report_name_subheader">Player xGoals</p>
                         </td>
                         <td class="game_report_cell">
-                            <p class="player_report_name_subheader game_stat">{{game_xgoals_data['away_xpoints']}}</p>
+                            <p class="report_name_subheader game_stat">{{game_xgoals_data['away_player_xgoals']}}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="game_report_cell">
+                            <p class="report_name_subheader game_stat">{{game_xgoals_data['home_xpoints']}}</p>
+                        </td>
+                        <td class="game_report_cell">
+                            <p class="report_name_subheader">xPoints</p>
+                        </td>
+                        <td class="game_report_cell">
+                            <p class="report_name_subheader game_stat">{{game_xgoals_data['away_xpoints']}}</p>
                         </td>
                     </tr>
                 </table>

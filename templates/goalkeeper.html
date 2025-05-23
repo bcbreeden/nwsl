@@ -8,14 +8,14 @@
                 <img class="team_logo" src="{{ url_for('static', filename='img/' + keeper_xgoal_data['team_abbreviation'] + '.png') }}">
             </div>
             <div class="report_name_container">
-                <h1 class="player_name_report">
+                <h1 class="name_report">
                     {{keeper_xgoal_data['player_first_name']}}<br/>
                 </h1>
-                <h1 class="player_name_report">
+                <h1 class="name_report">
                     {{keeper_xgoal_data['player_last_name']}}<br/>
                 </h1>
-                <h2 class="player_report_name_subheader">{{keeper_xgoal_data['team_name']}} - Goalkeeper</h2>
-                <h2 class="player_report_name_subheader">{{keeper_xgoal_data['nationality']}}</h2>
+                <h2 class="report_name_subheader">{{keeper_xgoal_data['team_name']}} - Goalkeeper</h2>
+                <h2 class="report_name_subheader">{{keeper_xgoal_data['nationality']}}</h2>
                 
             </div>
         </section>
