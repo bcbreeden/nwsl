@@ -6,6 +6,39 @@
         <section class="report_header">
             <img class="team_logo" src="{{ url_for('static', filename='img/' + team_xgoals_data['team_abbreviation'] + '.png') }}">
         </section>
+        <p>Wins: {{ team_record['wins'] }}</p>
+        <p>Losses: {{ team_record['losses'] }}</p>
+        <p>Draws: {{ team_record['draws'] }}</p>
+
+        <h2>Previous Matches</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date (EST)</th>
+                    <th>Home Game</th>
+                    <th>Result</th>
+                    <th>Opponent</th>
+                    <th>Short Name</th>
+                    <th>Abbreviation</th>
+                    <th>Goals Scored</th>
+                    <th>Goals Against</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in game_results %}
+                <tr>
+                    <td>{{ game.date_time_est }}</td>
+                    <td>{{ game.home_game }}</td>
+                    <td>{{ game.result }}</td>
+                    <td>{{ game.opponent_name }}</td>
+                    <td>{{ game.opponent_short_name }}</td>
+                    <td>{{ game.opponent_abbreviation }}</td>
+                    <td>{{ game.goals_scored }}</td>
+                    <td>{{ game.goals_against }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
 
     <div id="strength_donut"></div>

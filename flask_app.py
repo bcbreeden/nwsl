@@ -88,6 +88,7 @@ def team():
         strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
 
         team_record = db_games.get_team_record_by_season(team_id, season_manager.season)
+        game_results = db_games.get_team_game_results(team_id, season_manager.season)
 
         return render_template('team.html',
                                 team_xgoals_data=team_xgoals_data,
@@ -95,7 +96,8 @@ def team():
                                 seasons = season_manager.seasons,
                                 strength_fig_json = strength_fig_json, 
                                 strength_config = strength_config,
-                                team_record = team_record
+                                team_record = team_record,
+                                game_results = game_results
                                 )
     if request.method == 'GET':
         redirect(url_for('teams'))

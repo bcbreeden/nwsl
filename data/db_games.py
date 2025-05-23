@@ -209,6 +209,71 @@ def get_team_record_by_season(team_id, season):
     else:
         return {'wins': 0, 'losses': 0, 'draws': 0}
 
+def get_team_game_results(team_id, season):
+    print(f'Fetching game results for team: {team_id} in season: {season}')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = '''
+        SELECT 
+            g.home_team_id,
+            g.away_team_id,
+            g.home_score,
+            g.away_score,
+            g.date_time_est,
+            t.team_id AS opponent_id,
+            t.team_name AS opponent_name,
+            t.team_short_name AS opponent_short_name,
+            t.team_abbreviation AS opponent_abbreviation
+        FROM games g
+        JOIN team_info t
+          ON (g.home_team_id = ? AND t.team_id = g.away_team_id)
+          OR (g.away_team_id = ? AND t.team_id = g.home_team_id)
+        WHERE g.season = ?
+          AND (g.home_team_id = ? OR g.away_team_id = ?)
+          AND g.home_score IS NOT NULL
+          AND g.away_score IS NOT NULL
+    '''
+
+    cursor.execute(query, (
+        team_id, team_id,
+        season,
+        team_id, team_id
+    ))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    results = []
+
+    for row in rows:
+        is_home = row['home_team_id'] == team_id
+        goals_scored = row['home_score'] if is_home else row['away_score']
+        goals_against = row['away_score'] if is_home else row['home_score']
+
+        if goals_scored > goals_against:
+            result = "win"
+        elif goals_scored < goals_against:
+            result = "loss"
+        else:
+            result = "draw"
+
+        results.append({
+            "home_game": is_home,
+            "result": result,
+            "opponent": row['opponent_id'],
+            "opponent_name": row['opponent_name'],
+            "opponent_short_name": row['opponent_short_name'],
+            "opponent_abbreviation": row['opponent_abbreviation'],
+            "goals_scored": goals_scored,
+            "goals_against": goals_against,
+            "date_time_est": row['date_time_est']
+        })
+
+    return results
+
 def _convert_utc_to_est(utc_str):
     if utc_str == 'Unknown Last Updated Time':
         return None
