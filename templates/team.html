@@ -9,6 +9,7 @@
         <p>Wins: {{ team_record['wins'] }}</p>
         <p>Losses: {{ team_record['losses'] }}</p>
         <p>Draws: {{ team_record['draws'] }}</p>
+        <p>{{ stadium['stadium_name'] }}</p>
 
         {% for game in five_recent_games %}
             <div class="result-row">

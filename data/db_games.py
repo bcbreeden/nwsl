@@ -275,6 +275,29 @@ def get_team_game_results(team_id, season):
 
     return results
 
+def get_most_recent_home_stadium_id(team_id, season):
+    print(f'Getting most recent home game stadium for team {team_id} in season {season}')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    query = '''
+        SELECT stadium_id
+        FROM games
+        WHERE season = ?
+          AND home_team_id = ?
+          AND home_score IS NOT NULL
+          AND away_score IS NOT NULL
+        ORDER BY date_time_utc DESC
+        LIMIT 1
+    '''
+
+    cursor.execute(query, (season, team_id))
+    result = cursor.fetchone()
+    conn.close()
+
+    return result[0] if result else None
+
 def _convert_utc_to_est(utc_str):
     if utc_str == 'Unknown Last Updated Time':
         return None
