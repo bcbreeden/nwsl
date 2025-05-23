@@ -235,6 +235,7 @@ def get_team_game_results(team_id, season):
           AND (g.home_team_id = ? OR g.away_team_id = ?)
           AND g.home_score IS NOT NULL
           AND g.away_score IS NOT NULL
+        ORDER BY g.date_time_utc DESC
     '''
 
     cursor.execute(query, (

@@ -89,6 +89,7 @@ def team():
 
         team_record = db_games.get_team_record_by_season(team_id, season_manager.season)
         game_results = db_games.get_team_game_results(team_id, season_manager.season)
+        five_recent_games = game_results[:5]
 
         return render_template('team.html',
                                 team_xgoals_data=team_xgoals_data,
@@ -97,7 +98,8 @@ def team():
                                 strength_fig_json = strength_fig_json, 
                                 strength_config = strength_config,
                                 team_record = team_record,
-                                game_results = game_results
+                                game_results = game_results,
+                                five_recent_games = five_recent_games
                                 )
     if request.method == 'GET':
         redirect(url_for('teams'))

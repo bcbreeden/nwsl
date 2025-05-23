@@ -10,6 +10,12 @@
         <p>Losses: {{ team_record['losses'] }}</p>
         <p>Draws: {{ team_record['draws'] }}</p>
 
+        {% for game in five_recent_games %}
+            <div class="result-row">
+                <img class="icon" src="{{ url_for('static', filename='img/' + game.result + '.png') }}" alt="{{ game.result }}">
+            </div>
+        {% endfor %}
+
         <h2>Previous Matches</h2>
         <table>
             <thead>
@@ -39,6 +45,8 @@
                 {% endfor %}
             </tbody>
         </table>
+
+
 
 
     <div id="strength_donut"></div>
