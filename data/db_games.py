@@ -164,6 +164,50 @@ def get_latest_manager_id_by_team_and_season(team_id, season):
     
     return result[0] if result else None
 
+def get_team_record_by_season(team_id, season):
+    print(f'Fetching record for team: {team_id} in season: {season}')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    query = '''
+        SELECT
+            SUM(CASE
+                    WHEN (home_team_id = ? AND home_score > away_score)
+                      OR (away_team_id = ? AND away_score > home_score)
+                    THEN 1 ELSE 0 END) AS wins,
+            SUM(CASE
+                    WHEN (home_team_id = ? AND home_score < away_score)
+                      OR (away_team_id = ? AND away_score < home_score)
+                    THEN 1 ELSE 0 END) AS losses,
+            SUM(CASE
+                    WHEN home_score = away_score
+                         AND (home_team_id = ? OR away_team_id = ?)
+                    THEN 1 ELSE 0 END) AS draws
+        FROM games
+        WHERE season = ?
+          AND (home_team_id = ? OR away_team_id = ?)
+    '''
+
+    cursor.execute(query, (
+        team_id, team_id,  # wins
+        team_id, team_id,  # losses
+        team_id, team_id,  # draws
+        season,
+        team_id, team_id   # WHERE clause
+    ))
+
+    result = cursor.fetchone()
+    conn.close()
+
+    if result:
+        return {
+            'wins': result[0],
+            'losses': result[1],
+            'draws': result[2]
+        }
+    else:
+        return {'wins': 0, 'losses': 0, 'draws': 0}
 
 def _convert_utc_to_est(utc_str):
     if utc_str == 'Unknown Last Updated Time':
