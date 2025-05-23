@@ -347,3 +347,42 @@ def get_donut_plot_for_team_results(wins, losses, draws, points):
     config = {'displayModeBar': False}
 
     return fig_json, config
+
+
+def get_donut_plot_for_goals(goals_for, goals_against):
+    labels = ['Goals For', 'Goals Against']
+    values = [goals_for, goals_against]
+    colors = ['#003049', '#c1121f']
+
+    fig = go.Figure(go.Pie(
+        labels=labels,
+        values=values,
+        hole=0.6,
+        marker=dict(colors=colors),
+        textinfo='none',
+        sort=False,
+        hoverinfo='skip'
+    ))
+
+    fig.update_layout(
+        showlegend=False,
+        margin=dict(t=0, b=0, l=0, r=0),
+        annotations=[
+            dict(
+                text=f"<b>{goals_for}-{goals_against}</b><br><span style='font-size:12px;'>GOALS</span>",
+                x=0.5, y=0.5,
+                font_size=20,
+                showarrow=False,
+                align='center'
+            )
+        ],
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        height=250,
+        width=250
+    )
+
+    fig_json = fig.to_json()
+    config = {'displayModeBar': False}
+
+    return fig_json, config

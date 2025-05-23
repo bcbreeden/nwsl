@@ -21,6 +21,7 @@
         <div class="row_container">
             <div class="moderate-padding" id="strength_donut"></div>
             <div class="moderate-padding" id="results_donut"></div>
+            <div class="moderate-padding" id="goals_donut"></div>
         </div>
 
         <h2>Previous Matches</h2>
@@ -68,6 +69,12 @@
         const results_fig = {{ results_fig_json|safe }};
         const results_conf = {{ results_config|tojson }};
         Plotly.newPlot('results_donut', results_fig.data, results_fig.layout, results_conf);
+    </script>
+
+    <script>
+        const g_fig = {{ goals_fig_json|safe }};
+        const g_conf = {{ goals_config|tojson }};
+        Plotly.newPlot('goals_donut', g_fig.data, g_fig.layout, g_conf);
     </script>
 
 
