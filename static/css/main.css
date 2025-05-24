@@ -136,12 +136,12 @@ ul {
 /* ======================
    Alignment
 ====================== */
-.column_container {
+.column-container {
     display: flex;
     flex-direction: column;
 }
 
-.row_container {
+.row-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -184,6 +184,10 @@ ul {
     padding: 10px;
 }
 
+.moderate-margin {
+    margin: 10px;
+}
+
 /* ======================
    Text
 ====================== */
@@ -203,8 +207,16 @@ ul {
     font-size: xx-large;
 }
 
+.text-huge {
+    font-size: 76px;
+}
+
 .white-text {
     color: var(--block-bg);
+}
+
+.text-audiowide {
+    font-family: "Audiowide", serif;
 }
 
  /* ======================

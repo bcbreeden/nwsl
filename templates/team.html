@@ -11,24 +11,24 @@
                 <h1 class="name_report">{{ team_xgoals_data['team_name'] }}</h1>
                 <h2 class="report_name_subheader">{{ stadium['stadium_name'] }}</h2>
                 <h2 class="report_name_subheader">{{ team_record['wins'] }} - {{ team_record['draws'] }} - {{ team_record['losses'] }}</h2>
-                <div class="row_container">
+                <div class="row-container">
                     {% for game in five_recent_games %}
                         <img class="icon x-small-padding" src="{{ url_for('static', filename='img/' + game.result + '.png') }}" alt="{{ game.result }}">
                     {% endfor %}
                 </div>
             </div>
         </section>
-        <div class="row_container">
+        <div class="row-container">
             <div class="moderate-padding" id="strength_donut"></div>
             <div class="moderate-padding" id="results_donut"></div>
             <div class="moderate-padding" id="goals_donut"></div>
             <div class="moderate-padding" id="pass_donut"></div>
         </div>
-        <div class="row_container">
+        <div class="row-container">
             <div class="moderate-padding" id="team_strength_plot"></div>
         </div>
 
-        <div class="row_container">
+        <div class="row-container">
             {% for stat, label in [
                 ('goals_for', 'Goals For'),
                 ('xgoals_for', 'xGoals For'),
@@ -42,8 +42,9 @@
                 ('xgoal_difference', 'xGoal Difference'),
                 ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
             ] %}
-                <div class="column_container">
-                    <h3 class="text-xxlarge">{{ team_xgoals_data[stat] }}</h3> <p class="text-medium">{{ label }}</p>
+                <div class="column-container text-center moderate-margin moderate-padding">
+                    <h3 class="text-xxlarge text-audiowide">{{ team_xgoals_data[stat] }}</h3>
+                    <p class="text-large">{{ label }}</p>
                 </div>
             {% endfor %}
         </div>
