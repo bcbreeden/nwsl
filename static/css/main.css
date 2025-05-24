@@ -7,6 +7,7 @@
     --font-color: #000000;
     --green: #2ecc71;
     --padding-left: 35px;
+    --max-width: 1200px;
   }
 
 /* ======================
@@ -132,31 +133,18 @@ ul {
    Generic
 ====================== */
 
-.dark-background {
-    background-color: var(--dark-bg);
-}
-
-.x-small-padding {
-    padding: 1.5px;
-}
-
-.no-padding-no-margin {
-    margin: 0;
-    padding: 0;
+/* ======================
+   Alignment
+====================== */
+.column_container {
+    display: flex;
+    flex-direction: column;
 }
 
 .row_container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-}
-
-.small-padding {
-    padding: 5px;
-}
-
-.moderate-padding {
-    padding: 10px;
 }
 
 .text-center {
@@ -167,13 +155,75 @@ ul {
     text-align: left;
 }
 
+/* ======================
+   Colors
+====================== */
+
+.dark-background {
+    background-color: var(--dark-bg);
+}
+
+/* ======================
+   Padding/Margin
+====================== */
+
+.x-small-padding {
+    padding: 1.5px;
+}
+
+.no-padding-no-margin {
+    margin: 0;
+    padding: 0;
+}
+
+.small-padding {
+    padding: 5px;
+}
+
+.moderate-padding {
+    padding: 10px;
+}
+
+/* ======================
+   Text
+====================== */
 .text-small {
     font-size: small;
+}
+
+.text-medium {
+    font-size: medium;
+}
+
+.text-large {
+    font-size: large;
+}
+
+.text-xxlarge {
+    font-size: xx-large;
 }
 
 .white-text {
     color: var(--block-bg);
 }
+
+ /* ======================
+   IDs
+====================== */
+
+/* ======================
+   Classes
+====================== */
+
+.report {
+    max-width: var(--max-width);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+
 
 #all-content {
     display: flex;

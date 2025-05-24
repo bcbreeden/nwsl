@@ -24,8 +24,32 @@
             <div class="moderate-padding" id="goals_donut"></div>
             <div class="moderate-padding" id="pass_donut"></div>
         </div>
+        <div class="row_container">
+            <div class="moderate-padding" id="team_strength_plot"></div>
+        </div>
 
-        <div class="moderate-padding" id="team_strength_plot"></div>
+        <div class="row_container">
+            {% for stat, label in [
+                ('goals_for', 'Goals For'),
+                ('xgoals_for', 'xGoals For'),
+                ('goals_against', 'Goals Against'),
+                ('xgoals_against', 'xGoals Against'),
+                ('points', 'Points'),
+                ('xpoints', 'xPoints'),
+                ('shots_for', 'Shots For'),
+                ('shots_against', 'Shots Against'),
+                ('goal_difference', 'Goal Difference'),
+                ('xgoal_difference', 'xGoal Difference'),
+                ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
+            ] %}
+                <div class="column_container">
+                    <h3 class="text-xxlarge">{{ team_xgoals_data[stat] }}</h3> <p class="text-medium">{{ label }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+
+
 
         <h2>Match History</h2>
         <table>
