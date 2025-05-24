@@ -40,13 +40,20 @@ def insert_teams_xpass_by_season(season):
                 season
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            obj_id, team_id, count_games, attempted_passes_for, pass_completion_percentage_for,
-            xpass_completion_percentage_for, passes_completed_over_expected_for,
-            passes_completed_over_expected_p100_for, avg_vertical_distance_for,
-            attempted_passes_against, pass_completion_percentage_against,
-            xpass_completion_percentage_against, passes_completed_over_expected_against,
-            passes_completed_over_expected_p100_against, avg_vertical_distance_against,
-            passes_completed_over_expected_difference, avg_vertical_distance_difference,
+            obj_id, team_id, count_games,attempted_passes_for,
+            round((pass_completion_percentage_for * 100), 1),
+            round((xpass_completion_percentage_for * 100), 1),
+            round(passes_completed_over_expected_for, 1),
+            round(passes_completed_over_expected_p100_for, 1),
+            round(avg_vertical_distance_for, 1),
+            attempted_passes_against,
+            round((pass_completion_percentage_against * 100), 1),
+            round((xpass_completion_percentage_against * 100), 1),
+            round(passes_completed_over_expected_against, 1),
+            round(passes_completed_over_expected_p100_against, 1),
+            round(avg_vertical_distance_against, 1),
+            round(passes_completed_over_expected_difference, 1),
+            round(avg_vertical_distance_difference, 1),
             int(season)
         ))
 

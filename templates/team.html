@@ -52,6 +52,33 @@
             {% endfor %}
         </div>
 
+        <div class="row-container text-left">
+            <h2 class="text-xxlarge">xPass</h2>
+        </div>
+        <div class="row-container flex-all-center moderate-margin">
+            {% for stat, label in [
+                ('attempted_passes_for', 'Passes Attempted (For)'),
+                ('pass_completion_percentage_for', 'Pass Completion % (For)'),
+                ('xpass_completion_percentage_for', 'xPass Completion % (For)'),
+                ('passes_completed_over_expected_for', 'Passes Over Expected (For)'),
+                ('passes_completed_over_expected_p100_for', 'Passes Over Expected / 100 (For)'),
+                ('avg_vertical_distance_for', 'Avg Vertical Distance (For)'),
+                ('attempted_passes_against', 'Passes Attempted (Against)'),
+                ('pass_completion_percentage_against', 'Pass Completion % (Against)'),
+                ('xpass_completion_percentage_against', 'xPass Completion % (Against)'),
+                ('passes_completed_over_expected_against', 'Passes Over Expected (Against)'),
+                ('passes_completed_over_expected_p100_against', 'Passes Over Expected / 100 (Against)'),
+                ('avg_vertical_distance_against', 'Avg Vertical Distance (Against)'),
+                ('passes_completed_over_expected_difference', 'Passes Over Expected (Difference)'),
+                ('avg_vertical_distance_difference', 'Avg Vertical Distance (Difference)')
+            ] %}
+                <div class="column-container text-center large-margin moderate-padding">
+                    <h3 class="text-xxlarge text-audiowide">{{ team_xpass_data[stat] }}</h3>
+                    <p class="text-large">{{ label }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
         <div class="row-container">
             <h2 class="text-xxlarge moderate-margin">Match History</h2>
         </div>
