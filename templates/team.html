@@ -18,17 +18,20 @@
                 </div>
             </div>
         </section>
-        <div class="row-container">
+        <div class="row-container moderate-margin">
             <div class="moderate-padding" id="strength_donut"></div>
             <div class="moderate-padding" id="results_donut"></div>
             <div class="moderate-padding" id="goals_donut"></div>
             <div class="moderate-padding" id="pass_donut"></div>
         </div>
-        <div class="row-container">
+        <div class="row-container moderate-margin">
             <div class="moderate-padding" id="team_strength_plot"></div>
         </div>
 
-        <div class="row-container">
+        <div class="row-container text-left">
+            <h2 class="text-xxlarge">xGoals</h2>
+        </div>
+        <div class="row-container flex-all-center moderate-margin">
             {% for stat, label in [
                 ('goals_for', 'Goals For'),
                 ('xgoals_for', 'xGoals For'),
@@ -42,7 +45,7 @@
                 ('xgoal_difference', 'xGoal Difference'),
                 ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
             ] %}
-                <div class="column-container text-center moderate-margin moderate-padding">
+                <div class="column-container text-center large-margin moderate-padding">
                     <h3 class="text-xxlarge text-audiowide">{{ team_xgoals_data[stat] }}</h3>
                     <p class="text-large">{{ label }}</p>
                 </div>

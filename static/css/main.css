@@ -155,6 +155,12 @@ ul {
     text-align: left;
 }
 
+.flex-all-center {
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
 /* ======================
    Colors
 ====================== */
@@ -167,13 +173,21 @@ ul {
    Padding/Margin
 ====================== */
 
-.x-small-padding {
-    padding: 1.5px;
-}
-
 .no-padding-no-margin {
     margin: 0;
     padding: 0;
+}
+
+.moderate-margin {
+    margin: 10px;
+}
+
+.large-margin {
+    margin: 20px;
+}
+
+.x-small-padding {
+    padding: 1.5px;
 }
 
 .small-padding {
@@ -184,9 +198,11 @@ ul {
     padding: 10px;
 }
 
-.moderate-margin {
-    margin: 10px;
+.large_padding {
+    padding: 20px;
 }
+
+
 
 /* ======================
    Text

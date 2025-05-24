@@ -63,7 +63,7 @@ def insert_teams_xgoals_by_season(season):
             obj_id, team_id, count_games, shots_for, shots_against, goals_for,
             goals_against, goal_difference, xgoals_for, xgoals_against,
             xgoal_difference, goal_difference_minus_xgoal_difference,
-            points, xpoints, int(season), predicted_points, point_diff, goalfor_xgoalfor_diff, team_strength
+            points, xpoints, int(season), predicted_points, point_diff, round(goalfor_xgoalfor_diff, 1), team_strength
         ))
 
         conn.commit()
