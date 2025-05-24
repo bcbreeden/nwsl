@@ -135,7 +135,8 @@ def team():
                                 pass_config = pass_config,
                                 strength_bar_json = strength_bar_json,
                                 strength_bar_config = strength_bar_config,
-                                team_xpass_data = team_xpass_data)
+                                team_xpass_data = team_xpass_data,
+                                team_goals_added_data = team_goals_added_data)
     if request.method == 'GET':
         redirect(url_for('teams'))
 

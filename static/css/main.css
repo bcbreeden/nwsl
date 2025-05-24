@@ -7,7 +7,7 @@
     --font-color: #000000;
     --green: #2ecc71;
     --padding-left: 35px;
-    --max-width: 1200px;
+    --report-max-width: 1200px;
   }
 
 /* ======================
@@ -203,7 +203,6 @@ ul {
 }
 
 
-
 /* ======================
    Text
 ====================== */
@@ -244,14 +243,15 @@ ul {
 ====================== */
 
 .report {
-    max-width: var(--max-width);
+    max-width: var(--report-max-width);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-
-
+.static-stat-cell {
+    width: 200px;
+}
 
 #all-content {
     display: flex;

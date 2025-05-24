@@ -45,7 +45,7 @@
                 ('xgoal_difference', 'xGoal Difference'),
                 ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
             ] %}
-                <div class="column-container text-center large-margin moderate-padding">
+                <div class="column-container text-center large-margin moderate-padding static-stat-cell">
                     <h3 class="text-xxlarge text-audiowide">{{ team_xgoals_data[stat] }}</h3>
                     <p class="text-large">{{ label }}</p>
                 </div>
@@ -72,12 +72,55 @@
                 ('passes_completed_over_expected_difference', 'Passes Over Expected (Difference)'),
                 ('avg_vertical_distance_difference', 'Avg Vertical Distance (Difference)')
             ] %}
-                <div class="column-container text-center large-margin moderate-padding">
+                <div class="column-container text-center large-margin moderate-padding static-stat-cell">
                     <h3 class="text-xxlarge text-audiowide">{{ team_xpass_data[stat] }}</h3>
                     <p class="text-large">{{ label }}</p>
                 </div>
             {% endfor %}
         </div>
+
+        <div class="row-container text-left">
+            <h2 class="text-xxlarge">Goals Added</h2>
+        </div>
+        <div class="row-container flex-all-center moderate-margin">
+            {% for stat, label in [
+                ('dribbling_num_actions_for', 'Dribbling Actions (For)'),
+                ('dribbling_goals_added_for', 'Dribbling Goals Added (For)'),
+                ('dribbling_num_actions_against', 'Dribbling Actions (Against)'),
+                ('dribbling_goals_added_against', 'Dribbling Goals Added (Against)'),
+                ('shooting_num_actions_for', 'Shooting Actions (For)'),
+                ('shooting_goals_added_for', 'Shooting Goals Added (For)'),
+                ('shooting_num_actions_against', 'Shooting Actions (Against)'),
+                ('shooting_goals_added_against', 'Shooting Goals Added (Against)'),
+                ('passing_num_actions_for', 'Passing Actions (For)'),
+                ('passing_goals_added_for', 'Passing Goals Added (For)'),
+                ('passing_num_actions_against', 'Passing Actions (Against)'),
+                ('passing_goals_added_against', 'Passing Goals Added (Against)'),
+                ('interrupting_num_actions_for', 'Interrupting Actions (For)'),
+                ('interrupting_goals_added_for', 'Interrupting Goals Added (For)'),
+                ('interrupting_num_actions_against', 'Interrupting Actions (Against)'),
+                ('interrupting_goals_added_against', 'Interrupting Goals Added (Against)'),
+                ('receiving_num_actions_for', 'Receiving Actions (For)'),
+                ('receiving_goals_added_for', 'Receiving Goals Added (For)'),
+                ('receiving_num_actions_against', 'Receiving Actions (Against)'),
+                ('receiving_goals_added_against', 'Receiving Goals Added (Against)'),
+                ('claiming_num_actions_for', 'Claiming Actions (For)'),
+                ('claiming_goals_added_for', 'Claiming Goals Added (For)'),
+                ('claiming_num_actions_against', 'Claiming Actions (Against)'),
+                ('claiming_goals_added_against', 'Claiming Goals Added (Against)'),
+                ('fouling_num_actions_for', 'Fouling Actions (For)'),
+                ('fouling_goals_added_for', 'Fouling Goals Added (For)'),
+                ('fouling_num_actions_against', 'Fouling Actions (Against)'),
+                ('fouling_goals_added_against', 'Fouling Goals Added (Against)')
+            ] %}
+                <div class="column-container text-center large-margin moderate-padding static-stat-cell">
+                    <h3 class="text-xxlarge text-audiowide">{{ team_goals_added_data[stat] }}</h3>
+                    <p class="text-large">{{ label }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+
 
         <div class="row-container">
             <h2 class="text-xxlarge moderate-margin">Match History</h2>
