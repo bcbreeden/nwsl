@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
-                db_stadium_info)
-from plots import (plot_spider, plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results, get_donut_plot_for_goals,
-                get_donut_plot_for_pass_completion, plot_normalized_bar_chart)
+                db_stadium_info, db_team_strength)
+from plots import (plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results, get_donut_plot_for_goals,
+                get_donut_plot_for_pass_completion, plot_bar_chart)
 from momentum_plot import generate_momentum_plot
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -85,6 +85,7 @@ def team():
         team_xgoals_data = db_team_xgoals.get_team_xgoals_by_season(team_id, season_manager.season)
         team_xpass_data = db_team_xpass.get_team_xpass_by_season(team_id, season_manager.season)
         team_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team_id, season_manager.season)
+        team_strength_data = db_team_strength.get_team_strength(team_id, season_manager.season)
 
         team_strength = team_xgoals_data['team_strength']
         strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
@@ -96,10 +97,14 @@ def team():
         stadium = db_stadium_info.get_stadium_by_id(db_games.get_most_recent_home_stadium_id(team_id, season_manager.season))
 
         strength_stats_to_plot = [
-            'xgoal_difference', 'goal_difference', 'xpoints', 'points',
-            'goal_difference_minus_xgoal_difference', 'goalfor_xgoalfor_diff'
-        ]
-        strength_bar_json, strength_bar_config = plot_normalized_bar_chart(strength_stats_to_plot, team_xgoals_data)
+                                "xgoal_difference",
+                                "goal_difference",
+                                "xpoints",
+                                "points",
+                                "goal_diff_minus_xgoal_diff",
+                                "goalfor_xgoalfor_diff"
+                            ]
+        strength_bar_json, strength_bar_config = plot_bar_chart(strength_stats_to_plot, team_strength_data)
 
         results_fig_json, results_config = get_donut_plot_for_team_results(
                                                                         team_record['wins'],

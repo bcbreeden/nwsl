@@ -87,10 +87,11 @@
     </script>
 
     <script>
-        const tm_str_fig = {{ strength_bar_json|safe }};
+        const tm_str_fig = JSON.parse({{ strength_bar_json|tojson }});
         const tm_str_config = {{ strength_bar_config|tojson }};
         Plotly.newPlot('team_strength_plot', tm_str_fig.data, tm_str_fig.layout, tm_str_config);
     </script>
+
 
 
     </section>

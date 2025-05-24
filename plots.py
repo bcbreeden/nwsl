@@ -4,189 +4,6 @@ import plotly
 import json
 import matplotlib.pyplot as plt
 
-def plot_spider(stats_to_plot, player_data, label_font_size = 12):
-    """
-    Generates an interactive spider web graph for player stats with scales based on min_ and max_ values using Plotly.
-
-    Args:
-        stats_to_plot (list): A list of stats to plot.
-        player_data (sqlite3.Row): A row object containing player xGoals data, including min_ and max_ values for each stat.
-
-    Returns:
-        Tuple[str, str]: JSON-encoded Plotly figure and config.
-    """
-    if len(stats_to_plot) == 0:
-        print('No stats provided for spider plot.')
-        return [0, 0]
-    
-    categories = []
-    normalized_values = []
-    hover_values = []  # Store hover values (non-normalized stats)
-
-    for stat in stats_to_plot:
-        min_stat_key = f'min_{stat}'
-        max_stat_key = f'max_{stat}'
-
-        # Ensure the stat and its min/max values exist in the player data
-        if stat in player_data.keys() and min_stat_key in player_data.keys() and max_stat_key in player_data.keys():
-            min_stat = player_data[min_stat_key]
-            max_stat = player_data[max_stat_key]
-            player_stat = player_data[stat]
-
-            # Skip stats with invalid ranges
-            if max_stat == min_stat:
-                continue
-
-            # Normalize the player stat to a 0-1 scale
-            normalized_stat = (player_stat - min_stat) / (max_stat - min_stat)
-
-            # Append data for plotting
-            categories.append(stat.replace('_', ' ').title())
-            # categories.append(stat.replace('_', ' ').title().replace(' ', '<br>'))
-            normalized_values.append(normalized_stat)
-            hover_values.append(f"{stat.replace('_', ' ').title()}: {player_stat}")  # Add hover text
-    
-    # Close the radar chart loop
-    try:
-        categories.append(categories[0])
-    except IndexError:
-        print('No categories provided for spider plot')
-        return [0, 0]
-    
-    normalized_values.append(normalized_values[0])
-    hover_values.append(hover_values[0])  # Close the hover loop
-
-    # Create the radar chart
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatterpolar(
-        r=normalized_values,
-        theta=categories,
-        fill='toself',
-        fillcolor='#003049',
-        name=player_data['player_name'],
-        hoverinfo='text',
-        text=hover_values,  # Add hover values
-        line=dict(color='#003049'),
-        marker=dict(size=1)
-    ))
-
-    # Update the layout
-    fig.update_layout(
-        polar=dict(
-            radialaxis=dict(
-                visible=False,
-                range=[0, 1]  # Normalized range
-            ),
-            angularaxis=dict(
-            tickfont=dict(size=label_font_size)  # Set font size for labels (adjust the size as needed)
-            )
-        ),
-        showlegend=False,
-    )
-
-    # Convert the figure to JSON and add config to disable displayModeBar
-    fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    config = json.dumps({
-        "displayModeBar": False,  # Disable the toolbar
-        "scrollZoom": False,      # Disable zooming with the scroll wheel
-        "dragMode": False,
-        "staticPlot": True        # Make the plot fully static
-    })
-    
-    return fig_json, config
-
-def plot_normalized_bar_chart(stats_to_plot, data):
-    """
-    Generates a horizontal bar chart with weighted contributions to team strength
-    using fixed stat ranges for normalization.
-
-    Args:
-        data (dict or sqlite3.Row): Object containing raw stat values.
-
-    Returns:
-        Tuple[str, str]: JSON-encoded Plotly figure and config.
-    """
-    weighted_stats = {
-        'xgoal_difference': 0.333,
-        'goal_difference': 0.222,
-        'xpoints': 0.167,
-        'points': 0.111,
-        'goal_difference_minus_xgoal_difference': 0.111,
-        'goalfor_xgoalfor_diff': 0.056
-    }
-
-    # Reasonable fixed ranges based on typical NWSL team metrics (adjust if needed)
-    fixed_ranges = {
-        'xgoal_difference': (-5, 5),
-        'goal_difference': (-10, 10),
-        'xpoints': (0, 40),
-        'points': (0, 40),
-        'goal_difference_minus_xgoal_difference': (-5, 5),
-        'goalfor_xgoalfor_diff': (-5, 5)
-    }
-
-    categories = []
-    contributions = []
-    hover_text = []
-
-    for stat, weight in weighted_stats.items():
-        if stat not in data or stat not in fixed_ranges:
-            continue
-
-        val = data[stat]
-        min_val, max_val = fixed_ranges[stat]
-
-        if val is None or max_val == min_val:
-            continue
-
-        # Min-max normalization
-        norm_val = (val - min_val) / (max_val - min_val)
-        norm_val = max(0, min(1, norm_val))  # Clamp to [0, 1]
-
-        weighted_val = norm_val * weight
-
-        label = stat.replace('_', ' ').title()
-        categories.append(label + "  ")
-        contributions.append(weighted_val)
-        hover_text.append(f"{label}: {val:.2f} (norm {norm_val:.2f}, weight {weight})")
-
-    if not contributions:
-        fig = go.Figure(go.Bar(x=[0], y=["No Valid Stats"], orientation='h'))
-    else:
-        fig = go.Figure(go.Bar(
-            x=contributions,
-            y=categories,
-            orientation='h',
-            marker_color='#003049',
-            textposition='auto',
-            hovertext=hover_text,
-            hoverinfo='text'
-        ))
-
-    fig.update_layout(
-        xaxis=dict(
-            title='Weighted Contribution to Strength',
-            showline=True,
-            showticklabels=True
-        ),
-        yaxis=dict(autorange='reversed'),
-        height=40 * max(len(categories), 1) + 100,
-        width=1000,
-        margin=dict(l=120, r=60, t=60, b=40),
-        showlegend=False
-    )
-
-    fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    config = json.dumps({
-        "displayModeBar": False,
-        "staticPlot": True
-    })
-
-    return fig_json, config
-
-
-
 def plot_deviation_from_average_chart(stats_to_plot, player_data):
     """
     Generates a horizontal bar chart showing player stat deviations from league average.
@@ -429,5 +246,60 @@ def get_donut_plot_for_pass_completion(percentage):
 
     fig_json = fig.to_json()
     config = {'displayModeBar': False}
+
+    return fig_json, config
+
+def plot_bar_chart(stats_to_plot, team_data, title="Team Strength Breakdown"):
+    """
+    Generates a bar chart for a single team's strength-related stats.
+
+    Args:
+        team_data (sqlite3.Row or dict): Row returned by get_team_strength().
+        stats_to_plot (list of str): List of stat field names to plot (e.g. ['xgoal_difference', 'points']).
+        title (str): Chart title.
+
+    Returns:
+        Tuple[str, str]: JSON-encoded Plotly figure and config.
+    """
+    categories = []
+    values = []
+    bar_labels = []
+
+    for stat in stats_to_plot:
+        if stat in team_data.keys():
+            val = team_data[stat]
+            label = stat.replace('_', ' ').title()
+            categories.append(label + "  ")
+            values.append(val)
+            bar_labels.append(f"{val:.2f}")
+
+    fig = go.Figure(go.Bar(
+        x=values,
+        y=categories,
+        orientation='h',
+        marker_color='#003049',
+        text=bar_labels,
+        textposition='inside',
+        hoverinfo='skip'
+    ))
+
+    fig.update_layout(
+        title=title,
+        xaxis=dict(
+            showline=False,
+            showticklabels=False
+        ),
+        yaxis=dict(autorange='reversed'),
+        height=40 * len(categories) + 100,
+        width=1000,
+        margin=dict(l=120, r=60, t=60, b=40),
+        showlegend=False
+    )
+
+    fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    config = {
+        "displayModeBar": False,
+        "staticPlot": True
+        }
 
     return fig_json, config
