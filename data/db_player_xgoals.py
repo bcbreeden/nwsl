@@ -331,7 +331,9 @@ def get_player_xgoals_ids_by_season(season):
     return ids
 
 '''
-INSERT XGOALS DATA
+======================
+   Insert xGoals Data
+======================
 '''
 def insert_player_xgoals_by_season(season):
     """

@@ -74,7 +74,7 @@ def insert_teams_xgoals_by_season(season):
    Getters
 ======================
 '''
-def get_top_team_xgoals_stat(season, sorting_stat):
+def get_top_team_xgoals_stat(season, sorting_stat = "points"):
     print('Teams - Xgoals in {} for: {}.'.format(sorting_stat, season))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)

@@ -650,6 +650,67 @@ def create_tables():
     )
 ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS team_xgoals_boundaries (
+        season INTEGER,
+
+        avg_shots_for REAL,
+        min_shots_for REAL,
+        max_shots_for REAL,
+
+        avg_shots_against REAL,
+        min_shots_against REAL,
+        max_shots_against REAL,
+
+        avg_goals_for REAL,
+        min_goals_for REAL,
+        max_goals_for REAL,
+
+        avg_goals_against REAL,
+        min_goals_against REAL,
+        max_goals_against REAL,
+
+        avg_goal_difference REAL,
+        min_goal_difference REAL,
+        max_goal_difference REAL,
+
+        avg_xgoals_for REAL,
+        min_xgoals_for REAL,
+        max_xgoals_for REAL,
+
+        avg_xgoals_against REAL,
+        min_xgoals_against REAL,
+        max_xgoals_against REAL,
+
+        avg_xgoal_difference REAL,
+        min_xgoal_difference REAL,
+        max_xgoal_difference REAL,
+
+        avg_goal_difference_minus_xgoal_difference REAL,
+        min_goal_difference_minus_xgoal_difference REAL,
+        max_goal_difference_minus_xgoal_difference REAL,
+
+        avg_points REAL,
+        min_points REAL,
+        max_points REAL,
+
+        avg_xpoints REAL,
+        min_xpoints REAL,
+        max_xpoints REAL,
+
+        avg_point_diff REAL,
+        min_point_diff REAL,
+        max_point_diff REAL,
+
+        avg_goalfor_xgoalfor_diff REAL,
+        min_goalfor_xgoalfor_diff REAL,
+        max_goalfor_xgoalfor_diff REAL,
+
+        UNIQUE(season)
+    )
+''')
+
+
 
     # Commit the changes and close the connection
     conn.commit()

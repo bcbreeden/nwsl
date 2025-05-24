@@ -1,7 +1,8 @@
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
-                db_manager_info, db_referee_info, db_stadium_info, db_game_shots, db_player_strength)
+                db_manager_info, db_referee_info, db_stadium_info, db_game_shots, db_player_strength,
+                db_team_xgoals_boundaries)
 
 import time
 
@@ -21,21 +22,24 @@ if __name__ == '__main__':
 
         db_goalkeeper_goals_added.insert_goalkeeper_goals_added_by_season(season)
         db_goalkeeper_xgoals.insert_goalkeeper_xgoals_by_season(season)
-        db_goalkeeper_xgoals.update_goalkeeper_strength(season)
-        
+
         db_player_goals_added.insert_player_goals_added_by_season(season)
 
         db_player_xgoals.insert_player_xgoals_by_season(season)
         db_player_xgoals.update_xgoals_xassists_per_90(season)
 
         db_player_strength.update_attacker_strength(season)
-        
+        db_player_strength.update_midfielder_strength(season)
+        db_player_strength.update_defender_strength(season)
+        db_player_strength.update_goalkeeper_strength(season)
+
         db_player_xpass.insert_player_xpass_by_season(season)
 
         db_team_goals_added.insert_team_goals_added_by_season(season)
         db_team_xgoals.insert_teams_xgoals_by_season(season)
         db_team_xgoals.insert_team_strength_history(season)
         db_team_xpass.insert_teams_xpass_by_season(season)
+        db_team_xgoals_boundaries.insert_team_xgoal_boundaries(season)
 
         game_ids = db_games.get_game_ids_by_season(season)
         for game_id in game_ids:
