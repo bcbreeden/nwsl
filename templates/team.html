@@ -25,6 +25,8 @@
             <div class="moderate-padding" id="pass_donut"></div>
         </div>
 
+        <div class="moderate-padding" id="team_strength_plot"></div>
+
         <h2>Previous Matches</h2>
         <table>
             <thead>
@@ -82,6 +84,12 @@
         const p_fig = {{ pass_fig_json|safe }};
         const p_conf = {{ pass_config|tojson }};
         Plotly.newPlot('pass_donut', p_fig.data, p_fig.layout, p_conf);
+    </script>
+
+    <script>
+        const tm_str_fig = {{ strength_bar_json|safe }};
+        const tm_str_config = {{ strength_bar_config|tojson }};
+        Plotly.newPlot('team_strength_plot', tm_str_fig.data, tm_str_fig.layout, tm_str_config);
     </script>
 
 

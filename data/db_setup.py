@@ -602,38 +602,53 @@ def create_tables():
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS game_shots (
-            game_id TEXT,
-            period_id INTEGER,
-            expanded_minute INTEGER,
-            game_minute INTEGER,
-            team_id TEXT,
-            shooter_player_id TEXT,
-            assist_player_id TEXT,
-            shot_location_x REAL,
-            shot_location_y REAL,
-            shot_end_location_x REAL,
-            shot_end_location_y REAL,
-            distance_from_goal REAL,
-            distance_from_goal_yds REAL,
-            blocked INTEGER,
-            blocked_x REAL,
-            blocked_y REAL,
-            goal INTEGER,
-            own_goal INTEGER,
-            home_score INTEGER,
-            away_score INTEGER,
-            shot_xg REAL,
-            shot_psxg REAL,
-            head INTEGER,
-            assist_through_ball INTEGER,
-            assist_cross INTEGER,
-            pattern_of_play TEXT,
-            shot_order INTEGER,
-            season INTEGER,
-            FOREIGN KEY (game_id) REFERENCES games(game_id),
-            UNIQUE(game_id, shot_order)
-        )
-    ''')
+        game_id TEXT,
+        period_id INTEGER,
+        expanded_minute INTEGER,
+        game_minute INTEGER,
+        team_id TEXT,
+        shooter_player_id TEXT,
+        assist_player_id TEXT,
+        shot_location_x REAL,
+        shot_location_y REAL,
+        shot_end_location_x REAL,
+        shot_end_location_y REAL,
+        distance_from_goal REAL,
+        distance_from_goal_yds REAL,
+        blocked INTEGER,
+        blocked_x REAL,
+        blocked_y REAL,
+        goal INTEGER,
+        own_goal INTEGER,
+        home_score INTEGER,
+        away_score INTEGER,
+        shot_xg REAL,
+        shot_psxg REAL,
+        head INTEGER,
+        assist_through_ball INTEGER,
+        assist_cross INTEGER,
+        pattern_of_play TEXT,
+        shot_order INTEGER,
+        season INTEGER,
+        FOREIGN KEY (game_id) REFERENCES games(game_id),
+        UNIQUE(game_id, shot_order)
+    )
+''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS team_strength (
+        team_id TEXT,
+        season INTEGER,
+        xgoal_difference REAL,
+        goal_difference REAL,
+        xpoints REAL,
+        points REAL,
+        goal_diff_minus_xgoal_diff REAL,
+        goalfor_xgoalfor_diff REAL,
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id),
+        UNIQUE(team_id, season)
+    )
+''')
 
 
     # Commit the changes and close the connection

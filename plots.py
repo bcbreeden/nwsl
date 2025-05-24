@@ -96,6 +96,97 @@ def plot_spider(stats_to_plot, player_data, label_font_size = 12):
     
     return fig_json, config
 
+def plot_normalized_bar_chart(stats_to_plot, data):
+    """
+    Generates a horizontal bar chart with weighted contributions to team strength
+    using fixed stat ranges for normalization.
+
+    Args:
+        data (dict or sqlite3.Row): Object containing raw stat values.
+
+    Returns:
+        Tuple[str, str]: JSON-encoded Plotly figure and config.
+    """
+    weighted_stats = {
+        'xgoal_difference': 0.333,
+        'goal_difference': 0.222,
+        'xpoints': 0.167,
+        'points': 0.111,
+        'goal_difference_minus_xgoal_difference': 0.111,
+        'goalfor_xgoalfor_diff': 0.056
+    }
+
+    # Reasonable fixed ranges based on typical NWSL team metrics (adjust if needed)
+    fixed_ranges = {
+        'xgoal_difference': (-5, 5),
+        'goal_difference': (-10, 10),
+        'xpoints': (0, 40),
+        'points': (0, 40),
+        'goal_difference_minus_xgoal_difference': (-5, 5),
+        'goalfor_xgoalfor_diff': (-5, 5)
+    }
+
+    categories = []
+    contributions = []
+    hover_text = []
+
+    for stat, weight in weighted_stats.items():
+        if stat not in data or stat not in fixed_ranges:
+            continue
+
+        val = data[stat]
+        min_val, max_val = fixed_ranges[stat]
+
+        if val is None or max_val == min_val:
+            continue
+
+        # Min-max normalization
+        norm_val = (val - min_val) / (max_val - min_val)
+        norm_val = max(0, min(1, norm_val))  # Clamp to [0, 1]
+
+        weighted_val = norm_val * weight
+
+        label = stat.replace('_', ' ').title()
+        categories.append(label + "  ")
+        contributions.append(weighted_val)
+        hover_text.append(f"{label}: {val:.2f} (norm {norm_val:.2f}, weight {weight})")
+
+    if not contributions:
+        fig = go.Figure(go.Bar(x=[0], y=["No Valid Stats"], orientation='h'))
+    else:
+        fig = go.Figure(go.Bar(
+            x=contributions,
+            y=categories,
+            orientation='h',
+            marker_color='#003049',
+            textposition='auto',
+            hovertext=hover_text,
+            hoverinfo='text'
+        ))
+
+    fig.update_layout(
+        xaxis=dict(
+            title='Weighted Contribution to Strength',
+            showline=True,
+            showticklabels=True
+        ),
+        yaxis=dict(autorange='reversed'),
+        height=40 * max(len(categories), 1) + 100,
+        width=1000,
+        margin=dict(l=120, r=60, t=60, b=40),
+        showlegend=False
+    )
+
+    fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    config = json.dumps({
+        "displayModeBar": False,
+        "staticPlot": True
+    })
+
+    return fig_json, config
+
+
+
 def plot_deviation_from_average_chart(stats_to_plot, player_data):
     """
     Generates a horizontal bar chart showing player stat deviations from league average.

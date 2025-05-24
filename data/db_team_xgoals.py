@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import sqlite3
 from sklearn.preprocessing import MinMaxScaler
 from .data_util import get_db_path
+from .db_team_strength import insert_team_strength
 
 def insert_teams_xgoals_by_season(season):
     print('Inserting teams data (xgoals) for season:', season)
@@ -49,7 +50,7 @@ def insert_teams_xgoals_by_season(season):
         goalfor_xgoalfor_diff = team['goalfor_xgoalfor_diff']
 
         # Calculate power score
-        team_strength = calculate_team_strength(team, feature_mins, feature_maxs)
+        team_strength = calculate_team_strength(team, feature_mins, feature_maxs, season)
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xgoals (
@@ -150,7 +151,7 @@ def calculate_feature_min_max(teams_data):
                 feature_maxs[key] = val
     return feature_mins, feature_maxs
 
-def calculate_team_strength(team, feature_mins, feature_maxs):
+def calculate_team_strength(team, feature_mins, feature_maxs, season):
     features = {
         'xgoal_difference': team.get('xgoal_difference', 0),
         'goal_difference': team.get('goal_difference', 0),
@@ -168,14 +169,23 @@ def calculate_team_strength(team, feature_mins, feature_maxs):
         base_normalized = (val - min_val) / (max_val - min_val) if max_val != min_val else 0.5
         normalized[key] = base_normalized
 
+    xgd_contrib = 0.333 * normalized['xgoal_difference']
+    gd_contrib = 0.222 * normalized['goal_difference']
+    xp_contrib = 0.167 * normalized['xpoints']
+    p_contrib = 0.111 * normalized['points']
+    gdmxgd_contrib = 0.111 * normalized['goal_difference_minus_xgoal_difference']
+    gfdiff_contrib = 0.056 * normalized['goalfor_xgoalfor_diff']
+
     team_strength = (
-        0.333 * normalized['xgoal_difference'] +
-        0.222 * normalized['goal_difference'] +
-        0.167 * normalized['xpoints'] +
-        0.111 * normalized['points'] +
-        0.111 * normalized['goal_difference_minus_xgoal_difference'] +
-        0.056 * normalized['goalfor_xgoalfor_diff']
+        xgd_contrib +
+        gd_contrib +
+        xp_contrib +
+        p_contrib +
+        gdmxgd_contrib +
+        gfdiff_contrib
     )
+
+    insert_team_strength(xgd_contrib, gd_contrib, xp_contrib, p_contrib, gdmxgd_contrib, gfdiff_contrib, season, team.get('team_id'))
     
     return round(team_strength * 100, 1)
 
