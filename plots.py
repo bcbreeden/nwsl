@@ -284,7 +284,16 @@ def plot_bar_chart(stats_to_plot, team_data, title="Team Strength Breakdown"):
     ))
 
     fig.update_layout(
-        title=title,
+        title=dict(
+            text=f"<b>{title}</b>",
+            font=dict(
+                family="Montserrat, Arial, sans-serif",
+                size=27,
+                color="#003049"
+            ),
+            x=0.5,
+            xanchor="center"
+        ),
         xaxis=dict(
             showline=False,
             showticklabels=False

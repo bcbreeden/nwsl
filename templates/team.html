@@ -52,38 +52,41 @@
             {% endfor %}
         </div>
 
+        <div class="row-container">
+            <h2 class="text-xxlarge moderate-margin">Match History</h2>
+        </div>
+        <div class="row-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date (EST)</th>
+                        <th>Home Game</th>
+                        <th>Result</th>
+                        <th>Opponent</th>
+                        <th>Short Name</th>
+                        <th>Abbreviation</th>
+                        <th>Goals Scored</th>
+                        <th>Goals Against</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for game in game_results %}
+                    <tr>
+                        <td>{{ game.date_time_est }}</td>
+                        <td>{{ game.home_game }}</td>
+                        <td>{{ game.result }}</td>
+                        <td>{{ game.opponent_name }}</td>
+                        <td>{{ game.opponent_short_name }}</td>
+                        <td>{{ game.opponent_abbreviation }}</td>
+                        <td>{{ game.goals_scored }}</td>
+                        <td>{{ game.goals_against }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
 
-
-
-        <h2>Match History</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date (EST)</th>
-                    <th>Home Game</th>
-                    <th>Result</th>
-                    <th>Opponent</th>
-                    <th>Short Name</th>
-                    <th>Abbreviation</th>
-                    <th>Goals Scored</th>
-                    <th>Goals Against</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for game in game_results %}
-                <tr>
-                    <td>{{ game.date_time_est }}</td>
-                    <td>{{ game.home_game }}</td>
-                    <td>{{ game.result }}</td>
-                    <td>{{ game.opponent_name }}</td>
-                    <td>{{ game.opponent_short_name }}</td>
-                    <td>{{ game.opponent_abbreviation }}</td>
-                    <td>{{ game.goals_scored }}</td>
-                    <td>{{ game.goals_against }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
 
 
 
