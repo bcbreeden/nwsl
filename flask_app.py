@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
-                db_stadium_info, db_team_strength)
+                db_stadium_info, db_team_strength, db_team_xgoals_boundaries)
 from plots import (plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results, get_donut_plot_for_goals,
                 get_donut_plot_for_pass_completion, plot_bar_chart)
 from momentum_plot import generate_momentum_plot
@@ -86,6 +86,7 @@ def team():
         team_xpass_data = db_team_xpass.get_team_xpass_by_season(team_id, season_manager.season)
         team_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team_id, season_manager.season)
         team_strength_data = db_team_strength.get_team_strength(team_id, season_manager.season)
+        team_xgoal_boundary_data = db_team_xgoals_boundaries.get_team_xgoal_boundaries_by_season(season_manager.season)
 
         team_strength = team_xgoals_data['team_strength']
         strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
@@ -136,7 +137,8 @@ def team():
                                 strength_bar_json = strength_bar_json,
                                 strength_bar_config = strength_bar_config,
                                 team_xpass_data = team_xpass_data,
-                                team_goals_added_data = team_goals_added_data)
+                                team_goals_added_data = team_goals_added_data,
+                                team_xgoal_boundary_data = team_xgoal_boundary_data)
     if request.method == 'GET':
         redirect(url_for('teams'))
 

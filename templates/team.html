@@ -31,25 +31,51 @@
         <div class="row-container text-left">
             <h2 class="text-xxlarge">xGoals</h2>
         </div>
-        <div class="row-container flex-all-center moderate-margin">
-            {% for stat, label in [
-                ('goals_for', 'Goals For'),
-                ('xgoals_for', 'xGoals For'),
-                ('goals_against', 'Goals Against'),
-                ('xgoals_against', 'xGoals Against'),
-                ('points', 'Points'),
-                ('xpoints', 'xPoints'),
-                ('shots_for', 'Shots For'),
-                ('shots_against', 'Shots Against'),
-                ('goal_difference', 'Goal Difference'),
-                ('xgoal_difference', 'xGoal Difference'),
-                ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
-            ] %}
-                <div class="column-container text-center large-margin moderate-padding static-stat-cell">
-                    <h3 class="text-xxlarge text-audiowide">{{ team_xgoals_data[stat] }}</h3>
-                    <p class="text-large">{{ label }}</p>
-                </div>
-            {% endfor %}
+        <div class="report_stats_block">
+            <table class="stats_table">
+                <thead>
+                    <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                    <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                    <th class="small-padding dark-background white-text"></th>
+                    <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                </thead>
+                <tbody>
+                    {% for stat, label in [
+                        ('goals_for', 'Goals For'),
+                        ('xgoals_for', 'xGoals For'),
+                        ('goals_against', 'Goals Against'),
+                        ('xgoals_against', 'xGoals Against'),
+                        ('points', 'Points'),
+                        ('xpoints', 'xPoints'),
+                        ('shots_for', 'Shots For'),
+                        ('shots_against', 'Shots Against'),
+                        ('goal_difference', 'Goal Difference'),
+                        ('xgoal_difference', 'xGoal Difference'),
+                        ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
+                    ] %}
+                        <tr>
+                            <td class="text-left">
+                                <p class="stat_label player_stat_text">{{ label }}</p>
+                            </td>
+                            <td class="player_stat_cell">
+                                <p class="player_stat_text">{{ team_xgoals_data[stat] }}</p>
+                            </td>
+                            <td class="text-center">
+                                {% if team_xgoals_data[stat] == team_xgoal_boundary_data['max_' + stat] %}  
+                                    <img class="icon" src="{{ url_for('static', filename='img/star.png') }}">
+                                {% elif team_xgoals_data[stat] >= team_xgoal_boundary_data['avg_' + stat] %}  
+                                    <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
+                                {% else %}
+                                    <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
+                                {% endif %}
+                            </td>
+                            <td class="player_stat_cell">
+                                <p class="player_stat_text">{{ team_xgoal_boundary_data['avg_' + stat] }}</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
         <div class="row-container text-left">

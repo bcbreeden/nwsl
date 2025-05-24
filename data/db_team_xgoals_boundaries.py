@@ -60,19 +60,57 @@ def insert_season_boundaries_to_db(season_data, stats_to_track):
     ''', (
         season_data["season"],
 
-        season_data.get("avg_shots_for"), season_data.get("min_shots_for"), season_data.get("max_shots_for"),
-        season_data.get("avg_shots_against"), season_data.get("min_shots_against"), season_data.get("max_shots_against"),
-        season_data.get("avg_goals_for"), season_data.get("min_goals_for"), season_data.get("max_goals_for"),
-        season_data.get("avg_goals_against"), season_data.get("min_goals_against"), season_data.get("max_goals_against"),
-        season_data.get("avg_goal_difference"), season_data.get("min_goal_difference"), season_data.get("max_goal_difference"),
-        season_data.get("avg_xgoals_for"), season_data.get("min_xgoals_for"), season_data.get("max_xgoals_for"),
-        season_data.get("avg_xgoals_against"), season_data.get("min_xgoals_against"), season_data.get("max_xgoals_against"),
-        season_data.get("avg_xgoal_difference"), season_data.get("min_xgoal_difference"), season_data.get("max_xgoal_difference"),
-        season_data.get("avg_goal_difference_minus_xgoal_difference"), season_data.get("min_goal_difference_minus_xgoal_difference"), season_data.get("max_goal_difference_minus_xgoal_difference"),
-        season_data.get("avg_points"), season_data.get("min_points"), season_data.get("max_points"),
-        season_data.get("avg_xpoints"), season_data.get("min_xpoints"), season_data.get("max_xpoints"),
-        season_data.get("avg_point_diff"), season_data.get("min_point_diff"), season_data.get("max_point_diff"),
-        season_data.get("avg_goalfor_xgoalfor_diff"), season_data.get("min_goalfor_xgoalfor_diff"), season_data.get("max_goalfor_xgoalfor_diff")
+        round(season_data.get("avg_shots_for"), 2),
+        season_data.get("min_shots_for"),
+        season_data.get("max_shots_for"),
+
+        round(season_data.get("avg_shots_against"), 2),
+        season_data.get("min_shots_against"),
+        season_data.get("max_shots_against"),
+
+        round(season_data.get("avg_goals_for"), 2),
+        season_data.get("min_goals_for"),
+        season_data.get("max_goals_for"),
+
+        round(season_data.get("avg_goals_against"), 2),
+        season_data.get("min_goals_against"),
+        season_data.get("max_goals_against"),
+
+        round(season_data.get("avg_goal_difference"), 2),
+        season_data.get("min_goal_difference"),
+        season_data.get("max_goal_difference"),
+
+        round(season_data.get("avg_xgoals_for"), 2),
+        season_data.get("min_xgoals_for"),
+        season_data.get("max_xgoals_for"),
+
+        round(season_data.get("avg_xgoals_against"), 2),
+        season_data.get("min_xgoals_against"),
+        season_data.get("max_xgoals_against"),
+
+        round(season_data.get("avg_xgoal_difference"), 2),
+        season_data.get("min_xgoal_difference"),
+        season_data.get("max_xgoal_difference"),
+
+        round(season_data.get("avg_goal_difference_minus_xgoal_difference"), 2),
+        season_data.get("min_goal_difference_minus_xgoal_difference"),
+        season_data.get("max_goal_difference_minus_xgoal_difference"),
+
+        round(season_data.get("avg_points"), 2),
+        season_data.get("min_points"),
+        season_data.get("max_points"),
+
+        round(season_data.get("avg_xpoints"), 2),
+        season_data.get("min_xpoints"),
+        season_data.get("max_xpoints"),
+
+        round(season_data.get("avg_point_diff"), 2),
+        season_data.get("min_point_diff"),
+        season_data.get("max_point_diff"),
+
+        round(season_data.get("avg_goalfor_xgoalfor_diff"), 2),
+        season_data.get("min_goalfor_xgoalfor_diff"),
+        season_data.get("max_goalfor_xgoalfor_diff")
     ))
 
     conn.commit()
@@ -97,3 +135,24 @@ def aggregate_season_stats(team_data, stats_to_track):
             result[f"max_{stat}"] = None
 
     return result
+
+def get_team_xgoal_boundaries_by_season(season):
+    print('Attempting to get team xGoal boundaries for season:', season)
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT * FROM team_xgoals_boundaries WHERE season = ?
+    ''', (season,))
+    
+    row = cursor.fetchone()
+    conn.commit()
+    conn.close()
+
+    if row:
+        print('Team xGoal boundaries successfully retrieved for season:', season)
+    else:
+        print('No data found for season:', season)
+
+    return row

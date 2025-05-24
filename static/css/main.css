@@ -533,7 +533,7 @@ ul {
     text-align: center;
 }
 
-.player_stats_table{
+.stats_table{
     table-layout: auto;
     width: 100%;
     border: 2px solid var(--dark-bg);
@@ -546,7 +546,7 @@ ul {
     margin: 0;
 }
 
-.player_report_stats_block {
+.report_stats_block {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
