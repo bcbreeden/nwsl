@@ -69,7 +69,11 @@ def insert_teams_xgoals_by_season(season):
         conn.commit()
     conn.close()
 
-
+'''
+======================
+   Getters
+======================
+'''
 def get_top_team_xgoals_stat(season, sorting_stat):
     print('Teams - Xgoals in {} for: {}.'.format(sorting_stat, season))
     db_path = get_db_path()
@@ -124,11 +128,11 @@ def get_team_xgoals_by_season(team_id, season):
     print('Team XGoals for {}: {} returned'.format(team_id, season))
     return rows
 
-def _calc_predicted_points(count_games, goals_for, goals_against):
-    perc_points_prediction = (goals_for**1.35)/((goals_for**1.35) + (goals_against**1.35))
-    available_points = count_games * 3
-    predicted_points = perc_points_prediction * available_points
-    return(predicted_points)
+'''
+======================
+   Team Strength Helpers
+======================
+'''
 
 def calculate_feature_min_max(teams_data):
     keys = [
@@ -279,7 +283,6 @@ def insert_team_strength_history(season):
     print(f"Updated {len(teams_to_update)} teams for season {season}.")
     print(f"Updated these teams: {teams_to_update}")
 
-
 def get_team_strength_for_season(cursor, season):
     cursor.execute('''
         SELECT team_id, team_strength, count_games 
@@ -313,3 +316,14 @@ def get_team_strength_by_season(season):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+'''
+======================
+   Misc Helpers Strength Helpers
+======================
+'''
+def _calc_predicted_points(count_games, goals_for, goals_against):
+    perc_points_prediction = (goals_for**1.35)/((goals_for**1.35) + (goals_against**1.35))
+    available_points = count_games * 3
+    predicted_points = perc_points_prediction * available_points
+    return(predicted_points)
