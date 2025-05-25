@@ -331,9 +331,9 @@ ul {
 }
 
 .SD {
-    background-color: #e51884;      /* Primary: hot pink from the top banner */
+    background-color: #2d3e50;      /* Primary: hot pink from the top banner */
     color: #ffffff;                 /* Text: white for clarity and brightness */
-    border-left: var(--shot-border-width) solid #00b2a9; /* Secondary: ocean teal from the wave */
+    border-left: var(--shot-border-width) solid #e51884; /* Secondary: ocean teal from the wave */
 }
 
 .SEA {
