@@ -117,7 +117,7 @@ def team():
                                                                         team_xgoals_data['points']
                                                                         )
         goals_fig_json, goals_config = get_donut_plot_for_goals(team_xgoals_data['goals_for'], team_xgoals_data['goals_against'])
-        pass_fig_json, pass_config = get_donut_plot_for_pass_completion(int(round(team_xpass_data['pass_completion_percentage_for'] * 100, 0)))
+        pass_fig_json, pass_config = get_donut_plot_for_pass_completion(team_xpass_data['pass_completion_percentage_for'])
 
 
 
