@@ -710,7 +710,7 @@ def create_tables():
     )
 ''')
 
-    ursor.execute('''      
+    cursor.execute('''      
         CREATE TABLE IF NOT EXISTS team_xpass_boundaries (
         season INTEGER,
 
@@ -773,6 +773,127 @@ def create_tables():
         UNIQUE(season)
     )
 ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS team_goals_add_boundaries (
+        season INTEGER,
+
+        avg_dribbling_num_actions_for REAL,
+        min_dribbling_num_actions_for REAL,
+        max_dribbling_num_actions_for REAL,
+
+        avg_dribbling_goals_added_for REAL,
+        min_dribbling_goals_added_for REAL,
+        max_dribbling_goals_added_for REAL,
+
+        avg_dribbling_num_actions_against REAL,
+        min_dribbling_num_actions_against REAL,
+        max_dribbling_num_actions_against REAL,
+
+        avg_dribbling_goals_added_against REAL,
+        min_dribbling_goals_added_against REAL,
+        max_dribbling_goals_added_against REAL,
+
+        avg_shooting_num_actions_for REAL,
+        min_shooting_num_actions_for REAL,
+        max_shooting_num_actions_for REAL,
+
+        avg_shooting_goals_added_for REAL,
+        min_shooting_goals_added_for REAL,
+        max_shooting_goals_added_for REAL,
+
+        avg_shooting_num_actions_against REAL,
+        min_shooting_num_actions_against REAL,
+        max_shooting_num_actions_against REAL,
+
+        avg_shooting_goals_added_against REAL,
+        min_shooting_goals_added_against REAL,
+        max_shooting_goals_added_against REAL,
+
+        avg_passing_num_actions_for REAL,
+        min_passing_num_actions_for REAL,
+        max_passing_num_actions_for REAL,
+
+        avg_passing_goals_added_for REAL,
+        min_passing_goals_added_for REAL,
+        max_passing_goals_added_for REAL,
+
+        avg_passing_num_actions_against REAL,
+        min_passing_num_actions_against REAL,
+        max_passing_num_actions_against REAL,
+
+        avg_passing_goals_added_against REAL,
+        min_passing_goals_added_against REAL,
+        max_passing_goals_added_against REAL,
+
+        avg_interrupting_num_actions_for REAL,
+        min_interrupting_num_actions_for REAL,
+        max_interrupting_num_actions_for REAL,
+
+        avg_interrupting_goals_added_for REAL,
+        min_interrupting_goals_added_for REAL,
+        max_interrupting_goals_added_for REAL,
+
+        avg_interrupting_num_actions_against REAL,
+        min_interrupting_num_actions_against REAL,
+        max_interrupting_num_actions_against REAL,
+
+        avg_interrupting_goals_added_against REAL,
+        min_interrupting_goals_added_against REAL,
+        max_interrupting_goals_added_against REAL,
+
+        avg_receiving_num_actions_for REAL,
+        min_receiving_num_actions_for REAL,
+        max_receiving_num_actions_for REAL,
+
+        avg_receiving_goals_added_for REAL,
+        min_receiving_goals_added_for REAL,
+        max_receiving_goals_added_for REAL,
+
+        avg_receiving_num_actions_against REAL,
+        min_receiving_num_actions_against REAL,
+        max_receiving_num_actions_against REAL,
+
+        avg_receiving_goals_added_against REAL,
+        min_receiving_goals_added_against REAL,
+        max_receiving_goals_added_against REAL,
+
+        avg_claiming_num_actions_for REAL,
+        min_claiming_num_actions_for REAL,
+        max_claiming_num_actions_for REAL,
+
+        avg_claiming_goals_added_for REAL,
+        min_claiming_goals_added_for REAL,
+        max_claiming_goals_added_for REAL,
+
+        avg_claiming_num_actions_against REAL,
+        min_claiming_num_actions_against REAL,
+        max_claiming_num_actions_against REAL,
+
+        avg_claiming_goals_added_against REAL,
+        min_claiming_goals_added_against REAL,
+        max_claiming_goals_added_against REAL,
+
+        avg_fouling_num_actions_for REAL,
+        min_fouling_num_actions_for REAL,
+        max_fouling_num_actions_for REAL,
+
+        avg_fouling_goals_added_for REAL,
+        min_fouling_goals_added_for REAL,
+        max_fouling_goals_added_for REAL,
+
+        avg_fouling_num_actions_against REAL,
+        min_fouling_num_actions_against REAL,
+        max_fouling_num_actions_against REAL,
+
+        avg_fouling_goals_added_against REAL,
+        min_fouling_goals_added_against REAL,
+        max_fouling_goals_added_against REAL,
+
+        UNIQUE(season)
+    )
+''')
+
 
 
 

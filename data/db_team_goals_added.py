@@ -109,4 +109,36 @@ def get_team_goals_added_by_season(team_id, season):
     conn.commit()
     conn.close()
     print('Player goals added returned.')
-    return row
+    return row 
+
+import sqlite3
+from .data_util import get_db_path
+
+def get_all_teams_goals_added_by_season(season):
+    print(f'Fetching all team goals added stats for Season: {season}')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = '''
+        SELECT 
+            tga.*,
+            ti.*
+        FROM 
+            team_goals_added AS tga
+        JOIN 
+            team_info AS ti
+        ON 
+            tga.team_id = ti.team_id
+        WHERE
+            tga.season = ?
+    '''
+
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+
+    print(f'{len(rows)} team goals added rows returned.')
+    return rows  # List of sqlite3.Row objects

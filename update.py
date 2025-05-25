@@ -2,7 +2,7 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
                 db_manager_info, db_referee_info, db_stadium_info, db_player_strength, db_game_shots,
-                db_team_xgoals_boundaries, db_team_xpass_boundaries)
+                db_team_xgoals_boundaries, db_team_xpass_boundaries, db_team_goals_added_boundaries)
 from datetime import datetime
 import time
 
@@ -51,6 +51,7 @@ if __name__ == '__main__':
         db_team_xpass.insert_teams_xpass_by_season(season)
         db_team_xgoals_boundaries.insert_team_xgoal_boundaries(season)
         db_team_xpass_boundaries.insert_team_xpass_boundaries(season)
+        db_team_goals_added_boundaries.insert_team_goals_add_boundaries(season)
 
         print('Adding game flow data...')
         game_ids = db_games.get_game_ids_by_season(season)
