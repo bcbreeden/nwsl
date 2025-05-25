@@ -13,7 +13,7 @@
                 <h2 class="report_name_subheader">{{ team_record['wins'] }} - {{ team_record['draws'] }} - {{ team_record['losses'] }}</h2>
                 <div class="row-container">
                     {% for game in five_recent_games %}
-                        <img class="icon x-small-padding" src="{{ url_for('static', filename='img/' + game.result + '.png') }}" alt="{{ game.result }}">
+                        <img class="icon-small x-small-padding" src="{{ url_for('static', filename='img/' + game.result + '.png') }}" alt="{{ game.result }}">
                     {% endfor %}
                 </div>
             </div>
