@@ -6,7 +6,7 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
 from datetime import datetime
 import time
 
-UPDATE_ALL_SEASONS = False
+UPDATE_ALL_SEASONS = True
 
 '''
 Updates the tables for the current year (if applicable).

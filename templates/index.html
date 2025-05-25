@@ -5,7 +5,15 @@
  <section id="index_container">
     <section id="team_logo_contianer">
         {% for team in teams_data %}
-            <img class="team-icon-medium" src="{{ url_for('static', filename='img/' + team['team_abbreviation'] + '.png') }}">
+            <form action="/team" method="POST" style="display:inline;">
+                <input type="hidden" name="team_id" value="{{ team['team_id'] }}">
+                <button type="submit" class="grid_button" style="border: none; background: none; padding: 0;">
+                    <img class="team-icon-medium" src="{{ url_for('static', filename='img/' + team['team_abbreviation'] + '.png') }}" alt="{{ team['team_name'] }}">
+                </button>
+                <p class="hidden">{{ team['team_name'] }}</p>
+            </form>
+            
+
         {% endfor %}
     </section>
     <h1 id="index_header">NWSL Insights</h1>
