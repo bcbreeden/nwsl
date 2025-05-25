@@ -173,7 +173,6 @@ def team_comparison():
         {'name': 'goal_difference_minus_xgoal_difference', 'label': 'Goal Diff - xGoal Diff', 'type': 'neutral'},
         {'name': 'points', 'label': 'Points', 'type': 'positive'},
         {'name': 'xpoints', 'label': 'xPoints', 'type': 'positive'},
-        # {'name': 'point_diff', 'label': 'Point Differential', 'type': 'neutral'},
         {'name': 'goalfor_xgoalfor_diff', 'label': 'Goal For | xGoal For Diff', 'type': 'positive'}
     ]
 
