@@ -201,7 +201,7 @@ def game():
         game_data = db_games.get_game_by_id(request.form.get('game_id'))
         game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
         game_flow_data = db_game_flow.get_game_flow_by_game_id(request.form.get('game_id'))
-        shot_data = db_game_shots.get_shots_by_game_id(request.form.get('game_id'))
+        shot_data = _insert_halftime_and_fulltime_markers(db_game_shots.get_shots_by_game_id(request.form.get('game_id')))
         player_info = db_player_info.get_all_players_info()
         player_info_data = {row['player_id']: row['player_name'] for row in player_info}
 
@@ -353,6 +353,31 @@ def goalkeeper():
                            keeper_data = goalkeeper_data,
                            season = season_manager.season,
                            seasons = season_manager.seasons)
+
+def _insert_halftime_and_fulltime_markers(shot_data):
+    new_data = []
+    halftime_inserted = False
+
+    for i, shot in enumerate(shot_data):
+        if not halftime_inserted and shot['period_id'] == 2:
+            new_data.append({
+                'type': 'halftime',
+                'home_score': shot['home_score'],
+                'away_score': shot['away_score']
+            })
+            halftime_inserted = True
+        new_data.append(shot)
+
+    # Insert fulltime marker using score from final shot
+    if shot_data:
+        final_shot = shot_data[-1]
+        new_data.append({
+            'type': 'fulltime',
+            'home_score': final_shot['home_score'],
+            'away_score': final_shot['away_score']
+        })
+
+    return new_data
 
 if __name__ == '__main__':
     app.run(debug=True)

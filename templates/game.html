@@ -79,38 +79,77 @@
 
         <h1>SHOTS SHOTS SHOTS SHOTS</h1>
         {% for shot in shot_data %}
-            {% set team_abbr = team_info_data[shot['team_id']] %}
-            <div class="row-container shot-container x-large-margin {{ team_abbr }}">
-        
-            <div class="row-container">
-                <img class="team-icon-large x-large-margin"
-                src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
-                alt="Team Logo">
-            </div>
-            <div class="column-container">
 
-            
-                <p>Primary Shooter: {{ player_info_data[shot['shooter_player_id']] }}</p>
-                {% if shot['assist_player_id'] != "0" %}
-                    <p>Assist: {{ player_info_data[shot['assist_player_id']] }}</p>
-                {% endif %}
-                <p>Expanded Minute: {{ shot['expanded_minute'] }}</p>
-                <p>Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
-                {% if shot['goal'] == 1 %}
-                    <p>Home Score: {{ shot['home_score'] }}</p>
-                    <p>Away Score: {{ shot['away_score'] }}</p>
-                {% endif %}
-                <p>Home Score: {{ shot['home_score'] }}</p>
-                <p>Away Score: {{ shot['away_score'] }}</p>
-                <p>Shot xG: {{ shot['shot_xg'] }}</p>
-                <p>Shot PSxG: {{ shot['shot_psxg'] }}</p>
-                <p>Headed Shot: {{ shot['head'] }}</p>
-                <p>Assist (Through Ball): {{ shot['assist_through_ball'] }}</p>
-                <p>Assist (Cross): {{ shot['assist_cross'] }}</p>
-                <p>Pattern of Play: {{ shot['pattern_of_play'] }}</p>
-                
+        <!-- HALFTIME -->
+        {% if shot.type == 'halftime' %}
+            <div class="halftime-banner column-container flex-all-center small-padding">
+                <p class="text-xxlarge text-audiowide">Halftime</p>
+                <div class="row-container">
+                    <div class="column-container flex-all-center">
+                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
+                        <p class="text-xxlarge no-padding-no-margin">{{ shot.home_score }}</p>
+                    </div>
+                    <div class="column-container flex-all-center">
+                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
+                        <p class="text-xxlarge no-padding-no-margin">{{ shot.away_score }}</p>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- FULLTIME -->
+        {% elif shot.type == 'fulltime' %}
+            <div class="halftime-banner column-container flex-all-center small-padding">
+                <p class="text-xxlarge text-audiowide">Full Time</p>
+                <div class="row-container">
+                    <div class="column-container flex-all-center">
+                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
+                        <p class="text-xxlarge no-padding-no-margin">{{ shot.home_score }}</p>
+                    </div>
+                    <div class="column-container flex-all-center">
+                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
+                        <p class="text-xxlarge no-padding-no-margin">{{ shot.away_score }}</p>
+                    </div>
+                </div>
+            </div>
+
+        <!-- REGULAR SHOTS -->
+
+        {% else %}
+        <div class="column-container shot-container x-large-margin flex-all-center">
+            {% if shot['goal'] == 1 %}
+            <div class="column-container flex-all-center no-padding-no-margin">
+                <div class="row-container">
+                    <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+                    <p class="text-xxlarge text-audiowide no-padding-no-margin">GOAL</p>
+                    <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+                </div>
+            </div>
+            {% endif %}
+            {% set team_abbr = team_info_data[shot['team_id']] %}
+            <div class="row-container shot-container {{ team_abbr }}">
+        
+                <div class="row-container">
+                    <img class="icon-xlarge x-large-margin"
+                    src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
+                    alt="Team Logo">
+                </div>
+                <div class="column-container">
+                    <p>Primary Shooter: {{ player_info_data[shot['shooter_player_id']] }}</p>
+                    {% if shot['assist_player_id'] != "0" %}
+                        <p>Assist: {{ player_info_data[shot['assist_player_id']] }}</p>
+                    {% endif %}
+                    <p>Expanded Minute: {{ shot['expanded_minute'] }}</p>
+                    <p>Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
+                    <p>Shot xG: {{ shot['shot_xg'] }}</p>
+                    <p>Shot PSxG: {{ shot['shot_psxg'] }}</p>
+                    <p>Headed Shot: {{ shot['head'] }}</p>
+                    <p>Assist (Through Ball): {{ shot['assist_through_ball'] }}</p>
+                    <p>Assist (Cross): {{ shot['assist_cross'] }}</p>
+                    <p>Pattern of Play: {{ shot['pattern_of_play'] }}</p>
+                </div>
             </div>
         </div>
+        {% endif %}
         {% endfor %}
     </section>
 

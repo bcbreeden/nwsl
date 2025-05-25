@@ -8,7 +8,7 @@
             <tbody>
                 {% for player in top_scorers %}
                 <tr>
-                    <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                    <td><img class="icon-medium" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
                     <td class="name-table">
                         {% if player['player_first_name'] == '' %}
                             <span class="player_last_name">{{player['player_last_name'] }}</span>
@@ -31,7 +31,7 @@
             <tbody>
                 {% for player in top_assists %}
                 <tr>
-                    <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                    <td><img class="icon-medium" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
                     <td class="name-table">
                         {% if player['player_first_name'] == '' %}
                             <span class="player_last_name">{{player['player_last_name'] }}</span>
@@ -54,7 +54,7 @@
             <tbody>
                 {% for player in total_shots %}
                 <tr>
-                    <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                    <td><img class="icon-medium" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
                     <td class="name-table">
                         {% if player['player_first_name'] == '' %}
                             <span class="player_last_name">{{player['player_last_name'] }}</span>
@@ -77,7 +77,7 @@
             <tbody>
                 {% for player in minutes_played_non_df %}
                 <tr>
-                    <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                    <td><img class="icon-medium" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
                     <td class="name-table">
                         {% if player['player_first_name'] == '' %}
                             <span class="player_last_name">{{player['player_last_name'] }}</span>
@@ -101,7 +101,7 @@
             <tbody>
                 {% for player in minutes_played_df %}
                 <tr>
-                    <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                    <td><img class="icon-medium" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
                     <td class="name-table">
                         {% if player['player_first_name'] == '' %}
                             <span class="player_last_name">{{player['player_last_name'] }}</span>
@@ -125,7 +125,7 @@
             <tbody>
                 {% for player in shots_on_target %}
                     <tr>
-                        <td><img class="team-icon" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
+                        <td><img class="icon-medium" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}"></td>
                         <td class="name-table">
                             {% if player['player_first_name'] == '' %}
                                 <span class="player_last_name">{{player['player_last_name'] }}</span>

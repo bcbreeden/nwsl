@@ -195,6 +195,11 @@ ul {
     margin: 10px;
 }
 
+.moderate-margin-left-right {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .large-margin {
     margin: 20px;
 }
@@ -312,7 +317,7 @@ ul {
     border-left: var(--shot-border-width) solid #bfa46f; /* Secondary: Courage gold from panther & trim */
 }
 
-  .NJY {
+.NJY {
     background-color: #000000;      /* Primary: Gotham black */
     color: #b9e9f6;                 /* Text: Gotham's light liberty blue */
     border-left: var(--shot-border-width) solid #b9e9f6; /* Secondary: matches NY spikes & trim */
@@ -364,6 +369,36 @@ ul {
    Classes
 ====================== */
 
+.halftime-banner {
+    background-color: #222222;      /* Neutral dark gray */
+    color: #f2f2f2;                 /* Soft off-white text */
+    border-left: var(--shot-border-width) solid #cccccc; /* Subtle silver accent */
+    border-radius: 10px;
+    min-width: 900px;
+  }
+
+.icon-small {
+    height: 15px;
+    width: auto;
+    align-self: center;
+}
+
+.icon-medium {
+    height: 40px;
+    width: auto;
+}
+
+.icon-large {
+    height: 60px;
+    width: auto;
+    margin: 15px;
+}
+
+.icon-xlarge {
+    height: 120px;
+    width: auto;
+}
+
 .report {
     max-width: var(--report-max-width);
     display: flex;
@@ -372,7 +407,7 @@ ul {
 }
 
 .shot-container {
-    width: 600px;
+    min-width: 600px;
     border-radius: 10px;
 }
 
@@ -380,21 +415,7 @@ ul {
     width: 200px;
 }
 
-.team-icon {
-    height: 40px;
-    width: auto;
-}
 
-.team-icon-medium {
-    height: 60px;
-    width: auto;
-    margin: 15px;
-}
-
-.team-icon-large {
-    height: 120px;
-    width: auto;
-}
 
 #all-content {
     display: flex;
@@ -503,12 +524,6 @@ ul {
 
 .hidden {
     display: none !important;
-}
-
-.icon {
-    height: 15px;
-    width: auto;
-    align-self: center;
 }
 
 .index-metric-heading {

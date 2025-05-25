@@ -71,10 +71,10 @@ def insert_all_game_shots(game_id, season):
         ''', (
             game_id_val, period_id, expanded_minute, game_minute, team_id,
             shooter_player_id, assist_player_id, shot_location_x, shot_location_y,
-            shot_end_location_x, shot_end_location_y, distance_from_goal,
-            distance_from_goal_yds, blocked, blocked_x, blocked_y,
-            goal, own_goal, home_score, away_score, shot_xg, shot_psxg,
-            head, assist_through_ball, assist_cross, pattern_of_play.lower(), shot_order, season
+            shot_end_location_x, shot_end_location_y, round(distance_from_goal, 1),
+            round(distance_from_goal_yds, 1), blocked, blocked_x, blocked_y,
+            goal, own_goal, home_score, away_score, round(shot_xg, 2), round(shot_psxg, 2),
+            head, assist_through_ball, assist_cross, pattern_of_play, shot_order, season
         ))
         conn.commit()
 
@@ -134,7 +134,7 @@ def get_shots_by_type(shot_type, season):
         SELECT * FROM game_shots
         WHERE pattern_of_play = ? AND season = ?
         ORDER BY shot_order ASC
-    ''', (shot_type,season))
+    ''', (shot_type.lower(),season))
     
     rows = cursor.fetchall()
     conn.close()
