@@ -217,7 +217,8 @@ def get_team_game_results(team_id, season):
     cursor = conn.cursor()
 
     query = '''
-        SELECT 
+        SELECT
+            g.game_id, 
             g.home_team_id,
             g.away_team_id,
             g.home_score,
@@ -262,6 +263,7 @@ def get_team_game_results(team_id, season):
             result = "draw"
 
         results.append({
+            "game_id": row['game_id'],
             "home_game": is_home,
             "result": result,
             "opponent": row['opponent_id'],

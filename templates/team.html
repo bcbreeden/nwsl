@@ -228,6 +228,10 @@
                     <tr class="flex-all-center">
                         <td>
                             <p class="stat_text stat_label">{{ game.date_time_est }}</p>
+                            <form action="/game" method="POST">
+                                <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
+                                <input type="submit" class="grid_button stat_text stat_label" value="View Game Details">
+                            </form>
                         </td>
                         <td class="text-center">
                             {% if game.home_game == True %}

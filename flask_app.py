@@ -96,6 +96,10 @@ def team():
 
         team_record = db_games.get_team_record_by_season(team_id, season_manager.season)
         game_results = db_games.get_team_game_results(team_id, season_manager.season)
+        for row in game_results:
+            print(dict(row))
+
+
         five_recent_games = game_results[:5][::-1]
 
         stadium = db_stadium_info.get_stadium_by_id(db_games.get_most_recent_home_stadium_id(team_id, season_manager.season))
