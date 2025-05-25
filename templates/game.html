@@ -79,22 +79,16 @@
 
         <h1>SHOTS SHOTS SHOTS SHOTS</h1>
         {% for shot in shot_data %}
-            {% if shot['goal'] == 1 %}
-            <div class="row-container shot-container dark-background">
-            {% else %}
-                <div class="row-container shot-container">
-            {% endif %}
+            {% set team_abbr = team_info_data[shot['team_id']] %}
+            <div class="row-container shot-container x-large-margin {{ team_abbr }}">
         
             <div class="row-container">
                 <img class="team-icon-large x-large-margin"
                 src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
                 alt="Team Logo">
             </div>
-            {% if shot['goal'] == 1 %}
-                <div class="column-container white-text">
-            {% else %}
-                <div class="column-container">
-            {% endif %}
+            <div class="column-container">
+
             
                 <p>Primary Shooter: {{ player_info_data[shot['shooter_player_id']] }}</p>
                 {% if shot['assist_player_id'] != "0" %}

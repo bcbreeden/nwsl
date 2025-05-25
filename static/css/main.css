@@ -8,6 +8,7 @@
     --green: #2ecc71;
     --padding-left: 35px;
     --report-max-width: 1200px;
+    --shot-border-width: 35px;
   }
 
 /* ======================
@@ -261,6 +262,105 @@ ul {
 ====================== */
 
 /* ======================
+   Team Classes
+====================== */
+.BAY {
+    background-color: #0a1f38;      /* Primary navy */
+    color: #ffffff;                 /* Text color */
+    border-left: var(--shot-border-width) solid #dce1e7; /* Secondary accent */
+}
+
+.BOS {
+    background-color: #0033a0;      /* Primary: deep breaker blue */
+    color: #ffffff;                 /* Text: high contrast */
+    border-left: var(--shot-border-width) solid #9ec1f7; /* Secondary: wave light blue */
+}
+
+.CHI {
+    background-color: #a6dcef;      /* Primary: light sky blue */
+    color: #000000;                 /* Text: black for contrast */
+    border-left: var(--shot-border-width) solid #c8102e; /* Secondary: Chicago red (stars) */
+}
+
+.HOU {
+    background-color: #0d1b2a;      /* Primary: deep navy */
+    color: #ffffff;                 /* Text: white for contrast */
+    border-left: var(--shot-border-width) solid #ff6a13; /* Secondary: bright orange from the H */
+  }
+
+.KC {
+    background-color: #51c5c0;      /* Primary: teal/aqua from the shield */
+    color: #000000;                 /* Text: black for contrast */
+    border-left: var(--shot-border-width) solid #d62027; /* Secondary: strong red stripe */
+}
+
+.LA {
+    background-color: #111111;      /* Primary: deep charcoal/black */
+    color: #ffffff;                 /* Text: high-contrast white */
+    border-left: var(--shot-border-width) solid #f5b3a7; /* Secondary: soft rose-gold */
+}
+
+.LOU {
+    background-color: #cba3dd;      /* Primary: signature lavender */
+    color: #1b0038;                 /* Text: deep royal purple */
+    border-left: var(--shot-border-width) solid #57278f; /* Secondary: accent purple from logo details */
+}
+
+.NC {
+    background-color: #003049;      /* Primary: Courage deep blue */
+    color: #ffffff;                 /* Text: white for contrast */
+    border-left: var(--shot-border-width) solid #bfa46f; /* Secondary: Courage gold from panther & trim */
+}
+
+  .NJY {
+    background-color: #000000;      /* Primary: Gotham black */
+    color: #b9e9f6;                 /* Text: Gotham's light liberty blue */
+    border-left: var(--shot-border-width) solid #b9e9f6; /* Secondary: matches NY spikes & trim */
+}
+
+.ORL {
+    background-color: #612885;      /* Primary: signature Pride purple */
+    color: #ffffff;                 /* Text: bright white for clean contrast */
+    border-left: var(--shot-border-width) solid #00b6e4; /* Secondary: the vivid cyan from the fountain */
+}
+
+.POR {
+    background-color: #7a0019;      /* Primary: deep thorn red */
+    color: #ffffff;                 /* Text: white for max readability */
+    border-left: var(--shot-border-width) solid #d9b38c; /* Secondary: muted thorn stem beige */
+}
+
+.SD {
+    background-color: #e51884;      /* Primary: hot pink from the top banner */
+    color: #ffffff;                 /* Text: white for clarity and brightness */
+    border-left: var(--shot-border-width) solid #00b2a9; /* Secondary: ocean teal from the wave */
+}
+
+.SEA {
+    background-color: #1e1d26;      /* Primary: deep midnight/navy from the shield */
+    color: #ffffff;                 /* Text: regal and readable */
+    border-left: var(--shot-border-width) solid #bda873; /* Secondary: crown gold */
+}
+
+.UTA {
+    background-color: #0b0d3b;      /* Primary: deep royal navy */
+    color: #f4b92a;                 /* Text: Utah gold (lion & crown) */
+    border-left: var(--shot-border-width) solid #9b1c2c; /* Secondary: red accent from the crest edge */
+}
+
+.WAS {
+    background-color: #1a1a1a;      /* Primary: sleek dark charcoal */
+    color: #ffffff;                 /* Text: bright white for contrast */
+    border-left: var(--shot-border-width) solid #fff700; /* Secondary: signature highlighter yellow */
+  }
+
+  .WNY {
+    background-color: #c8102e;      /* Primary: bold red banner */
+    color: #ffffff;                 /* Text: white for strong contrast */
+    border-left: var(--shot-border-width) solid #ffd100; /* Secondary: lightning yellow */
+}
+  
+/* ======================
    Classes
 ====================== */
 
@@ -271,13 +371,13 @@ ul {
     align-items: center;
 }
 
-.static-stat-cell {
-    width: 200px;
+.shot-container {
+    width: 600px;
+    border-radius: 10px;
 }
 
-.shot-container {
-    border: 2px solid var(--dark-bg);
-    border-radius: 5px;
+.static-stat-cell {
+    width: 200px;
 }
 
 .team-icon {
