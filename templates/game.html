@@ -79,21 +79,33 @@
 
         <h1>SHOTS SHOTS SHOTS SHOTS</h1>
         {% for shot in shot_data %}
-        <div class="row-container">
+            {% if shot['goal'] == 1 %}
+            <div class="row-container shot-container dark-background">
+            {% else %}
+                <div class="row-container shot-container">
+            {% endif %}
+        
             <div class="row-container">
-                <img class="team-icon-medium"
+                <img class="team-icon-large x-large-margin"
                 src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
                 alt="Team Logo">
             </div>
-            <div class="column-container">
+            {% if shot['goal'] == 1 %}
+                <div class="column-container white-text">
+            {% else %}
+                <div class="column-container">
+            {% endif %}
+            
                 <p>Primary Shooter: {{ player_info_data[shot['shooter_player_id']] }}</p>
                 {% if shot['assist_player_id'] != "0" %}
                     <p>Assist: {{ player_info_data[shot['assist_player_id']] }}</p>
                 {% endif %}
                 <p>Expanded Minute: {{ shot['expanded_minute'] }}</p>
-                <p>Distance from Goal: {{ shot['distance_from_goal'] }}</p>
-                <p>Distance from Goal (yds): {{ shot['distance_from_goal_yds'] }}</p>
-                <p>Goal: {{ shot['goal'] }}</p>
+                <p>Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
+                {% if shot['goal'] == 1 %}
+                    <p>Home Score: {{ shot['home_score'] }}</p>
+                    <p>Away Score: {{ shot['away_score'] }}</p>
+                {% endif %}
                 <p>Home Score: {{ shot['home_score'] }}</p>
                 <p>Away Score: {{ shot['away_score'] }}</p>
                 <p>Shot xG: {{ shot['shot_xg'] }}</p>

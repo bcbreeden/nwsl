@@ -177,6 +177,10 @@ ul {
     background-color: var(--dark-bg);
 }
 
+.white-text {
+    color: white;
+}
+
 /* ======================
    Padding/Margin
 ====================== */
@@ -192,6 +196,10 @@ ul {
 
 .large-margin {
     margin: 20px;
+}
+
+.x-large-margin {
+    margin: 40px;
 }
 
 .x-small-padding {
@@ -265,6 +273,27 @@ ul {
 
 .static-stat-cell {
     width: 200px;
+}
+
+.shot-container {
+    border: 2px solid var(--dark-bg);
+    border-radius: 5px;
+}
+
+.team-icon {
+    height: 40px;
+    width: auto;
+}
+
+.team-icon-medium {
+    height: 60px;
+    width: auto;
+    margin: 15px;
+}
+
+.team-icon-large {
+    height: 120px;
+    width: auto;
 }
 
 #all-content {
@@ -466,16 +495,7 @@ ul {
     width: auto;
 }
 
-.team-icon {
-    height: 40px;
-    width: auto;
-}
 
-.team-icon-medium {
-    height: 60px;
-    width: auto;
-    margin: 15px;
-}
 
 #team_logo_contianer {
     text-align: center;
