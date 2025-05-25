@@ -359,10 +359,10 @@ ul {
     border-left: var(--shot-border-width) solid #fff700; /* Secondary: signature highlighter yellow */
   }
 
-  .WNY {
-    background-color: #c8102e;      /* Primary: bold red banner */
+.WNY {
+    background-color: #1a1a1a;      /* Primary: sleek dark charcoal */
     color: #ffffff;                 /* Text: white for strong contrast */
-    border-left: var(--shot-border-width) solid #ffd100; /* Secondary: lightning yellow */
+    border-left: var(--shot-border-width) solid #c8102e; /* Secondary: bold red */
 }
   
 /* ======================
