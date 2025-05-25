@@ -71,19 +71,19 @@
                             <td class="text-center">
                                 {% if stat in ['goals_conceded', 'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk', 'shots_faced'] %}
                                     {% if keeper_xgoal_data[stat] == keeper_xgoal_data['min_' + stat] %}
-                                        <img class="icon" src="{{ url_for('static', filename='img/star.png') }}">
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
                                     {% elif keeper_xgoal_data[stat] <= keeper_xgoal_data['avg_' + stat] %}
-                                        <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
                                     {% else %}
-                                        <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
                                     {% endif %}
                                 {% else %}
                                     {% if keeper_xgoal_data[stat] == keeper_xgoal_data['max_' + stat] %}
-                                        <img class="icon" src="{{ url_for('static', filename='img/star.png') }}">
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
                                     {% elif keeper_xgoal_data[stat] >= keeper_xgoal_data['avg_' + stat] %}
-                                        <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
                                     {% else %}
-                                        <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
                                     {% endif %}
                                 {% endif %}
                             </td>
@@ -144,11 +144,11 @@
                                     </td>
                                     <td class="text-center">
                                         {% if keeper_goals_added_data[stat] == keeper_goals_added_data['max_' + stat] %}
-                                            <img class="icon" src="{{ url_for('static', filename='img/star.png') }}">
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
                                         {% elif keeper_goals_added_data[stat] >= keeper_goals_added_data['avg_' + stat] %}
-                                            <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
                                         {% else %}
-                                            <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
                                         {% endif %}
                                     </td>
                                     <td class="player_stat_cell">
