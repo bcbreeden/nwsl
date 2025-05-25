@@ -209,6 +209,12 @@ ul {
     padding: 20px;
 }
 
+/* ======================
+   Tables
+====================== */
+.row-border td {
+    border-bottom: 2px solid #ccc;
+}
 
 /* ======================
    Text
