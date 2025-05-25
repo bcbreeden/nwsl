@@ -73,10 +73,10 @@
                             ] %}
                                 <tr>
                                     <td class="text-left">
-                                        <p class="stat_label player_stat_text">{{ label }}</p>
+                                        <p class="stat_label stat_text">{{ label }}</p>
                                     </td>
                                     <td class="player_stat_cell">
-                                        <p class="player_stat_text">{{ player_xgoals_data[stat] }}</p>
+                                        <p class="stat_text">{{ player_xgoals_data[stat] }}</p>
                                     </td>
                                     <td class="text-center">
                                         {% if player_xgoals_data[stat] == player_xgoals_data['max_' + stat] %}  
@@ -88,7 +88,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="player_stat_cell">
-                                        <p class="player_stat_text">{{ player_xgoals_data['avg_' + stat] }}</p>
+                                        <p class="stat_text">{{ player_xgoals_data['avg_' + stat] }}</p>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -128,10 +128,10 @@
                             ] %}
                             <tr>
                                 <td class="text-left">
-                                    <p class="stat_label player_stat_text">{{ label }}</p>
+                                    <p class="stat_label stat_text">{{ label }}</p>
                                 </td>
                                 <td class="player_stat_cell">
-                                    <p class="player_stat_text">{{ player_xpass_data[stat] }}</p>
+                                    <p class="stat_text">{{ player_xpass_data[stat] }}</p>
                                 </td>
                                 <td class="text-center">
                                     {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}  
@@ -141,7 +141,7 @@
                                     {% endif %}
                                 </td>
                                 <td class="player_stat_cell">
-                                    <p class="player_stat_text">{{ player_xpass_data['avg_' + stat] }}</p>
+                                    <p class="stat_text">{{ player_xpass_data['avg_' + stat] }}</p>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -189,10 +189,10 @@
                         ] %}
                         <tr>
                             <td class="text-left">
-                                <p class="stat_label player_stat_text">{{ label }}</p>
+                                <p class="stat_label stat_text">{{ label }}</p>
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ player_goals_added_data[stat] }}</p>
+                                <p class="stat_text">{{ player_goals_added_data[stat] }}</p>
                             </td>
                             <td class="text-center">
                                 {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat] %}  
@@ -202,7 +202,7 @@
                                 {% endif %}
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ player_goals_added_data['avg_' + stat] }}</p>
+                                <p class="stat_text">{{ player_goals_added_data['avg_' + stat] }}</p>
                             </td>
                         </tr>
                         {% endfor %}
@@ -229,14 +229,14 @@
                 <tbody>
                     {% for season in player_season_data %}
                     <tr>
-                        <td><p class="player_stat_text">{{ season['season'] }}</p></td>
-                        <td><p class="player_stat_text">{{ season['team_abbreviation'] }}</p></td>
-                        <td><p class="player_stat_text">{{ season['minutes_played'] }}</p></td>
-                        <td><p class="player_stat_text">{{ season['goals'] }}</p></td>
-                        <td><p class="player_stat_text">{{ season['primary_assists'] }}</p></td>
-                        <td><p class="player_stat_text">{{ season['xgoals'] }}</p></td>
-                        <td><p class="player_stat_text">{{ season['xassists'] }}</p></td>
-                        <td><p class="player_stat_text">{{ season['xgoals_xassists_per_90'] }}</p></td>
+                        <td><p class="stat_text">{{ season['season'] }}</p></td>
+                        <td><p class="stat_text">{{ season['team_abbreviation'] }}</p></td>
+                        <td><p class="stat_text">{{ season['minutes_played'] }}</p></td>
+                        <td><p class="stat_text">{{ season['goals'] }}</p></td>
+                        <td><p class="stat_text">{{ season['primary_assists'] }}</p></td>
+                        <td><p class="stat_text">{{ season['xgoals'] }}</p></td>
+                        <td><p class="stat_text">{{ season['xassists'] }}</p></td>
+                        <td><p class="stat_text">{{ season['xgoals_xassists_per_90'] }}</p></td>
                     </tr>
                     {% endfor %}
                 </tbody>

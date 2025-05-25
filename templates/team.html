@@ -55,10 +55,10 @@
                     ] %}
                         <tr>
                             <td class="text-left">
-                                <p class="stat_label player_stat_text">{{ label }}</p>
+                                <p class="stat_label stat_text">{{ label }}</p>
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ team_xgoals_data[stat] }}</p>
+                                <p class="stat_text">{{ team_xgoals_data[stat] }}</p>
                             </td>
                             <td class="text-center">
                                 {% if team_xgoals_data[stat] == team_xgoal_boundary_data['max_' + stat] %}  
@@ -70,7 +70,7 @@
                                 {% endif %}
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ team_xgoal_boundary_data['avg_' + stat] }}</p>
+                                <p class="stat_text">{{ team_xgoal_boundary_data['avg_' + stat] }}</p>
                             </td>
                         </tr>
                     {% endfor %}
@@ -117,10 +117,10 @@
                     {% endif %}
                     <tr>
                         <td class="text-left">
-                            <p class="stat_label player_stat_text">{{ label }}</p>
+                            <p class="stat_label stat_text">{{ label }}</p>
                         </td>
                         <td class="player_stat_cell">
-                            <p class="player_stat_text">{{ team_xpass_data[stat] }}</p>
+                            <p class="stat_text">{{ team_xpass_data[stat] }}</p>
                         </td>
                         <td class="text-center">
                             {% if team_xpass_data[stat] == team_xpass_boundary_data['max_' + clean_stat] %}  
@@ -132,7 +132,7 @@
                             {% endif %}
                         </td>
                         <td class="player_stat_cell">
-                            <p class="player_stat_text">{{ team_xpass_boundary_data['avg_' + clean_stat] }}</p>
+                            <p class="stat_text">{{ team_xpass_boundary_data['avg_' + clean_stat] }}</p>
                         </td>
                     </tr>
                 {% endfor %}
@@ -190,10 +190,10 @@
                     ] %}
                         <tr>
                             <td class="text-left">
-                                <p class="stat_label player_stat_text">{{ label }}</p>
+                                <p class="stat_label stat_text">{{ label }}</p>
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ team_goals_added_data[stat] }}</p>
+                                <p class="stat_text">{{ team_goals_added_data[stat] }}</p>
                             </td>
                             <td class="text-center">
                                 {% if team_goals_added_data[stat] == team_goals_added_boundaries['max_' + stat] %}
@@ -205,7 +205,7 @@
                                 {% endif %}
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ team_goals_added_boundaries['avg_' + stat] }}</p>
+                                <p class="stat_text">{{ team_goals_added_boundaries['avg_' + stat] }}</p>
                             </td>
                         </tr>
                     {% endfor %}
@@ -217,30 +217,34 @@
             <h2 class="text-xxlarge moderate-margin">Match History</h2>
         </div>
         <div class="row-container">
+            <p>(All dates/times in EST.)</p>
+        </div>
+        <div class="row-container">
             <table>
                 <thead>
-                    <tr>
-                        <th>Date (EST)</th>
-                        <th>Home Game</th>
-                        <th>Result</th>
-                        <th>Opponent</th>
-                        <th>Short Name</th>
-                        <th>Abbreviation</th>
-                        <th>Goals Scored</th>
-                        <th>Goals Against</th>
-                    </tr>
                 </thead>
                 <tbody>
                     {% for game in game_results %}
-                    <tr>
-                        <td>{{ game.date_time_est }}</td>
-                        <td>{{ game.home_game }}</td>
-                        <td>{{ game.result }}</td>
-                        <td>{{ game.opponent_name }}</td>
-                        <td>{{ game.opponent_short_name }}</td>
-                        <td>{{ game.opponent_abbreviation }}</td>
-                        <td>{{ game.goals_scored }}</td>
-                        <td>{{ game.goals_against }}</td>
+                    <tr class="flex-all-center">
+                        <td>
+                            <p class="stat_text stat_label">{{ game.date_time_est }}</p>
+                        </td>
+                        <td class="text-center">
+                            {% if game.home_game == True %}
+                                <p class="stat_text stat_label">VS</p>
+                            {% else %}
+                                <p class="stat_text stat_label">@</p>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center row-container flex-vert-center-hori-left">
+                            <img class="team-icon-medium" src="{{ url_for('static', filename='img/' + game['opponent_abbreviation'] + '.png') }}">
+                            <p class="stat_text stat_label">{{ game.opponent_name }}</p>
+                        </td>
+                        <td>
+                            <img class="icon x-small-padding" src="{{ url_for('static', filename='img/' + game['result'] + '.png') }}" alt="{{ game.result }}">
+                        </td>
+                        <td class="text-center"><p class="stat_text stat_label">{{ game.goals_scored }} - {{ game.goals_against }}</p></td>
                     </tr>
                     {% endfor %}
                 </tbody>

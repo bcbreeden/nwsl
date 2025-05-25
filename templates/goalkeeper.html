@@ -63,10 +63,10 @@
                         ] %}
                         <tr>
                             <td class="text-left">
-                                <p class="stat_label player_stat_text">{{ label }}</p>
+                                <p class="stat_label stat_text">{{ label }}</p>
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ keeper_xgoal_data[stat] }}</p>
+                                <p class="stat_text">{{ keeper_xgoal_data[stat] }}</p>
                             </td>
                             <td class="text-center">
                                 {% if stat in ['goals_conceded', 'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk', 'shots_faced'] %}
@@ -88,7 +88,7 @@
                                 {% endif %}
                             </td>
                             <td class="player_stat_cell">
-                                <p class="player_stat_text">{{ keeper_xgoal_data['avg_' + stat] }}</p>
+                                <p class="stat_text">{{ keeper_xgoal_data['avg_' + stat] }}</p>
                             </td>
                         </tr>
                         {% endfor %}
@@ -137,10 +137,10 @@
                             ] %}
                                 <tr>
                                     <td class="text-left">
-                                        <p class="stat_label player_stat_text">{{ label }}</p>
+                                        <p class="stat_label stat_text">{{ label }}</p>
                                     </td>
                                     <td class="player_stat_cell">
-                                        <p class="player_stat_text">{{ keeper_goals_added_data[stat] }}</p>
+                                        <p class="stat_text">{{ keeper_goals_added_data[stat] }}</p>
                                     </td>
                                     <td class="text-center">
                                         {% if keeper_goals_added_data[stat] == keeper_goals_added_data['max_' + stat] %}
@@ -152,7 +152,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="player_stat_cell">
-                                        <p class="player_stat_text">{{ keeper_goals_added_data['avg_' + stat] }}</p>
+                                        <p class="stat_text">{{ keeper_goals_added_data['avg_' + stat] }}</p>
                                     </td>
                                 </tr>
                                 {% endfor %}

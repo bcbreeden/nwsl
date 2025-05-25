@@ -161,6 +161,13 @@ ul {
     align-content: center;
 }
 
+.flex-vert-center-hori-left {
+    justify-content: left;
+    align-items: center;
+    align-content: center;
+
+}
+
 /* ======================
    Colors
 ====================== */
@@ -542,10 +549,6 @@ ul {
     border-spacing: 0;
 }
 
-.player_stat_text {
-    margin: 0;
-}
-
 .report_stats_block {
     display: flex;
     flex-direction: row;
@@ -580,7 +583,6 @@ ul {
 .stat_text {
     font-family: "Montserrat", serif;
     margin: 0px;
-    padding-top: 5px;
 }
 
 .above_avg, .advantage  {
