@@ -75,9 +75,38 @@
             var flowConfig = {{ game_flow_config|safe }};
             Plotly.newPlot('game_flow_plot', flowJson.data, flowJson.layout, flowConfig);
         </script>
+
+
+        <h1>SHOTS SHOTS SHOTS SHOTS</h1>
+        {% for shot in shot_data %}
+        <div class="row-container">
+            <div class="row-container">
+                <img class="team-icon-medium"
+                src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
+                alt="Team Logo">
+            </div>
+            <div class="column-container">
+                <p>Primary Shooter: {{ player_info_data[shot['shooter_player_id']] }}</p>
+                {% if shot['assist_player_id'] != "0" %}
+                    <p>Assist: {{ player_info_data[shot['assist_player_id']] }}</p>
+                {% endif %}
+                <p>Expanded Minute: {{ shot['expanded_minute'] }}</p>
+                <p>Distance from Goal: {{ shot['distance_from_goal'] }}</p>
+                <p>Distance from Goal (yds): {{ shot['distance_from_goal_yds'] }}</p>
+                <p>Goal: {{ shot['goal'] }}</p>
+                <p>Home Score: {{ shot['home_score'] }}</p>
+                <p>Away Score: {{ shot['away_score'] }}</p>
+                <p>Shot xG: {{ shot['shot_xg'] }}</p>
+                <p>Shot PSxG: {{ shot['shot_psxg'] }}</p>
+                <p>Headed Shot: {{ shot['head'] }}</p>
+                <p>Assist (Through Ball): {{ shot['assist_through_ball'] }}</p>
+                <p>Assist (Cross): {{ shot['assist_cross'] }}</p>
+                <p>Pattern of Play: {{ shot['pattern_of_play'] }}</p>
+                
+            </div>
+        </div>
+        {% endfor %}
     </section>
-
-
 
 
 

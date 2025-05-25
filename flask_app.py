@@ -3,7 +3,7 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
                 db_stadium_info, db_team_strength, db_team_xgoals_boundaries, db_team_xpass_boundaries,
-                db_team_goals_added_boundaries)
+                db_team_goals_added_boundaries, db_game_shots)
 from plots import (plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results, get_donut_plot_for_goals,
                 get_donut_plot_for_pass_completion, plot_bar_chart)
 from momentum_plot import generate_momentum_plot
@@ -201,6 +201,12 @@ def game():
         game_data = db_games.get_game_by_id(request.form.get('game_id'))
         game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
         game_flow_data = db_game_flow.get_game_flow_by_game_id(request.form.get('game_id'))
+        shot_data = db_game_shots.get_shots_by_game_id(request.form.get('game_id'))
+        player_info = db_player_info.get_all_players_info()
+        player_info_data = {row['player_id']: row['player_name'] for row in player_info}
+
+        team_info = db_team_info.get_all_teams_info()
+        team_info_data = {row['team_id']: row['team_abbreviation'] for row in team_info}
 
         game_flow_json, game_flow_config = generate_momentum_plot(request.form.get('game_id'))
         return render_template('game.html',
@@ -210,7 +216,10 @@ def game():
                                 game_flow_json = game_flow_json, 
                                 game_flow_config = game_flow_config,
                                 season = season_manager.season,
-                                seasons = season_manager.seasons)
+                                seasons = season_manager.seasons,
+                                shot_data = shot_data,
+                                player_info_data=player_info_data,
+                                team_info_data = team_info_data)
     else:
         return redirect(url_for('games'))
 

@@ -139,6 +139,7 @@ ul {
 .column-container {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
 }
 
 .row-container {
