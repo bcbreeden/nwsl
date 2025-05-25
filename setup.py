@@ -40,6 +40,7 @@ if __name__ == '__main__':
         db_team_xgoals.insert_team_strength_history(season)
         db_team_xpass.insert_teams_xpass_by_season(season)
         db_team_xgoals_boundaries.insert_team_xgoal_boundaries(season)
+        db_team_xpass_boundaries.insert_team_xpass_boundaries(season)
 
         game_ids = db_games.get_game_ids_by_season(season)
         for game_id in game_ids:

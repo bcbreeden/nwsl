@@ -78,31 +78,66 @@
             </table>
         </div>
 
+
+
+
+
         <div class="row-container text-left">
             <h2 class="text-xxlarge">xPass</h2>
         </div>
-        <div class="row-container flex-all-center moderate-margin">
-            {% for stat, label in [
-                ('attempted_passes_for', 'Passes Attempted (For)'),
-                ('pass_completion_percentage_for', 'Pass Completion % (For)'),
-                ('xpass_completion_percentage_for', 'xPass Completion % (For)'),
-                ('passes_completed_over_expected_for', 'Passes Over Expected (For)'),
-                ('passes_completed_over_expected_p100_for', 'Passes Over Expected / 100 (For)'),
-                ('avg_vertical_distance_for', 'Avg Vertical Distance (For)'),
-                ('attempted_passes_against', 'Passes Attempted (Against)'),
-                ('pass_completion_percentage_against', 'Pass Completion % (Against)'),
-                ('xpass_completion_percentage_against', 'xPass Completion % (Against)'),
-                ('passes_completed_over_expected_against', 'Passes Over Expected (Against)'),
-                ('passes_completed_over_expected_p100_against', 'Passes Over Expected / 100 (Against)'),
-                ('avg_vertical_distance_against', 'Avg Vertical Distance (Against)'),
-                ('passes_completed_over_expected_difference', 'Passes Over Expected (Difference)'),
-                ('avg_vertical_distance_difference', 'Avg Vertical Distance (Difference)')
-            ] %}
-                <div class="column-container text-center large-margin moderate-padding static-stat-cell">
-                    <h3 class="text-xxlarge text-audiowide">{{ team_xpass_data[stat] }}</h3>
-                    <p class="text-large">{{ label }}</p>
-                </div>
-            {% endfor %}
+        <div class="report_stats_block">
+            <table class="stats_table">
+                <thead>
+                    <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                    <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                    <th class="small-padding dark-background white-text"></th>
+                    <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                </thead>
+                <tbody>
+                    {% for stat, label in [
+                        ('attempted_passes_for', 'Passes Attempted (For)'),
+                        ('pass_completion_percentage_for', 'Pass Completion % (For)'),
+                        ('xpass_completion_percentage_for', 'xPass Completion % (For)'),
+                        ('passes_completed_over_expected_for', 'Passes Over Expected (For)'),
+                        ('passes_completed_over_expected_p100_for', 'Passes Over Expected / 100 (For)'),
+                        ('avg_vertical_distance_for', 'Avg Vertical Distance (For)'),
+                        ('attempted_passes_against', 'Passes Attempted (Against)'),
+                        ('pass_completion_percentage_against', 'Pass Completion % (Against)'),
+                        ('xpass_completion_percentage_against', 'xPass Completion % (Against)'),
+                        ('passes_completed_over_expected_against', 'Passes Over Expected (Against)'),
+                        ('passes_completed_over_expected_p100_against', 'Passes Over Expected / 100 (Against)'),
+                        ('avg_vertical_distance_against', 'Avg Vertical Distance (Against)'),
+                        ('passes_completed_over_expected_difference', 'Passes Over Expected (Difference)'),
+                        ('avg_vertical_distance_difference', 'Avg Vertical Distance (Difference)')
+                    ] %}
+                    {% if stat.startswith('avg_') %}
+                        {% set clean_stat = stat[4:] %}
+                    {% else %}
+                        {% set clean_stat = stat %}
+                    {% endif %}
+                    <tr>
+                        <td class="text-left">
+                            <p class="stat_label player_stat_text">{{ label }}</p>
+                        </td>
+                        <td class="player_stat_cell">
+                            <p class="player_stat_text">{{ team_xpass_data[stat] }}</p>
+                        </td>
+                        <td class="text-center">
+                            {% if team_xpass_data[stat] == team_xpass_boundary_data['max_' + clean_stat] %}  
+                                <img class="icon" src="{{ url_for('static', filename='img/star.png') }}">
+                            {% elif team_xpass_data[stat] >= team_xpass_boundary_data['avg_' + clean_stat] %}  
+                                <img class="icon" src="{{ url_for('static', filename='img/up.png') }}">
+                            {% else %}
+                                <img class="icon" src="{{ url_for('static', filename='img/down.png') }}">
+                            {% endif %}
+                        </td>
+                        <td class="player_stat_cell">
+                            <p class="player_stat_text">{{ team_xpass_boundary_data['avg_' + clean_stat] }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>            
         </div>
 
         <div class="row-container text-left">

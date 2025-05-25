@@ -710,6 +710,70 @@ def create_tables():
     )
 ''')
 
+    ursor.execute('''      
+        CREATE TABLE IF NOT EXISTS team_xpass_boundaries (
+        season INTEGER,
+
+        avg_attempted_passes_for REAL,
+        min_attempted_passes_for REAL,
+        max_attempted_passes_for REAL,
+
+        avg_pass_completion_percentage_for REAL,
+        min_pass_completion_percentage_for REAL,
+        max_pass_completion_percentage_for REAL,
+
+        avg_xpass_completion_percentage_for REAL,
+        min_xpass_completion_percentage_for REAL,
+        max_xpass_completion_percentage_for REAL,
+
+        avg_passes_completed_over_expected_for REAL,
+        min_passes_completed_over_expected_for REAL,
+        max_passes_completed_over_expected_for REAL,
+
+        avg_passes_completed_over_expected_p100_for REAL,
+        min_passes_completed_over_expected_p100_for REAL,
+        max_passes_completed_over_expected_p100_for REAL,
+
+        avg_vertical_distance_for REAL,
+        min_vertical_distance_for REAL,
+        max_vertical_distance_for REAL,
+
+        avg_attempted_passes_against REAL,
+        min_attempted_passes_against REAL,
+        max_attempted_passes_against REAL,
+
+        avg_pass_completion_percentage_against REAL,
+        min_pass_completion_percentage_against REAL,
+        max_pass_completion_percentage_against REAL,
+
+        avg_xpass_completion_percentage_against REAL,
+        min_xpass_completion_percentage_against REAL,
+        max_xpass_completion_percentage_against REAL,
+
+        avg_passes_completed_over_expected_against REAL,
+        min_passes_completed_over_expected_against REAL,
+        max_passes_completed_over_expected_against REAL,
+
+        avg_passes_completed_over_expected_p100_against REAL,
+        min_passes_completed_over_expected_p100_against REAL,
+        max_passes_completed_over_expected_p100_against REAL,
+
+        avg_vertical_distance_against REAL,
+        min_vertical_distance_against REAL,
+        max_vertical_distance_against REAL,
+
+        avg_passes_completed_over_expected_difference REAL,
+        min_passes_completed_over_expected_difference REAL,
+        max_passes_completed_over_expected_difference REAL,
+
+        avg_vertical_distance_difference REAL,
+        min_vertical_distance_difference REAL,
+        max_vertical_distance_difference REAL,
+
+        UNIQUE(season)
+    )
+''')
+
 
 
     # Commit the changes and close the connection

@@ -86,3 +86,29 @@ def get_team_xpass_by_season(team_id, season):
     conn.close()
     print('Team xpasses returned.')
     return row
+
+def get_all_teams_xpass_by_season(season):
+    print(f'Attempting to get all teams xpass data from data base, season: {season}.')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    query = f'''
+        SELECT 
+            tx.*,
+            ti.*
+        FROM 
+            team_xpass AS tx
+        JOIN 
+            team_info AS ti
+        ON 
+            tx.team_id = ti.team_id
+        WHERE
+            tx.season = ?;
+    '''
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print(f'All teams xpass data fetched from db for season: {season}')
+    return rows
