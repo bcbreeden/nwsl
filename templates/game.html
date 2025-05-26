@@ -36,7 +36,12 @@
                         <td class="column-container flex-all-center">
                             {% for goal in goal_data %}
                                 {% if goal["team_id"] == game_data["home_team_id"] %}
-                                    <p class="no-padding-no-margin">{{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'</p>
+                                    <p class="no-padding-no-margin">
+                                        {{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'
+                                        {% if goal["pattern_of_play"] == "Penalty" %}
+                                            (P)
+                                        {% endif %}
+                                    </p>
                                 {% endif %}
                             {% endfor %}
                         </td>
