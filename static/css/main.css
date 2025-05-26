@@ -164,10 +164,8 @@ ul {
 }
 
 .flex-vert-center-hori-left {
-    justify-content: left;
-    align-items: center;
+    justify-content: center;
     align-content: center;
-
 }
 
 /* ======================

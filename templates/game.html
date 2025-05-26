@@ -157,19 +157,32 @@
                     src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
                     alt="Team Logo">
                 </div>
-                <div class="column-container">
-                    <p>Primary Shooter: {{ player_info_data[shot['shooter_player_id']] }}</p>
-                    {% if shot['assist_player_id'] != "0" %}
-                        <p>Assist: {{ player_info_data[shot['assist_player_id']] }}</p>
+                <div class="column-container flex-vert-center-hori-left">
+                    <div class="column-container moderate-margin">
+                        <p class="no-padding-no-margin text-large text-weight-bolder">
+                            {{ player_info_data[shot['shooter_player_id']] }} - {{ shot['expanded_minute'] }}' 
+                            {% if shot['head'] == 1 %}
+                            ({{ shot['pattern_of_play'] }} - Header)
+                            {% else %}
+                            ({{ shot['pattern_of_play'] }})
+                            {% endif %}
+                        </p>
+                        {% if shot['assist_player_id'] != "0" %}
+                            <p class="no-padding-no-margin">
+                                Assist: {{ player_info_data[shot['assist_player_id']] }}
+                                {% if shot['assist_through_ball'] == 1 %}
+                                    (Through Ball)
+                                {% elif shot['assist_cross'] == 1 %}
+                                    (Cross)
+                                {% endif %}
+                            </p>
                     {% endif %}
-                    <p>Expanded Minute: {{ shot['expanded_minute'] }}</p>
-                    <p>Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
-                    <p>Shot xG: {{ shot['shot_xg'] }}</p>
-                    <p>Shot PSxG: {{ shot['shot_psxg'] }}</p>
-                    <p>Headed Shot: {{ shot['head'] }}</p>
-                    <p>Assist (Through Ball): {{ shot['assist_through_ball'] }}</p>
-                    <p>Assist (Cross): {{ shot['assist_cross'] }}</p>
-                    <p>Pattern of Play: {{ shot['pattern_of_play'] }}</p>
+                    </div>
+                    <div class="column-container moderate-margin">
+                        <p class="no-padding-no-margin">Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
+                        <p class="no-padding-no-margin">Shot xG: {{ shot['shot_xg'] }}</p>
+                        <p class="no-padding-no-margin">Shot PSxG: {{ shot['shot_psxg'] }}</p>
+                    </div>
                 </div>
             </div>
         </div>
