@@ -825,3 +825,22 @@ ul {
     flex-direction: column;
     align-items: center;
 }
+
+
+/* EXPERIMENT */
+.tab-button {
+
+}
+.tab-button.active {
+    background: #003049;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+.tab-content.active {
+    display: block;
+}

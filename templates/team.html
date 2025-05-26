@@ -18,274 +18,302 @@
                 </div>
             </div>
         </section>
-        <div class="row-container moderate-margin">
-            <div class="moderate-padding" id="strength_donut"></div>
-            <div class="moderate-padding" id="results_donut"></div>
-            <div class="moderate-padding" id="goals_donut"></div>
-            <div class="moderate-padding" id="pass_donut"></div>
-        </div>
-        <div class="row-container moderate-margin">
-            <div class="moderate-padding" id="team_strength_plot"></div>
-        </div>
 
-        <div class="row-container text-left">
-            <h2 class="text-xxlarge">xGoals</h2>
-        </div>
-        <div class="report_stats_block">
-            <table class="stats_table">
-                <thead>
-                    <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
-                    <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
-                    <th class="small-padding dark-background white-text"></th>
-                    <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
-                </thead>
-                <tbody>
-                    {% for stat, label in [
-                        ('goals_for', 'Goals For'),
-                        ('xgoals_for', 'xGoals For'),
-                        ('goals_against', 'Goals Against'),
-                        ('xgoals_against', 'xGoals Against'),
-                        ('points', 'Points'),
-                        ('xpoints', 'xPoints'),
-                        ('shots_for', 'Shots For'),
-                        ('shots_against', 'Shots Against'),
-                        ('goal_difference', 'Goal Difference'),
-                        ('xgoal_difference', 'xGoal Difference'),
-                        ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
-                    ] %}
-                        <tr>
-                            <td class="text-left">
-                                <p class="stat_label stat_text">{{ label }}</p>
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ team_xgoals_data[stat] }}</p>
-                            </td>
-                            <td class="text-center">
-                                {% if team_xgoals_data[stat] == team_xgoal_boundary_data['max_' + stat] %}  
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
-                                {% elif team_xgoals_data[stat] >= team_xgoal_boundary_data['avg_' + stat] %}  
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
-                                {% else %}
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
-                                {% endif %}
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ team_xgoal_boundary_data['avg_' + stat] }}</p>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <div class="column-container">
+            <div class="row-container flex-all-center">
+                <button class="grid_button tab-button active moderate-margin" onclick="openTab('team_strength')">Team Strength</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('xg')">xGoals</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('xp')">xPass</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('goals-added')">Goals Added</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('match-history')">Match History</button>
+            </div>
+            
+            <div id="team_strength" class="tab-content active">
+                <div class="row-container moderate-margin">
+                    <div class="moderate-padding" id="strength_donut"></div>
+                    <div class="moderate-padding" id="results_donut"></div>
+                    <div class="moderate-padding" id="goals_donut"></div>
+                    <div class="moderate-padding" id="pass_donut"></div>
+                </div>
+                <div class="row-container moderate-margin">
+                    <div class="moderate-padding" id="team_strength_plot"></div>
+                </div>
 
-
-
-
-
-        <div class="row-container text-left">
-            <h2 class="text-xxlarge">xPass</h2>
-        </div>
-        <div class="report_stats_block">
-            <table class="stats_table">
-                <thead>
-                    <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
-                    <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
-                    <th class="small-padding dark-background white-text"></th>
-                    <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
-                </thead>
-                <tbody>
-                    {% for stat, label in [
-                        ('attempted_passes_for', 'Passes Attempted (For)'),
-                        ('pass_completion_percentage_for', 'Pass Completion % (For)'),
-                        ('xpass_completion_percentage_for', 'xPass Completion % (For)'),
-                        ('passes_completed_over_expected_for', 'Passes Over Expected (For)'),
-                        ('passes_completed_over_expected_p100_for', 'Passes Over Expected / 100 (For)'),
-                        ('avg_vertical_distance_for', 'Avg Vertical Distance (For)'),
-                        ('attempted_passes_against', 'Passes Attempted (Against)'),
-                        ('pass_completion_percentage_against', 'Pass Completion % (Against)'),
-                        ('xpass_completion_percentage_against', 'xPass Completion % (Against)'),
-                        ('passes_completed_over_expected_against', 'Passes Over Expected (Against)'),
-                        ('passes_completed_over_expected_p100_against', 'Passes Over Expected / 100 (Against)'),
-                        ('avg_vertical_distance_against', 'Avg Vertical Distance (Against)'),
-                        ('passes_completed_over_expected_difference', 'Passes Over Expected (Difference)'),
-                        ('avg_vertical_distance_difference', 'Avg Vertical Distance (Difference)')
-                    ] %}
-                    {% if stat.startswith('avg_') %}
-                        {% set clean_stat = stat[4:] %}
-                    {% else %}
-                        {% set clean_stat = stat %}
-                    {% endif %}
-                    <tr>
-                        <td class="text-left">
-                            <p class="stat_label stat_text">{{ label }}</p>
-                        </td>
-                        <td class="player_stat_cell">
-                            <p class="stat_text">{{ team_xpass_data[stat] }}</p>
-                        </td>
-                        <td class="text-center">
-                            {% if team_xpass_data[stat] == team_xpass_boundary_data['max_' + clean_stat] %}  
-                                <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
-                            {% elif team_xpass_data[stat] >= team_xpass_boundary_data['avg_' + clean_stat] %}  
-                                <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+            </div>
+            
+            <div id="xg" class="tab-content">
+                <div class="row-container text-left">
+                    <h2 class="text-xxlarge">xGoals</h2>
+                </div>
+                <div class="report_stats_block">
+                    <table class="stats_table">
+                        <thead>
+                            <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                            <th class="small-padding dark-background white-text"></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                        </thead>
+                        <tbody>
+                            {% for stat, label in [
+                                ('goals_for', 'Goals For'),
+                                ('xgoals_for', 'xGoals For'),
+                                ('goals_against', 'Goals Against'),
+                                ('xgoals_against', 'xGoals Against'),
+                                ('points', 'Points'),
+                                ('xpoints', 'xPoints'),
+                                ('shots_for', 'Shots For'),
+                                ('shots_against', 'Shots Against'),
+                                ('goal_difference', 'Goal Difference'),
+                                ('xgoal_difference', 'xGoal Difference'),
+                                ('goalfor_xgoalfor_diff', 'Goal For/xGoal For Difference')
+                            ] %}
+                                <tr>
+                                    <td class="text-left">
+                                        <p class="stat_label stat_text">{{ label }}</p>
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="stat_text">{{ team_xgoals_data[stat] }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if team_xgoals_data[stat] == team_xgoal_boundary_data['max_' + stat] %}  
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
+                                        {% elif team_xgoals_data[stat] >= team_xgoal_boundary_data['avg_' + stat] %}  
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+                                        {% else %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                        {% endif %}
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="stat_text">{{ team_xgoal_boundary_data['avg_' + stat] }}</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="xp" class="tab-content">
+                <div class="row-container text-left">
+                    <h2 class="text-xxlarge">xPass</h2>
+                </div>
+                <div class="report_stats_block">
+                    <table class="stats_table">
+                        <thead>
+                            <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                            <th class="small-padding dark-background white-text"></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                        </thead>
+                        <tbody>
+                            {% for stat, label in [
+                                ('attempted_passes_for', 'Passes Attempted (For)'),
+                                ('pass_completion_percentage_for', 'Pass Completion % (For)'),
+                                ('xpass_completion_percentage_for', 'xPass Completion % (For)'),
+                                ('passes_completed_over_expected_for', 'Passes Over Expected (For)'),
+                                ('passes_completed_over_expected_p100_for', 'Passes Over Expected / 100 (For)'),
+                                ('avg_vertical_distance_for', 'Avg Vertical Distance (For)'),
+                                ('attempted_passes_against', 'Passes Attempted (Against)'),
+                                ('pass_completion_percentage_against', 'Pass Completion % (Against)'),
+                                ('xpass_completion_percentage_against', 'xPass Completion % (Against)'),
+                                ('passes_completed_over_expected_against', 'Passes Over Expected (Against)'),
+                                ('passes_completed_over_expected_p100_against', 'Passes Over Expected / 100 (Against)'),
+                                ('avg_vertical_distance_against', 'Avg Vertical Distance (Against)'),
+                                ('passes_completed_over_expected_difference', 'Passes Over Expected (Difference)'),
+                                ('avg_vertical_distance_difference', 'Avg Vertical Distance (Difference)')
+                            ] %}
+                            {% if stat.startswith('avg_') %}
+                                {% set clean_stat = stat[4:] %}
                             {% else %}
-                                <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                {% set clean_stat = stat %}
                             {% endif %}
-                        </td>
-                        <td class="player_stat_cell">
-                            <p class="stat_text">{{ team_xpass_boundary_data['avg_' + clean_stat] }}</p>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>            
+                            <tr>
+                                <td class="text-left">
+                                    <p class="stat_label stat_text">{{ label }}</p>
+                                </td>
+                                <td class="player_stat_cell">
+                                    <p class="stat_text">{{ team_xpass_data[stat] }}</p>
+                                </td>
+                                <td class="text-center">
+                                    {% if team_xpass_data[stat] == team_xpass_boundary_data['max_' + clean_stat] %}  
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
+                                    {% elif team_xpass_data[stat] >= team_xpass_boundary_data['avg_' + clean_stat] %}  
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+                                    {% else %}
+                                        <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                    {% endif %}
+                                </td>
+                                <td class="player_stat_cell">
+                                    <p class="stat_text">{{ team_xpass_boundary_data['avg_' + clean_stat] }}</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>            
+                </div>
+            </div>
+
+            <div id="goals-added" class="tab-content">
+                <div class="row-container text-left">
+                    <h2 class="text-xxlarge">Goals Added</h2>
+                </div>
+                <div class="report_stats_block">
+                    <table class="stats_table">
+                        <thead>
+                            <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                            <th class="small-padding dark-background white-text"></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                        </thead>
+                        <tbody>
+                            {% for stat, label in [
+                                ('dribbling_num_actions_for', 'Dribbling Actions (For)'),
+                                ('dribbling_goals_added_for', 'Dribbling Goals Added (For)'),
+                                ('dribbling_num_actions_against', 'Dribbling Actions (Against)'),
+                                ('dribbling_goals_added_against', 'Dribbling Goals Added (Against)'),
+                
+                                ('shooting_num_actions_for', 'Shooting Actions (For)'),
+                                ('shooting_goals_added_for', 'Shooting Goals Added (For)'),
+                                ('shooting_num_actions_against', 'Shooting Actions (Against)'),
+                                ('shooting_goals_added_against', 'Shooting Goals Added (Against)'),
+                
+                                ('passing_num_actions_for', 'Passing Actions (For)'),
+                                ('passing_goals_added_for', 'Passing Goals Added (For)'),
+                                ('passing_num_actions_against', 'Passing Actions (Against)'),
+                                ('passing_goals_added_against', 'Passing Goals Added (Against)'),
+                
+                                ('interrupting_num_actions_for', 'Interrupting Actions (For)'),
+                                ('interrupting_goals_added_for', 'Interrupting Goals Added (For)'),
+                                ('interrupting_num_actions_against', 'Interrupting Actions (Against)'),
+                                ('interrupting_goals_added_against', 'Interrupting Goals Added (Against)'),
+                
+                                ('receiving_num_actions_for', 'Receiving Actions (For)'),
+                                ('receiving_goals_added_for', 'Receiving Goals Added (For)'),
+                                ('receiving_num_actions_against', 'Receiving Actions (Against)'),
+                                ('receiving_goals_added_against', 'Receiving Goals Added (Against)'),
+                
+                                ('claiming_num_actions_for', 'Claiming Actions (For)'),
+                                ('claiming_goals_added_for', 'Claiming Goals Added (For)'),
+                                ('claiming_num_actions_against', 'Claiming Actions (Against)'),
+                                ('claiming_goals_added_against', 'Claiming Goals Added (Against)'),
+                
+                                ('fouling_num_actions_for', 'Fouling Actions (For)'),
+                                ('fouling_goals_added_for', 'Fouling Goals Added (For)'),
+                                ('fouling_num_actions_against', 'Fouling Actions (Against)'),
+                                ('fouling_goals_added_against', 'Fouling Goals Added (Against)')
+                            ] %}
+                                <tr>
+                                    <td class="text-left">
+                                        <p class="stat_label stat_text">{{ label }}</p>
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="stat_text">{{ team_goals_added_data[stat] }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if team_goals_added_data[stat] == team_goals_added_boundaries['max_' + stat] %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
+                                        {% elif team_goals_added_data[stat] >= team_goals_added_boundaries['avg_' + stat] %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+                                        {% else %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                        {% endif %}
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="stat_text">{{ team_goals_added_boundaries['avg_' + stat] }}</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="match-history" class="tab-content">
+                <div class="row-container flex-all-center">
+                    <p class="text-small no-padding-no-margin">(All dates/times EST.)</p>
+                </div>
+                <div class="row-container">
+                    <table>
+                        <thead>
+                        </thead>
+                        <tbody>
+                            {% for game in game_results %}
+                            <tr class="flex-all-center row-border">
+                                <td>
+                                    <p class="stat_text stat_label">{{ game.date_time_est }}</p>
+                                    <form action="/game" method="POST">
+                                        <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
+                                        <input type="submit" class="grid_button stat_text stat_label" value="View Game Details">
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    {% if game.home_game == True %}
+                                        <p class="stat_text stat_label">VS</p>
+                                    {% else %}
+                                        <p class="stat_text stat_label">@</p>
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-center row-container flex-vert-center-hori-left">
+                                    <img class="icon-large" src="{{ url_for('static', filename='img/' + game['opponent_abbreviation'] + '.png') }}">
+                                    <p class="stat_text stat_label">{{ game.opponent_name }}</p>
+                                </td>
+                                <td>
+                                    <img class="icon-small x-small-padding" src="{{ url_for('static', filename='img/' + game['result'] + '.png') }}" alt="{{ game.result }}">
+                                </td>
+                                <td class="text-center"><p class="stat_text stat_label">{{ game.goals_scored }} - {{ game.goals_against }}</p></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-
-        <div class="row-container text-left">
-            <h2 class="text-xxlarge">Goals Added</h2>
-        </div>
-        <div class="report_stats_block">
-            <table class="stats_table">
-                <thead>
-                    <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
-                    <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
-                    <th class="small-padding dark-background white-text"></th>
-                    <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
-                </thead>
-                <tbody>
-                    {% for stat, label in [
-                        ('dribbling_num_actions_for', 'Dribbling Actions (For)'),
-                        ('dribbling_goals_added_for', 'Dribbling Goals Added (For)'),
-                        ('dribbling_num_actions_against', 'Dribbling Actions (Against)'),
-                        ('dribbling_goals_added_against', 'Dribbling Goals Added (Against)'),
-        
-                        ('shooting_num_actions_for', 'Shooting Actions (For)'),
-                        ('shooting_goals_added_for', 'Shooting Goals Added (For)'),
-                        ('shooting_num_actions_against', 'Shooting Actions (Against)'),
-                        ('shooting_goals_added_against', 'Shooting Goals Added (Against)'),
-        
-                        ('passing_num_actions_for', 'Passing Actions (For)'),
-                        ('passing_goals_added_for', 'Passing Goals Added (For)'),
-                        ('passing_num_actions_against', 'Passing Actions (Against)'),
-                        ('passing_goals_added_against', 'Passing Goals Added (Against)'),
-        
-                        ('interrupting_num_actions_for', 'Interrupting Actions (For)'),
-                        ('interrupting_goals_added_for', 'Interrupting Goals Added (For)'),
-                        ('interrupting_num_actions_against', 'Interrupting Actions (Against)'),
-                        ('interrupting_goals_added_against', 'Interrupting Goals Added (Against)'),
-        
-                        ('receiving_num_actions_for', 'Receiving Actions (For)'),
-                        ('receiving_goals_added_for', 'Receiving Goals Added (For)'),
-                        ('receiving_num_actions_against', 'Receiving Actions (Against)'),
-                        ('receiving_goals_added_against', 'Receiving Goals Added (Against)'),
-        
-                        ('claiming_num_actions_for', 'Claiming Actions (For)'),
-                        ('claiming_goals_added_for', 'Claiming Goals Added (For)'),
-                        ('claiming_num_actions_against', 'Claiming Actions (Against)'),
-                        ('claiming_goals_added_against', 'Claiming Goals Added (Against)'),
-        
-                        ('fouling_num_actions_for', 'Fouling Actions (For)'),
-                        ('fouling_goals_added_for', 'Fouling Goals Added (For)'),
-                        ('fouling_num_actions_against', 'Fouling Actions (Against)'),
-                        ('fouling_goals_added_against', 'Fouling Goals Added (Against)')
-                    ] %}
-                        <tr>
-                            <td class="text-left">
-                                <p class="stat_label stat_text">{{ label }}</p>
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ team_goals_added_data[stat] }}</p>
-                            </td>
-                            <td class="text-center">
-                                {% if team_goals_added_data[stat] == team_goals_added_boundaries['max_' + stat] %}
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
-                                {% elif team_goals_added_data[stat] >= team_goals_added_boundaries['avg_' + stat] %}
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
-                                {% else %}
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
-                                {% endif %}
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ team_goals_added_boundaries['avg_' + stat] }}</p>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="row-container">
-            <h2 class="text-xxlarge moderate-margin">Match History</h2>
-        </div>
-        <div class="row-container">
-            <p>(All dates/times in EST.)</p>
-        </div>
-        <div class="row-container">
-            <table>
-                <thead>
-                </thead>
-                <tbody>
-                    {% for game in game_results %}
-                    <tr class="flex-all-center row-border">
-                        <td>
-                            <p class="stat_text stat_label">{{ game.date_time_est }}</p>
-                            <form action="/game" method="POST">
-                                <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
-                                <input type="submit" class="grid_button stat_text stat_label" value="View Game Details">
-                            </form>
-                        </td>
-                        <td class="text-center">
-                            {% if game.home_game == True %}
-                                <p class="stat_text stat_label">VS</p>
-                            {% else %}
-                                <p class="stat_text stat_label">@</p>
-                            {% endif %}
-                        </td>
-
-                        <td class="text-center row-container flex-vert-center-hori-left">
-                            <img class="icon-large" src="{{ url_for('static', filename='img/' + game['opponent_abbreviation'] + '.png') }}">
-                            <p class="stat_text stat_label">{{ game.opponent_name }}</p>
-                        </td>
-                        <td>
-                            <img class="icon-small x-small-padding" src="{{ url_for('static', filename='img/' + game['result'] + '.png') }}" alt="{{ game.result }}">
-                        </td>
-                        <td class="text-center"><p class="stat_text stat_label">{{ game.goals_scored }} - {{ game.goals_against }}</p></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script>
-        const str_fig = {{ strength_fig_json|safe }};
-        const str_config = {{ strength_config|tojson }};
-        Plotly.newPlot('strength_donut', str_fig.data, str_fig.layout, str_config);
-    </script>
-
-    <script>
-        const results_fig = {{ results_fig_json|safe }};
-        const results_conf = {{ results_config|tojson }};
-        Plotly.newPlot('results_donut', results_fig.data, results_fig.layout, results_conf);
-    </script>
-
-    <script>
-        const g_fig = {{ goals_fig_json|safe }};
-        const g_conf = {{ goals_config|tojson }};
-        Plotly.newPlot('goals_donut', g_fig.data, g_fig.layout, g_conf);
-    </script>
-
-    <script>
-        const p_fig = {{ pass_fig_json|safe }};
-        const p_conf = {{ pass_config|tojson }};
-        Plotly.newPlot('pass_donut', p_fig.data, p_fig.layout, p_conf);
-    </script>
-
-    <script>
-        const tm_str_fig = JSON.parse({{ strength_bar_json|tojson }});
-        const tm_str_config = {{ strength_bar_config|tojson }};
-        Plotly.newPlot('team_strength_plot', tm_str_fig.data, tm_str_fig.layout, tm_str_config);
-    </script>
-
     </section>
 </section>
+
+
+<script>
+    function openTab(tabId) {
+        const buttons = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        buttons.forEach(btn => btn.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+</script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    const str_fig = {{ strength_fig_json|safe }};
+    const str_config = {{ strength_config|tojson }};
+    Plotly.newPlot('strength_donut', str_fig.data, str_fig.layout, str_config);
+</script>
+
+<script>
+    const results_fig = {{ results_fig_json|safe }};
+    const results_conf = {{ results_config|tojson }};
+    Plotly.newPlot('results_donut', results_fig.data, results_fig.layout, results_conf);
+</script>
+
+<script>
+    const g_fig = {{ goals_fig_json|safe }};
+    const g_conf = {{ goals_config|tojson }};
+    Plotly.newPlot('goals_donut', g_fig.data, g_fig.layout, g_conf);
+</script>
+
+<script>
+    const p_fig = {{ pass_fig_json|safe }};
+    const p_conf = {{ pass_config|tojson }};
+    Plotly.newPlot('pass_donut', p_fig.data, p_fig.layout, p_conf);
+</script>
+
+<script>
+    const tm_str_fig = JSON.parse({{ strength_bar_json|tojson }});
+    const tm_str_config = {{ strength_bar_config|tojson }};
+    Plotly.newPlot('team_strength_plot', tm_str_fig.data, tm_str_fig.layout, tm_str_config);
+</script>
 {% endblock %}
