@@ -2,7 +2,8 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
                 db_manager_info, db_referee_info, db_stadium_info, db_game_shots, db_player_strength,
-                db_team_xgoals_boundaries, db_team_xpass_boundaries, db_team_goals_added_boundaries)
+                db_team_xgoals_boundaries, db_team_xpass_boundaries, db_team_goals_added_boundaries,
+                db_game_goals)
 
 import time
 
@@ -47,6 +48,7 @@ if __name__ == '__main__':
         for game_id in game_ids:
             db_game_shots.insert_all_game_shots(game_id, season)
             db_game_flow.insert_flow_by_game_id(game_id)
+            db_game_goals.insert_game_goals_by_game_id(game_id)
         print(str(season), 'season setup complete.')
         print('Buffering, next season will begin in 15 seconds.')
         time.sleep(15)

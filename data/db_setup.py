@@ -900,6 +900,20 @@ def create_tables():
     )
 ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS game_goals (
+        game_id TEXT,
+        shooter_player_id TEXT,
+        assist_player_id TEXT,
+        team_id TEXT,
+        expanded_minute INTEGER,
+        pattern_of_play TEXT,
+        FOREIGN KEY (team_id) REFERENCES team_info(team_id),
+        FOREIGN KEY (game_id) REFERENCES games(game_id),
+        UNIQUE(game_id, shooter_player_id, assist_player_id, expanded_minute)
+    )
+''')
+
 
 
 
