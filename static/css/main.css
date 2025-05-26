@@ -254,12 +254,20 @@ ul {
     font-size: 76px;
 }
 
+.text-weight-bolder {
+    font-weight: bolder
+}
+
 .white-text {
     color: var(--block-bg);
 }
 
 .text-audiowide {
     font-family: "Audiowide", serif;
+}
+
+.text-montserrat {
+    font-family: "Montserrat", serif;
 }
 
  /* ======================

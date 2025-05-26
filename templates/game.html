@@ -25,12 +25,31 @@
                         <td><img class="team_logo game_report_team_logo" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}"></td>
                     </tr>
                     <tr>
-                        <td class="game_report_cell"><p class="game_report_score">{{game_data['home_score']}}</p></td>
+                        <td class="game_report_cell"><p class="text-xxlarge text-montserrat text-weight-bolder no-padding-no-margin">{{game_data['home_score']}}</p></td>
                         <td class="game_report_cell">
                             <p class="report_name_subheader">Goals</p>
                         </td>
-                        <td class="game_report_cell"><p class="game_report_score">{{game_data['away_score']}}</p></td>
+                        <td class="game_report_cell"><p class="text-xxlarge text-montserrat text-weight-bolder no-padding-no-margin">{{game_data['away_score']}}</p></td>
                     </tr>
+
+                    <tr>
+                        <td class="column-container flex-all-center">
+                            {% for goal in goal_data %}
+                                {% if goal["team_id"] == game_data["home_team_id"] %}
+                                    <p class="no-padding-no-margin">{{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'</p>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td></td>
+                        <td class="column-container flex-all-center">
+                            {% for goal in goal_data %}
+                                {% if goal["team_id"] == game_data["away_team_id"] %}
+                                    <p class="no-padding-no-margin">{{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'</p>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+
                     <tr>
                         <td class="game_report_cell">
                             <p class="report_name_subheader game_stat">{{game_xgoals_data['home_team_xgoals']}}</p>

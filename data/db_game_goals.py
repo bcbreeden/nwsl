@@ -33,3 +33,19 @@ def insert_game_goals_by_game_id(game_id):
             conn.commit()
     cursor.close()
     conn.close()
+
+def get_goals_by_game_id(game_id):
+    print('Fetching goal records for game id:', game_id)
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT * FROM game_goals 
+        WHERE game_id = ? 
+        ORDER BY expanded_minute
+    ''', (game_id,))
+    rows = cursor.fetchall()
+    conn.close()
+    print(f'{len(rows)} goal(s) returned.')
+    return rows
