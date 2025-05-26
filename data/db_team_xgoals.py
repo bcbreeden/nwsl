@@ -128,6 +128,35 @@ def get_team_xgoals_by_season(team_id, season):
     print('Team XGoals for {}: {} returned'.format(team_id, season))
     return rows
 
+def get_all_team_xgoals_by_season(season):
+    print('Fetching all team xGoals data for season:', season)
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    query = '''
+        SELECT 
+            tx.*,
+            ti.*
+        FROM 
+            team_xgoals AS tx
+        JOIN 
+            team_info AS ti
+        ON 
+            tx.team_id = ti.team_id
+        WHERE
+            tx.season = ?;
+    '''
+    
+    cursor.execute(query, (season,))
+    rows = cursor.fetchall()
+    conn.close()
+    
+    print(f'{len(rows)} team(s) xGoals data returned for season {season}.')
+    return rows
+
+
 '''
 ======================
    Team Strength Helpers
