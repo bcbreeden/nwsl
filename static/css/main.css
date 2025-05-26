@@ -163,9 +163,16 @@ ul {
     align-content: center;
 }
 
-.flex-vert-center-hori-left {
+.flex-vert-center-hori-left-col {
     justify-content: center;
     align-content: center;
+    align-items: flex-start;
+}
+
+.flex-vert-center-hori-left-row {
+    justify-content: flex-start;
+    align-content: center;
+    align-items: center;
 }
 
 /* ======================
