@@ -715,9 +715,14 @@ def create_tables():
         min_goalfor_xgoalfor_diff REAL,
         max_goalfor_xgoalfor_diff REAL,
 
+        avg_psxg_xg_diff REAL,
+        min_psxg_xg_diff REAL,
+        max_psxg_xg_diff REAL,
+
         UNIQUE(season)
     )
 ''')
+
 
     cursor.execute('''      
         CREATE TABLE IF NOT EXISTS team_xpass_boundaries (
