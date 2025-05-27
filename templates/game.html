@@ -57,6 +57,44 @@
 
                     <tr>
                         <td class="game_report_cell">
+                            {% for team_id, shots in team_total_shots.items() %}
+                                {% if team_id == game_data["home_team_id"] %}
+                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="game_report_cell">
+                            <p class="report_name_subheader">Shots</p>
+                        </td>
+                        <td class="game_report_cell">
+                            {% for team_id, shots in team_total_shots.items() %}
+                                {% if team_id == game_data["away_team_id"] %}
+                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="game_report_cell">
+                            {% for team_id, shots in team_shots_on_target.items() %}
+                                {% if team_id == game_data["home_team_id"] %}
+                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="game_report_cell">
+                            <p class="report_name_subheader">Shots on Target</p>
+                        </td>
+                        <td class="game_report_cell">
+                            {% for team_id, shots in team_shots_on_target.items() %}
+                                {% if team_id == game_data["away_team_id"] %}
+                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td class="game_report_cell">
                             <p class="report_name_subheader game_stat">{{game_xgoals_data['home_team_xgoals']}}</p>
                         </td>
                         <td class="game_report_cell">

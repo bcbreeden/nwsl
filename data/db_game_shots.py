@@ -184,3 +184,61 @@ def get_total_psxg_by_game_id(game_id):
         print(f'Team {team_id} total PSxG: {round(total, 2)}')
 
     return {team_id: round(total, 2) for team_id, total in psxg_by_team.items()}
+
+def get_total_shots_by_game_id(game_id):
+    print(f'Fetching total shots for both teams in game {game_id}...')
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT team_id
+        FROM game_shots
+        WHERE game_id = ?
+    ''', (game_id,))
+
+    shots_by_team = {}
+    for row in cursor.fetchall():
+        team_id = row['team_id']
+        shots_by_team[team_id] = shots_by_team.get(team_id, 0) + 1
+
+    conn.close()
+
+    for team_id, total in shots_by_team.items():
+        print(f'Team {team_id} total shots: {total}')
+
+    return shots_by_team
+
+def get_total_shots_on_target_by_game_id(game_id):
+    print(f'Fetching total shots on target for both teams in game {game_id}...')
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT team_id, goal, shot_psxg
+        FROM game_shots
+        WHERE game_id = ?
+    ''', (game_id,))
+
+    shots_on_target_by_team = {}
+    for row in cursor.fetchall():
+        team_id = row['team_id']
+        goal = row['goal']
+        psxg = row['shot_psxg']
+
+        is_on_target = (
+            goal == 1 or
+            (psxg is not None and psxg > 0)
+        )
+
+        if is_on_target:
+            shots_on_target_by_team[team_id] = shots_on_target_by_team.get(team_id, 0) + 1
+
+    conn.close()
+
+    for team_id, total in shots_on_target_by_team.items():
+        print(f'Team {team_id} shots on target: {total}')
+
+    return shots_on_target_by_team
+

@@ -210,6 +210,8 @@ def game():
 
         goal_data = db_game_goals.get_goals_by_game_id(request.form.get('game_id'))
         team_psxgs = db_game_shots.get_total_psxg_by_game_id(request.form.get('game_id'))
+        team_total_shots = db_game_shots.get_total_shots_by_game_id(request.form.get('game_id'))
+        team_shots_on_target = db_game_shots.get_total_shots_on_target_by_game_id(request.form.get('game_id'))
 
         game_flow_json, game_flow_config = generate_momentum_plot(request.form.get('game_id'))
         return render_template('game.html',
@@ -224,7 +226,9 @@ def game():
                                 player_info_data=player_info_data,
                                 team_info_data = team_info_data,
                                 goal_data = goal_data,
-                                team_psxgs = team_psxgs)
+                                team_psxgs = team_psxgs,
+                                team_total_shots = team_total_shots,
+                                team_shots_on_target = team_shots_on_target)
     else:
         return redirect(url_for('games'))
 
