@@ -1,7 +1,7 @@
 import sqlite3
 from .data_util import get_db_path
 
-def insert_team_strength(xgd_contrib, gd_contrib, xp_contrib, p_contrib, gdmxgd_contrib, gfdiff_contrib, season, team_id):
+def insert_team_strength(xgd_contrib, gd_contrib, xp_contrib, p_contrib, gdmxgd_contrib, gfdiff_contrib, psxgdiff_contrib, season, team_id):
     print('Attempting to insert team strength...')
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -15,8 +15,9 @@ def insert_team_strength(xgd_contrib, gd_contrib, xp_contrib, p_contrib, gdmxgd_
             xpoints,
             points,
             goal_diff_minus_xgoal_diff,
-            goalfor_xgoalfor_diff
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            goalfor_xgoalfor_diff,
+            psxg_xg_diff
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         team_id,
         season,
@@ -25,7 +26,9 @@ def insert_team_strength(xgd_contrib, gd_contrib, xp_contrib, p_contrib, gdmxgd_
         round((xp_contrib * 100), 1),
         round((p_contrib * 100), 1),
         round((gdmxgd_contrib * 100), 1),
-        round((gfdiff_contrib * 100), 1)
+        round((gfdiff_contrib * 100), 1),
+        round((psxgdiff_contrib * 100), 1)
+
     ))
 
     conn.commit()

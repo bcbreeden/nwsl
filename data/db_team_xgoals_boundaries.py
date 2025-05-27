@@ -12,7 +12,7 @@ def insert_team_xgoal_boundaries(season):
         "shots_for", "shots_against", "goals_for",
         "goals_against", "goal_difference", "xgoals_for", "xgoals_against",
         "xgoal_difference", "goal_difference_minus_xgoal_difference",
-        "points", "xpoints", "point_diff", "goalfor_xgoalfor_diff"
+        "points", "xpoints", "point_diff", "goalfor_xgoalfor_diff", "psxg_xg_diff"
     ]
 
     season_stats = aggregate_season_stats(team_xgoals_data, stats_to_track)
@@ -41,7 +41,8 @@ def insert_season_boundaries_to_db(season_data, stats_to_track):
             avg_points, min_points, max_points,
             avg_xpoints, min_xpoints, max_xpoints,
             avg_point_diff, min_point_diff, max_point_diff,
-            avg_goalfor_xgoalfor_diff, min_goalfor_xgoalfor_diff, max_goalfor_xgoalfor_diff
+            avg_goalfor_xgoalfor_diff, min_goalfor_xgoalfor_diff, max_goalfor_xgoalfor_diff,
+            avg_psxg_xg_diff, min_psxg_xg_diff, max_psxg_xg_diff
         ) VALUES (?, 
             ?, ?, ?, 
             ?, ?, ?, 
@@ -53,6 +54,7 @@ def insert_season_boundaries_to_db(season_data, stats_to_track):
             ?, ?, ?, 
             ?, ?, ?, 
             ?, ?, ?, 
+            ?, ?, ?,
             ?, ?, ?,
             ?, ?, ?,
             ?, ?, ?
@@ -110,7 +112,11 @@ def insert_season_boundaries_to_db(season_data, stats_to_track):
 
         round(season_data.get("avg_goalfor_xgoalfor_diff"), 2),
         season_data.get("min_goalfor_xgoalfor_diff"),
-        season_data.get("max_goalfor_xgoalfor_diff")
+        season_data.get("max_goalfor_xgoalfor_diff"),
+
+        round(season_data.get("avg_psxg_xg_diff"), 2),
+        season_data.get("min_psxg_xg_diff"),
+        season_data.get("max_psxg_xg_diff")
     ))
 
     conn.commit()

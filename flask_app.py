@@ -110,7 +110,8 @@ def team():
                                 "xpoints",
                                 "points",
                                 "goal_diff_minus_xgoal_diff",
-                                "goalfor_xgoalfor_diff"
+                                "goalfor_xgoalfor_diff",
+                                "psxg_xg_diff"
                             ]
         strength_bar_json, strength_bar_config = plot_bar_chart(strength_stats_to_plot, team_strength_data)
 

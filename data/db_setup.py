@@ -442,6 +442,7 @@ def create_tables():
         goal_difference INTEGER,
         xgoals_for REAL,
         psxg REAL,
+        psxg_xg_diff REAL,
         xgoals_against REAL,
         xgoal_difference REAL,
         goal_difference_minus_xgoal_difference REAL,
@@ -652,6 +653,7 @@ def create_tables():
         points REAL,
         goal_diff_minus_xgoal_diff REAL,
         goalfor_xgoalfor_diff REAL,
+        psxg_xg_diff REAL,
         FOREIGN KEY (team_id) REFERENCES team_info(team_id),
         UNIQUE(team_id, season)
     )

@@ -20,10 +20,14 @@ def insert_teams_xgoals_by_season(season):
         predicted_points = round(_calc_predicted_points(count_games, goals_for, goals_against), 3)
         point_diff = round(predicted_points - points, 3)
         goalfor_xgoalfor_diff = round(goals_for - xgoals_for, 3)
+        psxg = round(get_total_psxg_by_team_and_season(team.get('team_id', 'Unknown Team ID'), season), 1)
+        psxg_xg_diff = round((psxg - xgoals_for), 1)
 
         team['predicted_points'] = predicted_points
         team['point_diff'] = point_diff
         team['goalfor_xgoalfor_diff'] = goalfor_xgoalfor_diff
+        team['psxg'] = psxg
+        team['psxg_xg_diff'] = psxg_xg_diff
 
     # Calculate min/max for normalization
     feature_mins, feature_maxs = calculate_feature_min_max(teams_data)
@@ -49,7 +53,8 @@ def insert_teams_xgoals_by_season(season):
         predicted_points = team['predicted_points']
         point_diff = team['point_diff']
         goalfor_xgoalfor_diff = team['goalfor_xgoalfor_diff']
-        psxg = round(get_total_psxg_by_team_and_season(team_id, season), 1)
+        psxg = team['psxg']
+        psxg_xg_diff = team['psxg_xg_diff']
 
         # Calculate power score
         team_strength = calculate_team_strength(team, feature_mins, feature_maxs, season)
@@ -59,13 +64,13 @@ def insert_teams_xgoals_by_season(season):
                 id, team_id, count_games, shots_for, shots_against, goals_for, 
                 goals_against, goal_difference, xgoals_for, xgoals_against, 
                 xgoal_difference, goal_difference_minus_xgoal_difference, 
-                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff, psxg, team_strength
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff, psxg, psxg_xg_diff, team_strength
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             obj_id, team_id, count_games, shots_for, shots_against, goals_for,
             goals_against, goal_difference, xgoals_for, xgoals_against,
             xgoal_difference, goal_difference_minus_xgoal_difference,
-            points, xpoints, int(season), predicted_points, point_diff, round(goalfor_xgoalfor_diff, 1), psxg, team_strength
+            points, xpoints, int(season), predicted_points, point_diff, round(goalfor_xgoalfor_diff, 1), psxg, psxg_xg_diff, team_strength
         ))
 
         conn.commit()
@@ -172,7 +177,8 @@ def calculate_feature_min_max(teams_data):
         'xpoints',
         'points',
         'goal_difference_minus_xgoal_difference',
-        'goalfor_xgoalfor_diff'
+        'goalfor_xgoalfor_diff',
+        'psxg_xg_diff'
     ]
     feature_mins = {key: float('inf') for key in keys}
     feature_maxs = {key: float('-inf') for key in keys}
@@ -193,7 +199,8 @@ def calculate_team_strength(team, feature_mins, feature_maxs, season):
         'xpoints': team.get('xpoints', 0),
         'points': team.get('points', 0),
         'goal_difference_minus_xgoal_difference': team.get('goal_difference_minus_xgoal_difference', 0),
-        'goalfor_xgoalfor_diff': team.get('goalfor_xgoalfor_diff', 0)
+        'goalfor_xgoalfor_diff': team.get('goalfor_xgoalfor_diff', 0),
+        'psxg_xg_diff': team.get('psxg_xg_diff')
     }
 
     normalized = {}
@@ -204,12 +211,13 @@ def calculate_team_strength(team, feature_mins, feature_maxs, season):
         base_normalized = (val - min_val) / (max_val - min_val) if max_val != min_val else 0.5
         normalized[key] = base_normalized
 
-    xgd_contrib = 0.333 * normalized['xgoal_difference']
-    gd_contrib = 0.222 * normalized['goal_difference']
-    xp_contrib = 0.167 * normalized['xpoints']
-    p_contrib = 0.111 * normalized['points']
-    gdmxgd_contrib = 0.111 * normalized['goal_difference_minus_xgoal_difference']
-    gfdiff_contrib = 0.056 * normalized['goalfor_xgoalfor_diff']
+    xgd_contrib = 0.35 * normalized['xgoal_difference']
+    xp_contrib = 0.18 * normalized['xpoints']
+    gdmxgd_contrib = 0.12 * normalized['goal_difference_minus_xgoal_difference']
+    psxgdiff_contrib = 0.05 * normalized['psxg_xg_diff']
+    gfdiff_contrib = 0.05 * normalized['goalfor_xgoalfor_diff']
+    gd_contrib = 0.15 * normalized['goal_difference']
+    p_contrib = 0.10 * normalized['points']
 
     team_strength = (
         xgd_contrib +
@@ -217,10 +225,11 @@ def calculate_team_strength(team, feature_mins, feature_maxs, season):
         xp_contrib +
         p_contrib +
         gdmxgd_contrib +
-        gfdiff_contrib
+        gfdiff_contrib +
+        psxgdiff_contrib
     )
 
-    insert_team_strength(xgd_contrib, gd_contrib, xp_contrib, p_contrib, gdmxgd_contrib, gfdiff_contrib, season, team.get('team_id'))
+    insert_team_strength(xgd_contrib, gd_contrib, xp_contrib, p_contrib, gdmxgd_contrib, gfdiff_contrib, psxgdiff_contrib, season, team.get('team_id'))
     
     return round(team_strength * 100, 1)
 
