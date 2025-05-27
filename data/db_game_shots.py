@@ -159,3 +159,28 @@ def get_total_psxg_by_team_and_season(team_id, season):
     total_psxg = sum(row['shot_psxg'] for row in rows if row['shot_psxg'] is not None)
     print(f'Total PSxG for team {team_id} in season {season}: {total_psxg:.2f}')
     return total_psxg
+
+def get_total_psxg_by_game_id(game_id):
+    print(f'Fetching total PSxG for both teams in game {game_id}...')
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT team_id, shot_psxg
+        FROM game_shots
+        WHERE game_id = ?
+    ''', (game_id,))
+
+    psxg_by_team = {}
+    for row in cursor.fetchall():
+        team_id = row['team_id']
+        psxg = row['shot_psxg'] or 0.0
+        psxg_by_team[team_id] = psxg_by_team.get(team_id, 0.0) + psxg
+
+    conn.close()
+
+    for team_id, total in psxg_by_team.items():
+        print(f'Team {team_id} total PSxG: {round(total, 2)}')
+
+    return {team_id: round(total, 2) for team_id, total in psxg_by_team.items()}

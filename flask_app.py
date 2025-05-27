@@ -209,6 +209,7 @@ def game():
         team_info_data = {row['team_id']: row['team_abbreviation'] for row in team_info}
 
         goal_data = db_game_goals.get_goals_by_game_id(request.form.get('game_id'))
+        team_psxgs = db_game_shots.get_total_psxg_by_game_id(request.form.get('game_id'))
 
         game_flow_json, game_flow_config = generate_momentum_plot(request.form.get('game_id'))
         return render_template('game.html',
@@ -222,7 +223,8 @@ def game():
                                 shot_data = shot_data,
                                 player_info_data=player_info_data,
                                 team_info_data = team_info_data,
-                                goal_data = goal_data)
+                                goal_data = goal_data,
+                                team_psxgs = team_psxgs)
     else:
         return redirect(url_for('games'))
 
