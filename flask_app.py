@@ -5,7 +5,7 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
                 db_stadium_info, db_team_strength, db_team_xgoals_boundaries, db_team_xpass_boundaries,
                 db_team_goals_added_boundaries, db_game_shots, db_game_goals)
 from plots import (plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results, get_donut_plot_for_goals,
-                get_donut_plot_for_pass_completion, plot_bar_chart)
+                get_donut_plot_for_pass_completion, plot_bar_chart, generate_shot_marker_plot)
 from momentum_plot import generate_momentum_plot
 import plotly.graph_objects as go
 import plotly.io as pio
@@ -214,6 +214,9 @@ def game():
         team_shots_on_target = db_game_shots.get_total_shots_on_target_by_game_id(request.form.get('game_id'))
 
         game_flow_json, game_flow_config = generate_momentum_plot(request.form.get('game_id'))
+        shot_map_json, shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data)
+
+
         return render_template('game.html',
                                 game_data = game_data,
                                 game_xgoals_data = game_xgoals_data,
@@ -228,7 +231,9 @@ def game():
                                 goal_data = goal_data,
                                 team_psxgs = team_psxgs,
                                 team_total_shots = team_total_shots,
-                                team_shots_on_target = team_shots_on_target)
+                                team_shots_on_target = team_shots_on_target,
+                                shot_map_json = shot_map_json,
+                                shot_map_config = shot_map_config)
     else:
         return redirect(url_for('games'))
 

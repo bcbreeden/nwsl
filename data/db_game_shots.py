@@ -242,3 +242,30 @@ def get_total_shots_on_target_by_game_id(game_id):
 
     return shots_on_target_by_team
 
+def get_shot_locations_by_game_id(game_id):
+    print(f'Fetching shot locations for game {game_id}...')
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT team_id, shot_location_x, shot_location_y, goal, shot_xg
+        FROM game_shots
+        WHERE game_id = ?
+          AND shot_location_x IS NOT NULL
+          AND shot_location_y IS NOT NULL
+    ''', (game_id,))
+
+    shot_data = []
+    for row in cursor.fetchall():
+        shot_data.append({
+            'team_id': row['team_id'],
+            'x': row['shot_location_x'],
+            'y': row['shot_location_y'],
+            'goal': row['goal'],
+            'xg': row['shot_xg']
+        })
+
+    conn.close()
+    print(f'{len(shot_data)} shots retrieved for game {game_id}.')
+    return shot_data

@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-from data import (db_games, db_team_xgoals)
+from data import (db_games, db_team_xgoals, db_game_shots)
 import plotly
 import json
 import matplotlib.pyplot as plt
@@ -312,3 +312,89 @@ def plot_bar_chart(stats_to_plot, team_data, title="Team Strength Breakdown"):
         }
 
     return fig_json, config
+
+def add_soccer_pitch(fig):
+    line_color = "white"
+    line_width = 2
+
+    pitch_shapes = [
+        # Outer box (half-pitch)
+        dict(type="rect", x0=50, y0=0, x1=100, y1=100, line=dict(color=line_color, width=line_width)),
+
+        # Midfield line
+        dict(type="line", x0=50, y0=0, x1=50, y1=100, line=dict(color=line_color, width=line_width)),
+
+        # Center circle (right half only)
+        # dict(type="circle", x0=50 - 9.15, y0=50 - 9.15, x1=50 + 9.15, y1=50 + 9.15, line=dict(color=line_color, width=line_width)),
+
+        # Penalty box
+        dict(type="rect", x0=83, y0=21.1, x1=100, y1=78.9, line=dict(color=line_color, width=line_width)),
+
+        # 6-yard box
+        dict(type="rect", x0=94.5, y0=36.8, x1=100, y1=63.2, line=dict(color=line_color, width=line_width)),
+
+        # Goal line (goal mouth)
+        dict(type="line", x0=100, y0=44.5, x1=100, y1=55.5, line=dict(color=line_color, width=line_width)),
+    ]
+
+    fig.update_layout(shapes=pitch_shapes)
+    return fig
+
+
+def generate_shot_marker_plot(game_id, game_data):
+    shot_data = db_game_shots.get_shot_locations_by_game_id(game_id)
+    if not shot_data:
+        return None, None
+
+    home_id = game_data["home_team_id"]
+    away_id = game_data["away_team_id"]
+
+    team_colors = {
+        home_id: "blue",
+        away_id: "orange"
+    }
+
+    fig = go.Figure()
+
+    # Plot team-colored markers
+    for team_id in [home_id, away_id]:
+        team_shots = [s for s in shot_data if s['team_id'] == team_id]
+        x = [s['x'] for s in team_shots]
+        y = [s['y'] for s in team_shots]
+        goals = [s['goal'] for s in team_shots]
+
+        colors = ['red' if goal else team_colors[team_id] for goal in goals]
+
+        fig.add_trace(go.Scatter(
+            x=x,
+            y=y,
+            mode='markers',
+            marker=dict(
+                size=8,
+                color=colors,
+                line=dict(width=1, color='black')
+            ),
+            name=f"{'Home' if team_id == home_id else 'Away'} Shots"
+        ))
+
+    # Pitch layout
+    fig.update_layout(
+        title=f"Shot Map — Game {game_id}",
+        xaxis=dict(range=[50, 101], showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(range=[0, 100], showgrid=False, zeroline=False, showticklabels=False),
+        height=600,
+        width=900,
+        paper_bgcolor='#007f00',
+        plot_bgcolor='#007f00',
+        margin=dict(t=40, b=40, l=40, r=40)
+    )
+    fig.update_yaxes(scaleanchor="x", scaleratio=0.5)
+
+    fig = add_soccer_pitch(fig)
+
+    config = {
+        'displayModeBar': False,
+        'responsive': True
+    }
+
+    return fig.to_json(), config

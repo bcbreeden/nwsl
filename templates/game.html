@@ -148,14 +148,27 @@
                 </table>
             </section>
         </section>
+
+        <h1>Shot Map</h1>
+        <div id="shot_map_plot">
+        </div>
+
+        <script>
+            var shotMapJson = JSON.parse({{ shot_map_json|tojson|safe }});
+            var shotMapConfig = {{ shot_map_config|tojson|safe }};
+            Plotly.newPlot('shot_map_plot', shotMapJson.data, shotMapJson.layout, shotMapConfig);
+        </script>
+
         <h1>Game Flow</h1>
         <div id="game_flow_plot">
         </div>
         <script>
-            var flowJson = {{ game_flow_json|safe }};
-            var flowConfig = {{ game_flow_config|safe }};
+            var flowJson = JSON.parse({{ game_flow_json|tojson|safe }});
+            var flowConfig = {{ game_flow_config|tojson|safe }};
             Plotly.newPlot('game_flow_plot', flowJson.data, flowJson.layout, flowConfig);
         </script>
+        
+
 
 
         <h1>SHOTS SHOTS SHOTS SHOTS</h1>
