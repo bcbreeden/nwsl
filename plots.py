@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 from data import (db_games, db_team_xgoals, db_game_shots)
+from plot_util import TEAM_STYLE_MAP
 import plotly
 import json
 import matplotlib.pyplot as plt
@@ -341,7 +342,7 @@ def add_soccer_pitch(fig):
     return fig
 
 
-def generate_shot_marker_plot(game_id, game_data):
+def generate_shot_marker_plot(game_id, game_data, player_info):
     shot_data = db_game_shots.get_shot_locations_by_game_id(game_id)
     if not shot_data:
         return None, None
@@ -349,47 +350,59 @@ def generate_shot_marker_plot(game_id, game_data):
     home_id = game_data["home_team_id"]
     away_id = game_data["away_team_id"]
 
-    team_colors = {
-        home_id: "blue",
-        away_id: "orange"
-    }
-
+    team_ids = [home_id, away_id]
     fig = go.Figure()
 
-    # Plot team-colored markers
-    for team_id in [home_id, away_id]:
+    if isinstance(player_info, list):
+        player_info = {p['player_id']: p['player_name'] for p in player_info}
+
+    for team_id in team_ids:
         team_shots = [s for s in shot_data if s['team_id'] == team_id]
         x = [s['x'] for s in team_shots]
         y = [s['y'] for s in team_shots]
-        goals = [s['goal'] for s in team_shots]
 
-        colors = ['red' if goal else team_colors[team_id] for goal in goals]
+        hover_texts = []
+        for shot in team_shots:
+            player_name = player_info.get(shot['shooter_player_id'], 'Unknown Player')
+            minute = shot.get('expanded_minute', '?')
+            hover_texts.append(f"{player_name} - {minute}'")
+
+        style = TEAM_STYLE_MAP.get(team_id, {
+            "dot_color": "#cccccc",
+            "stroke_color": "#000000",
+            "abbreviation": "UNK"
+        })
 
         fig.add_trace(go.Scatter(
             x=x,
             y=y,
             mode='markers',
             marker=dict(
-                size=8,
-                color=colors,
-                line=dict(width=1, color='black')
+                size=14,
+                color=style["dot_color"],
+                line=dict(
+                    width=2,
+                    color=style["stroke_color"]
+                )
             ),
-            name=f"{'Home' if team_id == home_id else 'Away'} Shots"
+            name=style["abbreviation"],
+            hoverinfo="text",
+            text=hover_texts
         ))
 
-    # Pitch layout
+    # Layout & pitch visuals
     fig.update_layout(
         title=f"Shot Map — Game {game_id}",
         xaxis=dict(range=[50, 101], showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(range=[0, 100], showgrid=False, zeroline=False, showticklabels=False),
         height=600,
         width=900,
-        paper_bgcolor='#007f00',
-        plot_bgcolor='#007f00',
-        margin=dict(t=40, b=40, l=40, r=40)
+        paper_bgcolor='#00611c',
+        plot_bgcolor='#00611c',
+        margin=dict(t=40, b=40, l=40, r=40),
+        showlegend=False
     )
-    fig.update_yaxes(scaleanchor="x", scaleratio=0.5)
-
+    fig.update_yaxes(scaleanchor="x", scaleratio=0.4)
     fig = add_soccer_pitch(fig)
 
     config = {
@@ -398,3 +411,4 @@ def generate_shot_marker_plot(game_id, game_data):
     }
 
     return fig.to_json(), config
+

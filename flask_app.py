@@ -214,7 +214,7 @@ def game():
         team_shots_on_target = db_game_shots.get_total_shots_on_target_by_game_id(request.form.get('game_id'))
 
         game_flow_json, game_flow_config = generate_momentum_plot(request.form.get('game_id'))
-        shot_map_json, shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data)
+        shot_map_json, shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data, player_info)
 
 
         return render_template('game.html',

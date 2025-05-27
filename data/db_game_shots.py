@@ -249,7 +249,7 @@ def get_shot_locations_by_game_id(game_id):
     cursor = conn.cursor()
 
     cursor.execute('''
-        SELECT team_id, shot_location_x, shot_location_y, goal, shot_xg
+        SELECT team_id, shot_location_x, shot_location_y, goal, shot_xg, shooter_player_id, assist_player_id, expanded_minute
         FROM game_shots
         WHERE game_id = ?
           AND shot_location_x IS NOT NULL
@@ -263,7 +263,10 @@ def get_shot_locations_by_game_id(game_id):
             'x': row['shot_location_x'],
             'y': row['shot_location_y'],
             'goal': row['goal'],
-            'xg': row['shot_xg']
+            'xg': row['shot_xg'],
+            'shooter_player_id': row['shooter_player_id'],
+            'assist_player_id': row['assist_player_id'],
+            'expanded_minute': row['expanded_minute'],
         })
 
     conn.close()
