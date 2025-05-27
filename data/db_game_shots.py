@@ -141,3 +141,21 @@ def get_shots_by_type(shot_type, season):
 
     print(f'{len(rows)} {shot_type} shots retrieved.')
     return rows
+
+def get_total_psxg_by_team_and_season(team_id, season):
+    print(f'Fetching total PSxG for team {team_id} in season {season}...')
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT shot_psxg FROM game_shots
+        WHERE team_id = ? AND season = ?
+    ''', (team_id, season))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    total_psxg = sum(row['shot_psxg'] for row in rows if row['shot_psxg'] is not None)
+    print(f'Total PSxG for team {team_id} in season {season}: {total_psxg:.2f}')
+    return total_psxg

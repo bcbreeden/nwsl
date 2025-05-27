@@ -441,6 +441,7 @@ def create_tables():
         goals_against INTEGER,
         goal_difference INTEGER,
         xgoals_for REAL,
+        psxg REAL,
         xgoals_against REAL,
         xgoal_difference REAL,
         goal_difference_minus_xgoal_difference REAL,

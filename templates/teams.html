@@ -18,6 +18,7 @@
                     <th>xGA</th>
                     <th>xGoal Diff</th>
                     <th>Goal|XGoal Diff</th>
+                    <th>PSxG</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,7 @@
                     <td>{{ team['xgoals_against'] }}</td>
                     <td>{{ team['xgoal_difference'] }}</td>
                     <td>{{ team['goal_difference_minus_xgoal_difference'] }}</td>
+                    <td>{{ team['psxg'] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

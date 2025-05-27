@@ -4,6 +4,7 @@ import sqlite3
 from sklearn.preprocessing import MinMaxScaler
 from .data_util import get_db_path
 from .db_team_strength import insert_team_strength
+from .db_game_shots import get_total_psxg_by_team_and_season
 
 def insert_teams_xgoals_by_season(season):
     print('Inserting teams data (xgoals) for season:', season)
@@ -48,6 +49,7 @@ def insert_teams_xgoals_by_season(season):
         predicted_points = team['predicted_points']
         point_diff = team['point_diff']
         goalfor_xgoalfor_diff = team['goalfor_xgoalfor_diff']
+        psxg = round(get_total_psxg_by_team_and_season(team_id, season), 1)
 
         # Calculate power score
         team_strength = calculate_team_strength(team, feature_mins, feature_maxs, season)
@@ -57,13 +59,13 @@ def insert_teams_xgoals_by_season(season):
                 id, team_id, count_games, shots_for, shots_against, goals_for, 
                 goals_against, goal_difference, xgoals_for, xgoals_against, 
                 xgoal_difference, goal_difference_minus_xgoal_difference, 
-                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff, team_strength
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff, psxg, team_strength
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             obj_id, team_id, count_games, shots_for, shots_against, goals_for,
             goals_against, goal_difference, xgoals_for, xgoals_against,
             xgoal_difference, goal_difference_minus_xgoal_difference,
-            points, xpoints, int(season), predicted_points, point_diff, round(goalfor_xgoalfor_diff, 1), team_strength
+            points, xpoints, int(season), predicted_points, point_diff, round(goalfor_xgoalfor_diff, 1), psxg, team_strength
         ))
 
         conn.commit()
