@@ -2,5 +2,8 @@
 *.pyc
 *.env
 .coverage
-sandbox.py
+testing_file.py
+PR_template.py
+rankings_sample.py
+todo.tx
 venv/
