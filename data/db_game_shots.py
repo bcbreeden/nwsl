@@ -209,6 +209,7 @@ def get_total_shots_by_game_id(game_id):
 
     return shots_by_team
 
+
 def get_total_shots_on_target_by_game_id(game_id):
     print(f'Fetching total shots on target for both teams in game {game_id}...')
     conn = sqlite3.connect(get_db_path())
@@ -216,7 +217,7 @@ def get_total_shots_on_target_by_game_id(game_id):
     cursor = conn.cursor()
 
     cursor.execute('''
-        SELECT team_id, goal, shot_psxg
+        SELECT *
         FROM game_shots
         WHERE game_id = ?
     ''', (game_id,))
@@ -226,9 +227,11 @@ def get_total_shots_on_target_by_game_id(game_id):
         team_id = row['team_id']
         goal = row['goal']
         psxg = row['shot_psxg']
+        blocked = row['blocked']
 
         is_on_target = (
-            goal == 1 or
+            (goal == 1 or (psxg is not None and psxg > 0)) and
+            (blocked is None or blocked == 0) and
             (psxg is not None and psxg > 0)
         )
 
@@ -241,6 +244,7 @@ def get_total_shots_on_target_by_game_id(game_id):
         print(f'Team {team_id} shots on target: {total}')
 
     return shots_on_target_by_team
+
 
 def get_shot_locations_by_game_id(game_id):
     print(f'Fetching shot locations for game {game_id}...')
