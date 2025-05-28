@@ -122,13 +122,10 @@ def generate_momentum_plot(game_id):
         fig.add_annotation(**annotation)
 
     fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    config = json.dumps({
-        "displayModeBar": False,  # Disable the toolbar
-        "scrollZoom": False,      # Disable zooming with the scroll wheel
-        "dragMode": False,
-        "staticPlot": True        # Make the plot fully static
-    })
-
+    config = {
+        "displayModeBar": False,
+        "staticPlot": True
+    }
     return fig_json, config
 
 def _make_logo_image(path, x, y, xanchor="left", yanchor="top"):
