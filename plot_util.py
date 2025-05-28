@@ -11,8 +11,8 @@ TEAM_STYLE_MAP = {
     },
     "KPqjw8PQ6v": {
         "abbreviation": "CHI",
-        "dot_color": "#a6dcef",
-        "stroke_color": "#c8102e"
+        "dot_color": "#c8102e",
+        "stroke_color": "#092944"
     },
     "4JMAk47qKg": {
         "abbreviation": "HOU",
