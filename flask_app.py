@@ -198,39 +198,39 @@ def games():
 @app.route('/game', methods=['GET', 'POST'])
 def game():
     if request.method == 'POST':
+        # GAME DATA
         game_data = db_games.get_game_by_id(request.form.get('game_id'))
-        game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
-        game_flow_data = db_game_flow.get_game_flow_by_game_id(request.form.get('game_id'))
-
-        all_shots_data = db_game_shots.get_shots_by_game_id(request.form.get('game_id'))
-        all_shot_data_with_markers = _insert_event_markers(all_shots_data)
-        
-
-        player_info = db_player_info.get_all_players_info()
-        player_info_data = {row['player_id']: row['player_name'] for row in player_info}
-
-        team_info = db_team_info.get_all_teams_info()
-        team_info_data = {row['team_id']: row['team_abbreviation'] for row in team_info}
-
         away_team_id = game_data['away_team_id']
         away_team_abbr = game_data['away_team_abbreviation']
         home_team_id = game_data['home_team_id']
         home_team_abbr = game_data['home_team_abbreviation']
+
+        # PLAYER INFO DATA
+        player_info = db_player_info.get_all_players_info()
+        player_info_data = {row['player_id']: row['player_name'] for row in player_info}
+
+        # TEAM INFO DATA
+        team_info = db_team_info.get_all_teams_info()
+        team_info_data = {row['team_id']: row['team_abbreviation'] for row in team_info}
+
+        # SHOT DATA
+        all_shots_data = db_game_shots.get_shots_by_game_id(request.form.get('game_id'))
+        all_shot_data_with_markers = _insert_event_markers(all_shots_data)
         home_shots_data = [shot for shot in all_shots_data if shot['team_id'] == home_team_id]
         away_shots_data = [shot for shot in all_shots_data if shot['team_id'] == away_team_id]
-
         home_shot_map_json, home_shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data, player_info, home_shots_data, home_team_abbr)
         away_shot_map_json, away_shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data, player_info, away_shots_data, away_team_abbr)
-
-
         goal_data = db_game_goals.get_goals_by_game_id(request.form.get('game_id'))
         team_psxgs = db_game_shots.get_total_psxg_by_game_id(request.form.get('game_id'))
         team_total_shots = db_game_shots.get_total_shots_by_game_id(request.form.get('game_id'))
         team_shots_on_target = db_game_shots.get_total_shots_on_target_by_game_id(request.form.get('game_id'))
 
+        # GAME FLOW DATA
+        game_flow_data = db_game_flow.get_game_flow_by_game_id(request.form.get('game_id'))
         game_flow_json, game_flow_config = generate_momentum_plot(request.form.get('game_id'))
         
-
+        # XGOALS DATA
+        game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
 
         return render_template('game.html',
                                 game_data = game_data,
