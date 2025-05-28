@@ -223,8 +223,39 @@
                 </div>
             </div>
 
-        <!-- REGULAR SHOTS -->
+        <!-- OWN GOAL -->
+        {% elif shot.type == 'own_goal' %}
+        {% set team_abbr = team_info_data[shot['team_id']] %}
+        <div class="row-container">
+            <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+            <p class="text-xxlarge text-audiowide no-padding-no-margin">GOAL</p>
+            <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+        </div>
+        <div class="row-container shot-container {{ team_abbr }}">
+            
+            <div class="row-container">
+                <img class="icon-xlarge x-large-margin"
+                     src="{{ url_for('static', filename='img/' + team_abbr + '.png') }}"
+                     alt="Team Logo">
+            </div>
+    
+            <div class="column-container flex-vert-center-hori-left-col">
+                <div class="column-container moderate-margin">
+                    <p class="no-padding-no-margin text-large text-weight-bolder">
+                        Own Goal - {{ shot['expanded_minute'] }}'
+                    </p>
+                    <p class="no-padding-no-margin text-color-warning">
+                        This goal was accidentally scored by {{ team_abbr }}
+                    </p>
+                </div>
+                <div class="column-container moderate-margin">
+                    <p class="no-padding-no-margin">Score After: {{ shot['home_score'] }} - {{ shot['away_score'] }}</p>
+                </div>
+            </div>
+        </div>
 
+
+        <!-- REGULAR SHOTS -->
         {% else %}
         <div class="column-container shot-container x-large-margin flex-all-center">
             {% if shot['goal'] == 1 %}

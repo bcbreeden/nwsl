@@ -201,7 +201,7 @@ def game():
         game_data = db_games.get_game_by_id(request.form.get('game_id'))
         game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
         game_flow_data = db_game_flow.get_game_flow_by_game_id(request.form.get('game_id'))
-        shot_data = _insert_halftime_and_fulltime_markers(db_game_shots.get_shots_by_game_id(request.form.get('game_id')))
+        shot_data = _insert_event_markers(db_game_shots.get_shots_by_game_id(request.form.get('game_id')))
         player_info = db_player_info.get_all_players_info()
         player_info_data = {row['player_id']: row['player_name'] for row in player_info}
 
@@ -382,11 +382,34 @@ def goalkeeper():
                            season = season_manager.season,
                            seasons = season_manager.seasons)
 
-def _insert_halftime_and_fulltime_markers(shot_data):
+def _insert_event_markers(shot_data):
     new_data = []
     halftime_inserted = False
 
     for i, shot in enumerate(shot_data):
+        if i > 0:
+            prev_shot = shot_data[i - 1]
+
+            score_changed = (
+                shot['home_score'] != prev_shot['home_score'] or
+                shot['away_score'] != prev_shot['away_score']
+            )
+            both_no_goals = prev_shot['goal'] == 0 and shot['goal'] == 0
+
+            if score_changed and both_no_goals:
+                # Infer team that conceded: the one not credited with this shot
+                conceding_team_id = prev_shot['team_id'] if shot['team_id'] != prev_shot['team_id'] else 'Unknown'
+
+                own_goal_marker = {
+                    'type': 'own_goal',
+                    'home_score': shot['home_score'],
+                    'away_score': shot['away_score'],
+                    'expanded_minute': shot['expanded_minute'],
+                    'period_id': shot['period_id'],
+                    'team_id': conceding_team_id
+                }
+                new_data.append(own_goal_marker)
+
         if not halftime_inserted and shot['period_id'] == 2:
             new_data.append({
                 'type': 'halftime',
@@ -394,9 +417,9 @@ def _insert_halftime_and_fulltime_markers(shot_data):
                 'away_score': shot['away_score']
             })
             halftime_inserted = True
+
         new_data.append(shot)
 
-    # Insert fulltime marker using score from final shot
     if shot_data:
         final_shot = shot_data[-1]
         new_data.append({
@@ -406,6 +429,8 @@ def _insert_halftime_and_fulltime_markers(shot_data):
         })
 
     return new_data
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
