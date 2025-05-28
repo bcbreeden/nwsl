@@ -6,8 +6,8 @@ TEAM_STYLE_MAP = {
     },
     "4wM4Ezg5jB": {
         "abbreviation": "BOS",
-        "dot_color": "#0033a0",
-        "stroke_color": "#9ec1f7"
+        "dot_color": "#9ec1f7",
+        "stroke_color": "#0033a0"
     },
     "KPqjw8PQ6v": {
         "abbreviation": "CHI",
@@ -56,7 +56,7 @@ TEAM_STYLE_MAP = {
     },
     "7VqG1lYMvW": {
         "abbreviation": "SD",
-        "dot_color": "#2d3e50",
+        "dot_color": "#ffffff",
         "stroke_color": "#e51884"
     },
     "7vQ7BBzqD1": {
@@ -80,3 +80,18 @@ TEAM_STYLE_MAP = {
         "stroke_color": "#c8102e"
     }
 }
+
+def _make_logo_image(path, x, y, xanchor="center", yanchor="middle"):
+    return dict(
+        source=path,
+        xref="paper",         # Use paper coordinates to position independently of axis ranges
+        yref="paper",
+        x=x,
+        y=y,
+        sizex=0.4,
+        sizey=0.4,
+        xanchor=xanchor,
+        yanchor=yanchor,
+        opacity=0.15,
+        layer="below"
+    )

@@ -208,13 +208,25 @@ def game():
         team_info = db_team_info.get_all_teams_info()
         team_info_data = {row['team_id']: row['team_abbreviation'] for row in team_info}
 
+        all_shots_data = db_game_shots.get_shot_locations_by_game_id(request.form.get('game_id'))
+        away_team_id = game_data['away_team_id']
+        away_team_abbr = game_data['away_team_abbreviation']
+        home_team_id = game_data['home_team_id']
+        home_team_abbr = game_data['home_team_abbreviation']
+        home_shots_data = [shot for shot in all_shots_data if shot['team_id'] == home_team_id]
+        away_shots_data = [shot for shot in all_shots_data if shot['team_id'] == away_team_id]
+
+        home_shot_map_json, home_shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data, player_info, home_shots_data, home_team_abbr)
+        away_shot_map_json, away_shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data, player_info, away_shots_data, away_team_abbr)
+
+
         goal_data = db_game_goals.get_goals_by_game_id(request.form.get('game_id'))
         team_psxgs = db_game_shots.get_total_psxg_by_game_id(request.form.get('game_id'))
         team_total_shots = db_game_shots.get_total_shots_by_game_id(request.form.get('game_id'))
         team_shots_on_target = db_game_shots.get_total_shots_on_target_by_game_id(request.form.get('game_id'))
 
         game_flow_json, game_flow_config = generate_momentum_plot(request.form.get('game_id'))
-        shot_map_json, shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data, player_info)
+        
 
 
         return render_template('game.html',
@@ -232,8 +244,10 @@ def game():
                                 team_psxgs = team_psxgs,
                                 team_total_shots = team_total_shots,
                                 team_shots_on_target = team_shots_on_target,
-                                shot_map_json = shot_map_json,
-                                shot_map_config = shot_map_config)
+                                home_shot_map_json = home_shot_map_json,
+                                home_shot_map_config = home_shot_map_config,
+                                away_shot_map_json = away_shot_map_json,
+                                away_shot_map_config = away_shot_map_config)
     else:
         return redirect(url_for('games'))
 

@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 from data import (db_games, db_team_xgoals, db_game_shots)
-from plot_util import TEAM_STYLE_MAP
+from plot_util import TEAM_STYLE_MAP, _make_logo_image
 import plotly
 import json
 import matplotlib.pyplot as plt
@@ -325,9 +325,6 @@ def add_soccer_pitch(fig):
         # Midfield line
         dict(type="line", x0=50, y0=0, x1=50, y1=100, line=dict(color=line_color, width=line_width)),
 
-        # Center circle (right half only)
-        # dict(type="circle", x0=50 - 9.15, y0=50 - 9.15, x1=50 + 9.15, y1=50 + 9.15, line=dict(color=line_color, width=line_width)),
-
         # Penalty box
         dict(type="rect", x0=83, y0=21.1, x1=100, y1=78.9, line=dict(color=line_color, width=line_width)),
 
@@ -342,8 +339,7 @@ def add_soccer_pitch(fig):
     return fig
 
 
-def generate_shot_marker_plot(game_id, game_data, player_info):
-    shot_data = db_game_shots.get_shot_locations_by_game_id(game_id)
+def generate_shot_marker_plot(game_id, game_data, player_info, shot_data, team_abbr):
     if not shot_data:
         return None, None
 
@@ -389,10 +385,11 @@ def generate_shot_marker_plot(game_id, game_data, player_info):
             hoverinfo="text",
             text=hover_texts
         ))
+    logo_abbr = team_abbr
+    logo_path = f"/static/img/{logo_abbr}.png"
 
     # Layout & pitch visuals
     fig.update_layout(
-        title=f"Shot Map — Game {game_id}",
         xaxis=dict(range=[50, 101], showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(range=[0, 100], showgrid=False, zeroline=False, showticklabels=False),
         height=600,
@@ -400,7 +397,8 @@ def generate_shot_marker_plot(game_id, game_data, player_info):
         paper_bgcolor='#00611c',
         plot_bgcolor='#00611c',
         margin=dict(t=40, b=40, l=40, r=40),
-        showlegend=False
+        showlegend=False,
+        images=[_make_logo_image(f"/static/img/{team_abbr}.png", x=0.3, y=0.5, xanchor="center")]
     )
     fig.update_yaxes(scaleanchor="x", scaleratio=0.4)
     fig = add_soccer_pitch(fig)
