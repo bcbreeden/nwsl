@@ -20,298 +20,325 @@
                 <h3 class="report_name_subheader">Attendance -  {{ game_data['attendance'] }}</h3>
             </section>
 
+            <div class="row-container flex-all-center">
+                <button class="grid_button tab-button active moderate-margin" onclick="openTab('game_summary')">Game Summary</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('shot_map')">Shot Map</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('timeline')">Game Timeline</button>
+            </div>
+
             <!--=====================================
             ===           SUMMARY                 ===
             ======================================--> 
-            <section class="game_report_row">
-                <table>
-                    <tr>
-                        <td><img class="team_logo game_report_team_logo" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}"></td>
-                        <td>
-                            
-                        </td>
-                        <td><img class="team_logo game_report_team_logo" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}"></td>
-                    </tr>
-                    <tr>
-                        <td class="game_report_cell"><p class="text-xxlarge text-montserrat text-weight-bolder no-padding-no-margin">{{game_data['home_score']}}</p></td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader">Goals</p>
-                        </td>
-                        <td class="game_report_cell"><p class="text-xxlarge text-montserrat text-weight-bolder no-padding-no-margin">{{game_data['away_score']}}</p></td>
-                    </tr>
+            <div id="game_summary" class="tab-content active">
+                <section class="game_report_row column-container flex-all-center">
+                    <table>
+                        <tr>
+                            <td><img class="team_logo game_report_team_logo" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}"></td>
+                            <td>
+                                
+                            </td>
+                            <td><img class="team_logo game_report_team_logo" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}"></td>
+                        </tr>
+                        <tr>
+                            <td class="game_report_cell"><p class="text-xxlarge text-montserrat text-weight-bolder no-padding-no-margin">{{game_data['home_score']}}</p></td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader">Goals</p>
+                            </td>
+                            <td class="game_report_cell"><p class="text-xxlarge text-montserrat text-weight-bolder no-padding-no-margin">{{game_data['away_score']}}</p></td>
+                        </tr>
 
-                    <tr>
-                        <td class="column-container flex-all-center">
-                            {% for goal in goal_data %}
-                                {% if goal["team_id"] == game_data["home_team_id"] %}
-                                    <p class="no-padding-no-margin">
-                                        {{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'
-                                        {% if goal["pattern_of_play"] == "Penalty" %}
-                                            (P)
-                                        {% endif %}
-                                    </p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td></td>
-                        <td class="column-container flex-all-center">
-                            {% for goal in goal_data %}
-                                {% if goal["team_id"] == game_data["away_team_id"] %}
-                                    <p class="no-padding-no-margin">{{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'</p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
+                        <tr>
+                            <td class="column-container flex-all-center">
+                                {% for goal in goal_data %}
+                                    {% if goal["team_id"] == game_data["home_team_id"] %}
+                                        <p class="no-padding-no-margin">
+                                            {{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'
+                                            {% if goal["pattern_of_play"] == "Penalty" %}
+                                                (P)
+                                            {% endif %}
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td></td>
+                            <td class="column-container flex-all-center">
+                                {% for goal in goal_data %}
+                                    {% if goal["team_id"] == game_data["away_team_id"] %}
+                                        <p class="no-padding-no-margin">{{ player_info_data[goal['shooter_player_id']] }} - {{ goal['expanded_minute'] }}'</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td class="game_report_cell">
-                            {% for team_id, shots in team_total_shots.items() %}
-                                {% if team_id == game_data["home_team_id"] %}
-                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader">Shots</p>
-                        </td>
-                        <td class="game_report_cell">
-                            {% for team_id, shots in team_total_shots.items() %}
-                                {% if team_id == game_data["away_team_id"] %}
-                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="game_report_cell">
-                            {% for team_id, shots in team_shots_on_target.items() %}
-                                {% if team_id == game_data["home_team_id"] %}
-                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader">Shots on Target</p>
-                        </td>
-                        <td class="game_report_cell">
-                            {% for team_id, shots in team_shots_on_target.items() %}
-                                {% if team_id == game_data["away_team_id"] %}
-                                    <p class="report_name_subheader game_stat">{{ shots }}</p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>                    
-                    <tr>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader game_stat">{{game_xgoals_data['home_team_xgoals']}}</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader">xGoals</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader game_stat">{{game_xgoals_data['away_team_xgoals']}}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="game_report_cell">
-                            {% for team_id, psxg in team_psxgs.items() %}
-                                {% if team_id == game_data["home_team_id"] %}
-                                    <p class="report_name_subheader game_stat">{{ psxg }}</p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader">Post Shot xGoals</p>
-                        </td>
-                        <td class="game_report_cell">
-                            {% for team_id, psxg in team_psxgs.items() %}
-                                {% if team_id == game_data["away_team_id"] %}
-                                    <p class="report_name_subheader game_stat">{{ psxg }}</p>
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader game_stat">{{game_xgoals_data['home_player_xgoals']}}</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader">Player xGoals</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader game_stat">{{game_xgoals_data['away_player_xgoals']}}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader game_stat">{{game_xgoals_data['home_xpoints']}}</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader">xPoints</p>
-                        </td>
-                        <td class="game_report_cell">
-                            <p class="report_name_subheader game_stat">{{game_xgoals_data['away_xpoints']}}</p>
-                        </td>
-                    </tr>
-                </table>    
-            </section>
-            <h1>Game Flow</h1>
-            <div id="game_flow_plot">
+                        <tr>
+                            <td class="game_report_cell">
+                                {% for team_id, shots in team_total_shots.items() %}
+                                    {% if team_id == game_data["home_team_id"] %}
+                                        <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader">Shots</p>
+                            </td>
+                            <td class="game_report_cell">
+                                {% for team_id, shots in team_total_shots.items() %}
+                                    {% if team_id == game_data["away_team_id"] %}
+                                        <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="game_report_cell">
+                                {% for team_id, shots in team_shots_on_target.items() %}
+                                    {% if team_id == game_data["home_team_id"] %}
+                                        <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader">Shots on Target</p>
+                            </td>
+                            <td class="game_report_cell">
+                                {% for team_id, shots in team_shots_on_target.items() %}
+                                    {% if team_id == game_data["away_team_id"] %}
+                                        <p class="report_name_subheader game_stat">{{ shots }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>                    
+                        <tr>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader game_stat">{{game_xgoals_data['home_team_xgoals']}}</p>
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader">xGoals</p>
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader game_stat">{{game_xgoals_data['away_team_xgoals']}}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="game_report_cell">
+                                {% for team_id, psxg in team_psxgs.items() %}
+                                    {% if team_id == game_data["home_team_id"] %}
+                                        <p class="report_name_subheader game_stat">{{ psxg }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader">Post Shot xGoals</p>
+                            </td>
+                            <td class="game_report_cell">
+                                {% for team_id, psxg in team_psxgs.items() %}
+                                    {% if team_id == game_data["away_team_id"] %}
+                                        <p class="report_name_subheader game_stat">{{ psxg }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader game_stat">{{game_xgoals_data['home_player_xgoals']}}</p>
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader">Player xGoals</p>
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader game_stat">{{game_xgoals_data['away_player_xgoals']}}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader game_stat">{{game_xgoals_data['home_xpoints']}}</p>
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader">xPoints</p>
+                            </td>
+                            <td class="game_report_cell">
+                                <p class="report_name_subheader game_stat">{{game_xgoals_data['away_xpoints']}}</p>
+                            </td>
+                        </tr>
+                    </table>    
+                </section>
+                <div class="row-container">
+                    <h1>Game Flow</h1>
+                    <div id="game_flow_plot">
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            var flowJson = JSON.parse({{ game_flow_json|tojson|safe }});
+                            var flowConfig = {{ game_flow_config|tojson|safe }};
+                            Plotly.newPlot('game_flow_plot', flowJson.data, flowJson.layout, flowConfig);
+                        });
+                    </script>
+                </div>
             </div>
-            <script>
-                var flowJson = JSON.parse({{ game_flow_json|tojson|safe }});
-                var flowConfig = {{ game_flow_config|tojson|safe }};
-                Plotly.newPlot('game_flow_plot', flowJson.data, flowJson.layout, flowConfig);
-            </script>
         </section>
 
         
         <!--=====================================
         ===           SHOT MAPS               ===
         ======================================--> 
-        <h1>Shot Map</h1>
+        <div id="shot_map" class="tab-content">
+            <h1>Shot Map</h1>
 
-        <div id="home_shot_map_plot"></div>
-        <script>
-            var homeShotMapJson = JSON.parse({{ home_shot_map_json | tojson | safe }});
-            var homeShotMapConfig = {{ home_shot_map_config | tojson | safe }};
-            Plotly.newPlot('home_shot_map_plot', homeShotMapJson.data, homeShotMapJson.layout, homeShotMapConfig);
-        </script>
+            <div id="home_shot_map_plot"></div>
+            <script>
+                var homeShotMapJson = JSON.parse({{ home_shot_map_json | tojson | safe }});
+                var homeShotMapConfig = {{ home_shot_map_config | tojson | safe }};
+                Plotly.newPlot('home_shot_map_plot', homeShotMapJson.data, homeShotMapJson.layout, homeShotMapConfig);
+            </script>
 
-        <div id="away_shot_map_plot"></div>
-        <script>
-            var awayShotMapJson = JSON.parse({{ away_shot_map_json | tojson | safe }});
-            var awayShotMapConfig = {{ away_shot_map_config | tojson | safe }};
-            Plotly.newPlot('away_shot_map_plot', awayShotMapJson.data, awayShotMapJson.layout, awayShotMapConfig);
-        </script>
+            <div id="away_shot_map_plot"></div>
+            <script>
+                var awayShotMapJson = JSON.parse({{ away_shot_map_json | tojson | safe }});
+                var awayShotMapConfig = {{ away_shot_map_config | tojson | safe }};
+                Plotly.newPlot('away_shot_map_plot', awayShotMapJson.data, awayShotMapJson.layout, awayShotMapConfig);
+            </script>
+        </div>
 
         <!--=====================================
         ===           SHOT TIMELINE           ===
         ======================================-->
-        <h1>SHOTS SHOTS SHOTS SHOTS</h1>
-        {% for shot in shot_data %}
+        <div id="timeline" class="tab-content">
+            <h1>SHOTS SHOTS SHOTS SHOTS</h1>
+            {% for shot in shot_data %}
 
-        <!-- HALFTIME -->
-        {% if shot.type == 'halftime' %}
-            <div class="halftime-banner column-container flex-all-center small-padding">
-                <p class="text-xxlarge text-audiowide">Halftime</p>
-                <div class="row-container">
-                    <div class="column-container flex-all-center">
-                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
-                        <p class="text-xxlarge no-padding-no-margin">{{ shot.home_score }}</p>
-                    </div>
-                    <div class="column-container flex-all-center">
-                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
-                        <p class="text-xxlarge no-padding-no-margin">{{ shot.away_score }}</p>
+            <!-- HALFTIME -->
+            {% if shot.type == 'halftime' %}
+                <div class="halftime-banner column-container flex-all-center small-padding">
+                    <p class="text-xxlarge text-audiowide">Halftime</p>
+                    <div class="row-container">
+                        <div class="column-container flex-all-center">
+                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge no-padding-no-margin">{{ shot.home_score }}</p>
+                        </div>
+                        <div class="column-container flex-all-center">
+                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge no-padding-no-margin">{{ shot.away_score }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        
-        <!-- FULLTIME -->
-        {% elif shot.type == 'fulltime' %}
-            <div class="halftime-banner column-container flex-all-center small-padding">
-                <p class="text-xxlarge text-audiowide">Full Time</p>
-                <div class="row-container">
-                    <div class="column-container flex-all-center">
-                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
-                        <p class="text-xxlarge no-padding-no-margin">{{game_data['home_score']}}</p>
-                    </div>
-                    <div class="column-container flex-all-center">
-                        <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
-                        <p class="text-xxlarge no-padding-no-margin">{{game_data['away_score']}}</p>
-                    </div>
-                </div>
-            </div>
-
-        <!-- OWN GOAL -->
-        {% elif shot.type == 'own_goal' %}
-        {% set team_abbr = team_info_data[shot['team_id']] %}
-        <div class="row-container">
-            <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
-            <p class="text-xxlarge text-audiowide no-padding-no-margin">GOAL</p>
-            <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
-        </div>
-        <div class="row-container shot-container {{ team_abbr }}">
             
-            <div class="row-container">
-                <img class="icon-xlarge x-large-margin"
-                     src="{{ url_for('static', filename='img/' + team_abbr + '.png') }}"
-                     alt="Team Logo">
-            </div>
-    
-            <div class="column-container flex-vert-center-hori-left-col">
-                <div class="column-container moderate-margin">
-                    <p class="no-padding-no-margin text-large text-weight-bolder">
-                        Own Goal - {{ shot['expanded_minute'] }}'
-                    </p>
-                    <p class="no-padding-no-margin text-color-warning">
-                        This goal was accidentally scored by {{ team_abbr }}
-                    </p>
+            <!-- FULLTIME -->
+            {% elif shot.type == 'fulltime' %}
+                <div class="halftime-banner column-container flex-all-center small-padding">
+                    <p class="text-xxlarge text-audiowide">Full Time</p>
+                    <div class="row-container">
+                        <div class="column-container flex-all-center">
+                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge no-padding-no-margin">{{game_data['home_score']}}</p>
+                        </div>
+                        <div class="column-container flex-all-center">
+                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge no-padding-no-margin">{{game_data['away_score']}}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="column-container moderate-margin">
-                    <p class="no-padding-no-margin">Score After: {{ shot['home_score'] }} - {{ shot['away_score'] }}</p>
-                </div>
-            </div>
-        </div>
 
-
-        <!-- REGULAR SHOTS -->
-        {% else %}
-        <div class="column-container shot-container x-large-margin flex-all-center">
-            {% if shot['goal'] == 1 %}
-            <div class="column-container flex-all-center no-padding-no-margin">
-                <div class="row-container">
-                    <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
-                    <p class="text-xxlarge text-audiowide no-padding-no-margin">GOAL</p>
-                    <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
-                </div>
-            </div>
-            {% endif %}
+            <!-- OWN GOAL -->
+            {% elif shot.type == 'own_goal' %}
             {% set team_abbr = team_info_data[shot['team_id']] %}
+            <div class="row-container">
+                <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+                <p class="text-xxlarge text-audiowide no-padding-no-margin">GOAL</p>
+                <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+            </div>
             <div class="row-container shot-container {{ team_abbr }}">
-        
+                
                 <div class="row-container">
                     <img class="icon-xlarge x-large-margin"
-                    src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
-                    alt="Team Logo">
+                        src="{{ url_for('static', filename='img/' + team_abbr + '.png') }}"
+                        alt="Team Logo">
                 </div>
+        
                 <div class="column-container flex-vert-center-hori-left-col">
                     <div class="column-container moderate-margin">
                         <p class="no-padding-no-margin text-large text-weight-bolder">
-                            {{ player_info_data[shot['shooter_player_id']] }} - {{ shot['expanded_minute'] }}' 
-                            {% if shot['head'] == 1 %}
-                            ({{ shot['pattern_of_play'] }} - Header)
-                            {% else %}
-                            ({{ shot['pattern_of_play'] }})
-                            {% endif %}
+                            Own Goal - {{ shot['expanded_minute'] }}'
                         </p>
-                        {% if shot['assist_player_id'] != "0" %}
-                            <p class="no-padding-no-margin">
-                                Assist: {{ player_info_data[shot['assist_player_id']] }}
-                                {% if shot['assist_through_ball'] == 1 %}
-                                    (Through Ball)
-                                {% elif shot['assist_cross'] == 1 %}
-                                    (Cross)
-                                {% endif %}
-                            </p>
-                    {% endif %}
+                        <p class="no-padding-no-margin text-color-warning">
+                            This goal was accidentally scored by {{ team_abbr }}
+                        </p>
                     </div>
                     <div class="column-container moderate-margin">
-                        <p class="no-padding-no-margin">Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
-                        <p class="no-padding-no-margin">Shot xG: {{ shot['shot_xg'] }}</p>
-                        <p class="no-padding-no-margin">Shot PSxG: {{ shot['shot_psxg'] }}</p>
-                        {% if shot['blocked'] == 1 %}
-                            <p class="no-padding-no-margin text-weight-bolder">[Blocked]</p>
-                        {% endif %}
+                        <p class="no-padding-no-margin">Score After: {{ shot['home_score'] }} - {{ shot['away_score'] }}</p>
                     </div>
                 </div>
             </div>
-        </div>
-        {% endif %}
-        {% endfor %}
-    </section>
 
 
+            <!-- REGULAR SHOTS -->
+            {% else %}
+            <div class="column-container shot-container x-large-margin flex-all-center">
+                {% if shot['goal'] == 1 %}
+                <div class="column-container flex-all-center no-padding-no-margin">
+                    <div class="row-container">
+                        <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+                        <p class="text-xxlarge text-audiowide no-padding-no-margin">GOAL</p>
+                        <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
+                    </div>
+                </div>
+                {% endif %}
+                {% set team_abbr = team_info_data[shot['team_id']] %}
+                <div class="row-container shot-container {{ team_abbr }}">
+            
+                    <div class="row-container">
+                        <img class="icon-xlarge x-large-margin"
+                        src="{{ url_for('static', filename='img/' + team_info_data[shot['team_id']] + '.png') }}"
+                        alt="Team Logo">
+                    </div>
+                    <div class="column-container flex-vert-center-hori-left-col">
+                        <div class="column-container moderate-margin">
+                            <p class="no-padding-no-margin text-large text-weight-bolder">
+                                {{ player_info_data[shot['shooter_player_id']] }} - {{ shot['expanded_minute'] }}' 
+                                {% if shot['head'] == 1 %}
+                                ({{ shot['pattern_of_play'] }} - Header)
+                                {% else %}
+                                ({{ shot['pattern_of_play'] }})
+                                {% endif %}
+                            </p>
+                            {% if shot['assist_player_id'] != "0" %}
+                                <p class="no-padding-no-margin">
+                                    Assist: {{ player_info_data[shot['assist_player_id']] }}
+                                    {% if shot['assist_through_ball'] == 1 %}
+                                        (Through Ball)
+                                    {% elif shot['assist_cross'] == 1 %}
+                                        (Cross)
+                                    {% endif %}
+                                </p>
+                        {% endif %}
+                        </div>
+                        <div class="column-container moderate-margin">
+                            <p class="no-padding-no-margin">Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
+                            <p class="no-padding-no-margin">Shot xG: {{ shot['shot_xg'] }}</p>
+                            <p class="no-padding-no-margin">Shot PSxG: {{ shot['shot_psxg'] }}</p>
+                            {% if shot['blocked'] == 1 %}
+                                <p class="no-padding-no-margin text-weight-bolder">[Blocked]</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </section>
+    </div>
+
+    <script>
+        function openTab(tabId) {
+            const buttons = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
             <script>
