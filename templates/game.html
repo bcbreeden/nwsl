@@ -197,11 +197,11 @@
                 <div class="row-container">
                     <div class="column-container flex-all-center">
                         <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
-                        <p class="text-xxlarge no-padding-no-margin">{{ shot.home_score }}</p>
+                        <p class="text-xxlarge no-padding-no-margin">{{game_data['home_score']}}</p>
                     </div>
                     <div class="column-container flex-all-center">
                         <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
-                        <p class="text-xxlarge no-padding-no-margin">{{ shot.away_score }}</p>
+                        <p class="text-xxlarge no-padding-no-margin">{{game_data['away_score']}}</p>
                     </div>
                 </div>
             </div>
@@ -252,6 +252,9 @@
                         <p class="no-padding-no-margin">Distance from Goal: {{ shot['distance_from_goal'] }} m</p>
                         <p class="no-padding-no-margin">Shot xG: {{ shot['shot_xg'] }}</p>
                         <p class="no-padding-no-margin">Shot PSxG: {{ shot['shot_psxg'] }}</p>
+                        {% if shot['blocked'] == 1 %}
+                            <p class="no-padding-no-margin text-weight-bolder">[Blocked]</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
