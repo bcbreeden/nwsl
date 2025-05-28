@@ -201,14 +201,17 @@ def game():
         game_data = db_games.get_game_by_id(request.form.get('game_id'))
         game_xgoals_data = db_games_xgoals.get_game_xgoals_by_id(request.form.get('game_id'))
         game_flow_data = db_game_flow.get_game_flow_by_game_id(request.form.get('game_id'))
-        shot_data = _insert_event_markers(db_game_shots.get_shots_by_game_id(request.form.get('game_id')))
+
+        all_shots_data = db_game_shots.get_shots_by_game_id(request.form.get('game_id'))
+        all_shot_data_with_markers = _insert_event_markers(all_shots_data)
+        
+
         player_info = db_player_info.get_all_players_info()
         player_info_data = {row['player_id']: row['player_name'] for row in player_info}
 
         team_info = db_team_info.get_all_teams_info()
         team_info_data = {row['team_id']: row['team_abbreviation'] for row in team_info}
 
-        all_shots_data = db_game_shots.get_shot_locations_by_game_id(request.form.get('game_id'))
         away_team_id = game_data['away_team_id']
         away_team_abbr = game_data['away_team_abbreviation']
         home_team_id = game_data['home_team_id']
@@ -237,7 +240,7 @@ def game():
                                 game_flow_config = game_flow_config,
                                 season = season_manager.season,
                                 seasons = season_manager.seasons,
-                                shot_data = shot_data,
+                                shot_data = all_shot_data_with_markers,
                                 player_info_data=player_info_data,
                                 team_info_data = team_info_data,
                                 goal_data = goal_data,
@@ -427,7 +430,6 @@ def _insert_event_markers(shot_data):
             'home_score': final_shot['home_score'],
             'away_score': final_shot['away_score']
         })
-
     return new_data
 
 

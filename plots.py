@@ -354,14 +354,28 @@ def generate_shot_marker_plot(game_id, game_data, player_info, shot_data, team_a
 
     for team_id in team_ids:
         team_shots = [s for s in shot_data if s['team_id'] == team_id]
-        x = [s['x'] for s in team_shots]
-        y = [s['y'] for s in team_shots]
+        x = []
+        y = []
+        symbols = []
+        for shot in team_shots:
+            x.append(shot['shot_location_x'])
+            y.append(shot['shot_location_y'])
+            if shot['goal'] == 1:
+                symbols.append('star')
+            else:
+                symbols.append('circle')
 
         hover_texts = []
         for shot in team_shots:
             player_name = player_info.get(shot['shooter_player_id'], 'Unknown Player')
-            minute = shot.get('expanded_minute', '?')
-            hover_texts.append(f"{player_name} - {minute}'")
+            minute = shot['expanded_minute']
+            xg = round(shot['shot_xg'], 3)
+            psxg = round(shot['shot_psxg'], 3)
+            pattern = shot['pattern_of_play'].lower()
+            is_penalty = " (Penalty)" if pattern == "penalty" else ""
+            hover_texts.append(f"{player_name} - {minute}'{is_penalty}<br>xG: {xg}<br>PSxG: {psxg}")
+
+
 
         style = TEAM_STYLE_MAP.get(team_id, {
             "dot_color": "#cccccc",
@@ -376,6 +390,7 @@ def generate_shot_marker_plot(game_id, game_data, player_info, shot_data, team_a
             marker=dict(
                 size=14,
                 color=style["dot_color"],
+                symbol=symbols,  # ← add this line
                 line=dict(
                     width=2,
                     color=style["stroke_color"]
