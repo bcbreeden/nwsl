@@ -609,7 +609,7 @@ def create_tables():
 ''')
 
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS game_shots (
+    CREATE TABLE IF NOT EXISTS game_shots (
         game_id TEXT,
         period_id INTEGER,
         expanded_minute INTEGER,
@@ -639,9 +639,19 @@ def create_tables():
         shot_order INTEGER,
         season INTEGER,
         FOREIGN KEY (game_id) REFERENCES games(game_id),
-        UNIQUE(game_id, shot_order)
+        CONSTRAINT unique_shot_key UNIQUE (
+            game_id,
+            shot_order,
+            shooter_player_id,
+            team_id,
+            shot_location_x,
+            shot_location_y,
+            expanded_minute
+        )
     )
 ''')
+
+
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS team_strength (
