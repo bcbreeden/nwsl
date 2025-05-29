@@ -7,10 +7,8 @@
         <table id="games">
             <thead>
                 <tr>
-                    <th>Details</th>
-                    <th>Game ID</th>
                     <th>Game Time (EST)</th>
-                    <th>Status</th>
+                    <th>Venue</th>
                     <th>Home Team</th>
                     <th>Away Team</th>
                 </tr>
@@ -19,18 +17,20 @@
                 {% for game in games_data %}
                 <tr>
                     <td>
-                        <form action="/game" method="POST">
-                            <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
-                            <input type="submit" class="grid_button" value="Game Details">
-                        </form>
+                        <div class="column-container">
+                            <p class="no-padding-no-margin text-weight-bolder">{{ game['date_time_est'] }}</p>
+                            <p class="no-padding-no-margin">Matchday {{ game['matchday'] }}</p>
+                            <form action="/game" method="POST">
+                                <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
+                                <input type="submit" class="grid_button moderate-margin-top-bottom" value="Game Details">
+                            </form>
+                        </div>
                     </td>
-
-                    <td>{{ game['game_id'] }}</td>
-
-                    <td><p class="report_name_subheader">{{ game['date_time_est'] }}</p></td>
-
-                    <td><p class="report_name_subheader">{{ game['status'] }}</p></td>
-
+                    <td class="column-container">
+                        <div>
+                            <p class="no-padding-no-margin">{{ game['stadium_name'] }}</p>
+                        </div>
+                    </td>
                     <td class="stat">
                         <div class="hidden">{{ game['home_team_name'] }}</div>
                         <img class="icon-medium" src="{{ url_for('static', filename='img/' + game['home_team_abbreviation'] + '.png') }}"> <br>
@@ -51,6 +51,10 @@
             <script>
                 $(document).ready( function () {
                     $('#games').DataTable();
+                } );
+
+                $.extend( $.fn.dataTable.defaults, {
+                    ordering:  false
                 } );
     </script>
 {% endblock %}

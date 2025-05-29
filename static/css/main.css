@@ -163,6 +163,10 @@ ul {
     align-content: center;
 }
 
+.flex-vert-top {
+    align-content: flex-end;
+}
+
 .flex-vert-center-hori-left-col {
     justify-content: center;
     align-content: center;
@@ -196,6 +200,10 @@ ul {
     padding: 0;
 }
 
+.small-margin {
+    margin: 5px;
+}
+
 .moderate-margin {
     margin: 10px;
 }
@@ -203,6 +211,11 @@ ul {
 .moderate-margin-left-right {
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.moderate-margin-top-bottom {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .large-margin {

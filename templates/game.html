@@ -186,16 +186,14 @@
         ===           SHOT MAPS               ===
         ======================================--> 
         <div id="shot_map" class="tab-content">
-            <h1>Shot Map</h1>
-
-            <div id="home_shot_map_plot"></div>
+            <div id="home_shot_map_plot" class="moderate-margin-top-bottom"></div>
             <script>
                 var homeShotMapJson = JSON.parse({{ home_shot_map_json | tojson | safe }});
                 var homeShotMapConfig = {{ home_shot_map_config | tojson | safe }};
                 Plotly.newPlot('home_shot_map_plot', homeShotMapJson.data, homeShotMapJson.layout, homeShotMapConfig);
             </script>
 
-            <div id="away_shot_map_plot"></div>
+            <div id="away_shot_map_plot" class="moderate-margin-top-bottom"></div>
             <script>
                 var awayShotMapJson = JSON.parse({{ away_shot_map_json | tojson | safe }});
                 var awayShotMapConfig = {{ away_shot_map_config | tojson | safe }};
@@ -207,21 +205,24 @@
         ===           SHOT TIMELINE           ===
         ======================================-->
         <div id="timeline" class="tab-content">
-            <h1>SHOTS SHOTS SHOTS SHOTS</h1>
             {% for shot in shot_data %}
 
             <!-- HALFTIME -->
             {% if shot.type == 'halftime' %}
                 <div class="halftime-banner column-container flex-all-center small-padding">
-                    <p class="text-xxlarge text-audiowide">Halftime</p>
+                    <div class="row-container flex-all-center">
+                        <img class="icon-medium large-margin" src="{{ url_for('static', filename='img/w-r.png') }}">
+                        <p class="text-xxlarge text-audiowide">Halftime</p>
+                        <img class="icon-medium large-margin" src="{{ url_for('static', filename='img/w-l.png') }}">
+                    </div>
                     <div class="row-container">
                         <div class="column-container flex-all-center">
-                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
-                            <p class="text-xxlarge no-padding-no-margin">{{ shot.home_score }}</p>
+                            <img class="team_logo large-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge moderate-margin text-audiowide">{{ shot.home_score }}</p>
                         </div>
                         <div class="column-container flex-all-center">
-                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
-                            <p class="text-xxlarge no-padding-no-margin">{{ shot.away_score }}</p>
+                            <img class="team_logo large-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge moderate-margin text-audiowide">{{ shot.away_score }}</p>
                         </div>
                     </div>
                 </div>
@@ -229,15 +230,19 @@
             <!-- FULLTIME -->
             {% elif shot.type == 'fulltime' %}
                 <div class="halftime-banner column-container flex-all-center small-padding">
-                    <p class="text-xxlarge text-audiowide">Full Time</p>
+                    <div class="row-container flex-all-center">
+                        <img class="icon-medium large-margin" src="{{ url_for('static', filename='img/w-r.png') }}">
+                        <p class="text-xxlarge text-audiowide">Full Time</p>
+                        <img class="icon-medium large-margin" src="{{ url_for('static', filename='img/w-l.png') }}">
+                    </div>
                     <div class="row-container">
                         <div class="column-container flex-all-center">
-                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
-                            <p class="text-xxlarge no-padding-no-margin">{{game_data['home_score']}}</p>
+                            <img class="team_logo large-margin" src="{{ url_for('static', filename='img/' + game_data['home_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge moderate-margin text-audiowide">{{game_data['home_score']}}</p>
                         </div>
                         <div class="column-container flex-all-center">
-                            <img class="team_logo moderate-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
-                            <p class="text-xxlarge no-padding-no-margin">{{game_data['away_score']}}</p>
+                            <img class="team_logo large-margin" src="{{ url_for('static', filename='img/' + game_data['away_team_abbreviation'] + '.png') }}">
+                            <p class="text-xxlarge moderate-margin text-audiowide">{{game_data['away_score']}}</p>
                         </div>
                     </div>
                 </div>

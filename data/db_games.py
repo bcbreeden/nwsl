@@ -64,7 +64,8 @@ def get_all_games_by_season(season):
             home_team.team_abbreviation AS home_team_abbreviation,
             away_team.team_name AS away_team_name,
             away_team.team_short_name AS away_team_short_name,
-            away_team.team_abbreviation AS away_team_abbreviation
+            away_team.team_abbreviation AS away_team_abbreviation,
+            stadium.stadium_name AS stadium_name
         FROM
             games AS gm
         JOIN
@@ -73,9 +74,15 @@ def get_all_games_by_season(season):
         JOIN
             team_info AS away_team
             ON gm.away_team_id = away_team.team_id
+        LEFT JOIN
+            stadium_info AS stadium
+            ON gm.stadium_id = stadium.stadium_id
         WHERE
             gm.season = ?
+        ORDER BY
+            gm.matchday DESC
     '''
+
 
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
@@ -83,6 +90,7 @@ def get_all_games_by_season(season):
     conn.close()
     print('Games returned.')
     return rows
+
 
 def get_game_by_id(game_id):
     print('Fetching game: {}'.format(game_id))
