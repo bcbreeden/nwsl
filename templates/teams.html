@@ -7,17 +7,16 @@
             <thead>
                 <tr>
                     <th>Team</th>
-                    <th>Matches</th>
-                    <th>Team Strength</th>
-                    <th>Points</th>
-                    <th>xPoints</th>
+                    <th>MP</th>
+                    <th>Str</th>
+                    <th>Pts</th>
+                    <th>xPts</th>
                     <th>GF</th>
                     <th>GA</th>
-                    <th>Goal Diff</th>
+                    <th>GD</th>
                     <th>xGF</th>
                     <th>xGA</th>
-                    <th>xGoal Diff</th>
-                    <th>Goal|XGoal Diff</th>
+                    <th>xGD</th>
                     <th>PSxG</th>
                 </tr>
             </thead>
@@ -41,7 +40,6 @@
                     <td>{{ team['xgoals_for'] }}</td>
                     <td>{{ team['xgoals_against'] }}</td>
                     <td>{{ team['xgoal_difference'] }}</td>
-                    <td>{{ team['goal_difference_minus_xgoal_difference'] }}</td>
                     <td>{{ team['psxg'] }}</td>
                 </tr>
                 {% endfor %}

@@ -169,6 +169,8 @@ def team_comparison():
         {'name': 'goals_against', 'label': 'Goals Against', 'type': 'negative'},
         {'name': 'goal_difference', 'label': 'Goal Differential', 'type': 'positive'},
         {'name': 'xgoals_for', 'label': 'xGoals For', 'type': 'positive'},
+        {'name': 'psxg', 'label': 'Post Shot xG', 'type': 'positive'},
+        {'name': 'psxg_xg_diff', 'label': 'PSxG Diff', 'type': 'positive'},
         {'name': 'xgoals_against', 'label': 'xGoals Against', 'type': 'negative'},
         {'name': 'xgoal_difference', 'label': 'xGoals Differential', 'type': 'positive'},
         {'name': 'goal_difference_minus_xgoal_difference', 'label': 'Goal Diff - xGoal Diff', 'type': 'neutral'},
