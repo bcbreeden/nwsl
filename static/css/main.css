@@ -448,10 +448,10 @@ ul {
 }
 .tab-content {
     display: none;
-    padding: 20px;
 }
 .tab-content.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ======================

@@ -29,83 +29,29 @@
             </section>
             <section class="player_report_stats_container hidden">
         {% else %}
-            <div class="plot_container" id="xgoals_plot">
-            </div>
-            <section class="player_report_stats_container text-center">
+            <div class="row-container flex-all-center">
         {% endif %}
-            <div class="plot_container" id="xgoals_plot">
+                <button class="grid_button tab-button active moderate-margin" onclick="openTab('xg')">xGoals</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('xp')">xPass</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('goals-added')">Goals Added</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('career')">Career</button>
             </div>
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    var spiderChartData = {{ xgoals_fig_json|safe }};
-                    var spiderChartConfig = {{ xgoals_config|safe }};
-                    Plotly.newPlot('xgoals_plot', spiderChartData.data, spiderChartData.layout, spiderChartConfig);
-                });
-            </script>
-            <!-- XGoals -->
-            <h2>{{player_xgoals_data['player_name']}} - XGoals</h2>
-            <section class="report_stats_block">
-                <table class="stats_table">
-                    <thead>
-                        <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
-                        <th class="small-padding dark-background white-text"></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
-                    </thead>
-                    <tbody>
-                            {% for stat, abr,  label in [
-                                ('xgoals_xassists_per_90', 'XG/XA|90', 'XGoals/XAssists/90'),
-                                ('minutes_played', 'MP', 'Minutes Played'),
-                                ('shots', 'S', 'Shots'),
-                                ('shots_on_target', 'SOT', 'Shots on Target'),
-                                ('shots_on_target_perc', 'SOT %', 'Shots on Target %'),
-                                ('goals', 'G', 'Goals'),
-                                ('xgoals', 'xG', 'Expected Goals'),
-                                ('xplace', 'xP', 'xPlace'),
-                                ('goals_minus_xgoals', 'G-xG', 'Goals - xGoals'),
-                                ('key_passes', 'KP', 'Key Passes'),
-                                ('primary_assists', 'PA', 'Primary Assists'),
-                                ('xassists', 'xA', 'Expected Assists (xA)'),
-                                ('primary_assists_minus_xassists', 'PA-xA', 'Primary Assists - xAssists'),
-                                ('xgoals_plus_xassists', 'xG + xA', 'xGoals + xAssists'),
-                                ('points_added', 'PA', 'Points Added'),
-                                ('xpoints_added', 'xPA', 'Expected Points Added')
-                            ] %}
-                                <tr>
-                                    <td class="text-left">
-                                        <p class="stat_label stat_text">{{ label }}</p>
-                                    </td>
-                                    <td class="player_stat_cell">
-                                        <p class="stat_text">{{ player_xgoals_data[stat] }}</p>
-                                    </td>
-                                    <td class="text-center">
-                                        {% if player_xgoals_data[stat] == player_xgoals_data['max_' + stat] %}  
-                                            <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
-                                        {% elif player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}  
-                                            <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
-                                        {% else %}
-                                            <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
-                                        {% endif %}
-                                    </td>
-                                    <td class="player_stat_cell">
-                                        <p class="stat_text">{{ player_xgoals_data['avg_' + stat] }}</p>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                    </tbody>
-                </table>
-                {% include 'stat_legend.html' %}
-            </section>
 
-            <div class="plot_container" id="xpass_plot">
-            </div>
-            <script>
-                var xpassSpiderChartData = {{ xpass_fig_json|safe }};
-                var xpassSpiderChartConfig = {{ xpass_config|safe }};
-                Plotly.newPlot('xpass_plot', xpassSpiderChartData.data, xpassSpiderChartData.layout, xpassSpiderChartConfig);
-            </script>
-            <!-- XPass -->
-            <h2>{{player_xgoals_data['player_name']}} - XPass</h2>
+            <!-- XGoals -->
+            <div id="xg" class="tab-content active">
+                <div class="plot_container" id="xgoals_plot">
+                </div>
+                <section class="player_report_stats_container text-center">
+    
+                <div class="plot_container" id="xgoals_plot">
+                </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var spiderChartData = {{ xgoals_fig_json|safe }};
+                        var spiderChartConfig = {{ xgoals_config|safe }};
+                        Plotly.newPlot('xgoals_plot', spiderChartData.data, spiderChartData.layout, spiderChartConfig);
+                    });
+                </script>
                 <section class="report_stats_block">
                     <table class="stats_table">
                         <thead>
@@ -115,33 +61,162 @@
                             <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
                         </thead>
                         <tbody>
-                            {% for stat, abr, label in [
-                                ('count_games','GP', 'Games Played'),
-                                ('attempted_passes', 'AP', 'Attempted Passes'),
-                                ('pass_completion_percentage', 'PC %', 'Pass Completion Percentage'),
-                                ('xpass_completion_percentage', 'xPC %', 'xPass Completion Percentage'),
-                                ('passes_completed_over_expected', 'PCOE', 'Passes Completed Over Expected'),
-                                ('passes_completed_over_expected_p100', 'PCOE 100', 'Passes Completed Over Expected/100'),
-                                ('avg_distance_yds', 'AvgD',  'Average Distance (yds)'),
-                                ('avg_vertical_distance_yds', 'AvgVD', 'Average Vertical Distance (yds)'),
-                                ('share_team_touches', 'SoTT %', 'Share of Team Touches')
+                                {% for stat, abr,  label in [
+                                    ('xgoals_xassists_per_90', 'XG/XA|90', 'XGoals/XAssists/90'),
+                                    ('minutes_played', 'MP', 'Minutes Played'),
+                                    ('shots', 'S', 'Shots'),
+                                    ('shots_on_target', 'SOT', 'Shots on Target'),
+                                    ('shots_on_target_perc', 'SOT %', 'Shots on Target %'),
+                                    ('goals', 'G', 'Goals'),
+                                    ('xgoals', 'xG', 'Expected Goals'),
+                                    ('xplace', 'xP', 'xPlace'),
+                                    ('goals_minus_xgoals', 'G-xG', 'Goals - xGoals'),
+                                    ('key_passes', 'KP', 'Key Passes'),
+                                    ('primary_assists', 'PA', 'Primary Assists'),
+                                    ('xassists', 'xA', 'Expected Assists (xA)'),
+                                    ('primary_assists_minus_xassists', 'PA-xA', 'Primary Assists - xAssists'),
+                                    ('xgoals_plus_xassists', 'xG + xA', 'xGoals + xAssists'),
+                                    ('points_added', 'PA', 'Points Added'),
+                                    ('xpoints_added', 'xPA', 'Expected Points Added')
+                                ] %}
+                                    <tr>
+                                        <td class="text-left">
+                                            <p class="stat_label stat_text">{{ label }}</p>
+                                        </td>
+                                        <td class="player_stat_cell">
+                                            <p class="stat_text">{{ player_xgoals_data[stat] }}</p>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if player_xgoals_data[stat] == player_xgoals_data['max_' + stat] %}  
+                                                <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
+                                            {% elif player_xgoals_data[stat] >= player_xgoals_data['avg_' + stat] %}  
+                                                <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+                                            {% else %}
+                                                <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                            {% endif %}
+                                        </td>
+                                        <td class="player_stat_cell">
+                                            <p class="stat_text">{{ player_xgoals_data['avg_' + stat] }}</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include 'stat_legend.html' %}
+                </section>
+
+            </div>
+            <!-- XPass -->
+            <div id="xp" class="tab-content flex-all-center">
+                <div class="plot_container" id="xpass_plot">
+                </div>
+                <script>
+                    var xpassSpiderChartData = {{ xpass_fig_json|safe }};
+                    var xpassSpiderChartConfig = {{ xpass_config|safe }};
+                    Plotly.newPlot('xpass_plot', xpassSpiderChartData.data, xpassSpiderChartData.layout, xpassSpiderChartConfig);
+                </script>
+                    <section class="report_stats_block">
+                        <table class="stats_table">
+                            <thead>
+                                <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                                <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                                <th class="small-padding dark-background white-text"></th>
+                                <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                            </thead>
+                            <tbody>
+                                {% for stat, abr, label in [
+                                    ('count_games','GP', 'Games Played'),
+                                    ('attempted_passes', 'AP', 'Attempted Passes'),
+                                    ('pass_completion_percentage', 'PC %', 'Pass Completion Percentage'),
+                                    ('xpass_completion_percentage', 'xPC %', 'xPass Completion Percentage'),
+                                    ('passes_completed_over_expected', 'PCOE', 'Passes Completed Over Expected'),
+                                    ('passes_completed_over_expected_p100', 'PCOE 100', 'Passes Completed Over Expected/100'),
+                                    ('avg_distance_yds', 'AvgD',  'Average Distance (yds)'),
+                                    ('avg_vertical_distance_yds', 'AvgVD', 'Average Vertical Distance (yds)'),
+                                    ('share_team_touches', 'SoTT %', 'Share of Team Touches')
+                                ] %}
+                                <tr>
+                                    <td class="text-left">
+                                        <p class="stat_label stat_text">{{ label }}</p>
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="stat_text">{{ player_xpass_data[stat] }}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}  
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+                                        {% else %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                        {% endif %}
+                                    </td>
+                                    <td class="player_stat_cell">
+                                        <p class="stat_text">{{ player_xpass_data['avg_' + stat] }}</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% include 'stat_legend.html' %}
+                    </section>
+            </div>
+
+
+
+            <!-- Player Goals Added -->
+            <div id="goals-added" class="tab-content flex-all-center">
+                <div class="plot_container" id="defense_plot">
+                </div>
+                <script>
+                    var defenseSpiderChartData = {{ defense_fig_json|safe }};
+                    var defenseSpiderChartConfig = {{ defense_config|safe }};
+                    Plotly.newPlot('defense_plot', defenseSpiderChartData.data, defenseSpiderChartData.layout, defenseSpiderChartConfig);
+                </script>
+                <h2>{{player_xgoals_data['player_name']}} - Goals Added</h2>
+                <section class="report_stats_block">
+                    <table class="stats_table">
+                        <thead>
+                            <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                            <th class="small-padding dark-background white-text"></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                        </thead>
+                        <tbody>
+                            {% for stat, abr,  label in [
+                                ('dribbling_goals_added_raw', 'DGA(R)', 'Dribbling Goals Added (Raw)'),
+                                ('dribbling_goals_added_above_avg','DGA(AA)', 'Dribbling Goals Added (Above Avg)'),
+                                ('dribbling_count_actions', 'DA', 'Dribbling Actions'),
+                                ('fouling_goals_added_raw', 'FGA(R)', 'Fouling Goals Added (Raw)'),
+                                ('fouling_goals_added_above_avg', 'FGA(AA)', 'Fouling Goals Added (Above Avg)'),
+                                ('fouling_count_actions', 'FA', 'Fouling Actions'),
+                                ('interrupting_goals_added_raw', 'IGA(R)', 'Interrupting Goals Added (Raw)'),
+                                ('interrupting_goals_added_above_avg', 'IGA(AA)', 'Interrupting Goals Added (Above Avg)'),
+                                ('interrupting_count_actions', 'IA', 'Interrupting Actions'),
+                                ('passing_goals_added_raw', 'PGA(R)', 'Passing Goals Added (Raw)'),
+                                ('passing_goals_added_above_avg', 'PGA(AA)', 'Passing Goals Added (Above Avg)'),
+                                ('passing_count_actions', 'PA', 'Passing Actions'),
+                                ('receiving_goals_added_raw', 'RGA(R)', 'Receiving Goals Added (Raw)'),
+                                ('receiving_goals_added_above_avg', 'RGA(AA)', 'Receiving Goals Added (Above Avg)'),
+                                ('receiving_count_actions', 'RA', 'Receiving Actions'),
+                                ('shooting_goals_added_raw', 'SGA(R)', 'Shooting Goals Added (Raw)'),
+                                ('shooting_goals_added_above_avg', 'SGA(AA)', 'Shooting Goals Added (Above Avg)'),
+                                ('shooting_count_actions', 'SA', 'Shooting Actions')
                             ] %}
                             <tr>
                                 <td class="text-left">
                                     <p class="stat_label stat_text">{{ label }}</p>
                                 </td>
                                 <td class="player_stat_cell">
-                                    <p class="stat_text">{{ player_xpass_data[stat] }}</p>
+                                    <p class="stat_text">{{ player_goals_added_data[stat] }}</p>
                                 </td>
                                 <td class="text-center">
-                                    {% if player_xpass_data[stat] >= player_xpass_data['avg_' + stat] %}  
+                                    {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat] %}  
                                         <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
                                     {% else %}
                                         <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
                                     {% endif %}
                                 </td>
                                 <td class="player_stat_cell">
-                                    <p class="stat_text">{{ player_xpass_data['avg_' + stat] }}</p>
+                                    <p class="stat_text">{{ player_goals_added_data['avg_' + stat] }}</p>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -149,100 +224,42 @@
                     </table>
                     {% include 'stat_legend.html' %}
                 </section>
-            <div class="plot_container" id="defense_plot">
             </div>
-            <script>
-                var defenseSpiderChartData = {{ defense_fig_json|safe }};
-                var defenseSpiderChartConfig = {{ defense_config|safe }};
-                Plotly.newPlot('defense_plot', defenseSpiderChartData.data, defenseSpiderChartData.layout, defenseSpiderChartConfig);
-            </script>
-            <!-- Player Goals Added -->
-            <h2>{{player_xgoals_data['player_name']}} - Goals Added</h2>
+
+        <!-- All Seasons Data -->
+        <div id="career" class="tab-content flex-all-center">
             <section class="report_stats_block">
+                <h2>{{player_xgoals_data['player_name']}} - All Seasons Data</h2>
                 <table class="stats_table">
                     <thead>
-                        <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
-                        <th class="small-padding dark-background white-text"></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                        <tr>
+                            <th class="small-padding dark-background white-text text-center">Season</th>
+                            <th class="small-padding dark-background white-text text-center">Team</th>
+                            <th class="small-padding dark-background white-text text-center">Minutes</th>
+                            <th class="small-padding dark-background white-text text-center">G</th>
+                            <th class="small-padding dark-background white-text text-center">A</th>
+                            <th class="small-padding dark-background white-text text-center">xG</th>
+                            <th class="small-padding dark-background white-text text-center">xA</th>
+                            <th class="small-padding dark-background white-text text-center">xG/xA/90</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        {% for stat, abr,  label in [
-                            ('dribbling_goals_added_raw', 'DGA(R)', 'Dribbling Goals Added (Raw)'),
-                            ('dribbling_goals_added_above_avg','DGA(AA)', 'Dribbling Goals Added (Above Avg)'),
-                            ('dribbling_count_actions', 'DA', 'Dribbling Actions'),
-                            ('fouling_goals_added_raw', 'FGA(R)', 'Fouling Goals Added (Raw)'),
-                            ('fouling_goals_added_above_avg', 'FGA(AA)', 'Fouling Goals Added (Above Avg)'),
-                            ('fouling_count_actions', 'FA', 'Fouling Actions'),
-                            ('interrupting_goals_added_raw', 'IGA(R)', 'Interrupting Goals Added (Raw)'),
-                            ('interrupting_goals_added_above_avg', 'IGA(AA)', 'Interrupting Goals Added (Above Avg)'),
-                            ('interrupting_count_actions', 'IA', 'Interrupting Actions'),
-                            ('passing_goals_added_raw', 'PGA(R)', 'Passing Goals Added (Raw)'),
-                            ('passing_goals_added_above_avg', 'PGA(AA)', 'Passing Goals Added (Above Avg)'),
-                            ('passing_count_actions', 'PA', 'Passing Actions'),
-                            ('receiving_goals_added_raw', 'RGA(R)', 'Receiving Goals Added (Raw)'),
-                            ('receiving_goals_added_above_avg', 'RGA(AA)', 'Receiving Goals Added (Above Avg)'),
-                            ('receiving_count_actions', 'RA', 'Receiving Actions'),
-                            ('shooting_goals_added_raw', 'SGA(R)', 'Shooting Goals Added (Raw)'),
-                            ('shooting_goals_added_above_avg', 'SGA(AA)', 'Shooting Goals Added (Above Avg)'),
-                            ('shooting_count_actions', 'SA', 'Shooting Actions')
-                        ] %}
+                        {% for season in player_season_data %}
                         <tr>
-                            <td class="text-left">
-                                <p class="stat_label stat_text">{{ label }}</p>
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ player_goals_added_data[stat] }}</p>
-                            </td>
-                            <td class="text-center">
-                                {% if player_goals_added_data[stat] >= player_goals_added_data['avg_' + stat] %}  
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
-                                {% else %}
-                                    <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
-                                {% endif %}
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ player_goals_added_data['avg_' + stat] }}</p>
-                            </td>
+                            <td><p class="stat_text">{{ season['season'] }}</p></td>
+                            <td><p class="stat_text">{{ season['team_abbreviation'] }}</p></td>
+                            <td><p class="stat_text">{{ season['minutes_played'] }}</p></td>
+                            <td><p class="stat_text">{{ season['goals'] }}</p></td>
+                            <td><p class="stat_text">{{ season['primary_assists'] }}</p></td>
+                            <td><p class="stat_text">{{ season['xgoals'] }}</p></td>
+                            <td><p class="stat_text">{{ season['xassists'] }}</p></td>
+                            <td><p class="stat_text">{{ season['xgoals_xassists_per_90'] }}</p></td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                {% include 'stat_legend.html' %}
             </section>
-        <!-- All Seasons Data -->
-         <section class="report_stats_block">
-            <h2>{{player_xgoals_data['player_name']}} - All Seasons Data</h2>
-            <table class="stats_table">
-                <thead>
-                    <tr>
-                        <th class="small-padding dark-background white-text text-center">Season</th>
-                        <th class="small-padding dark-background white-text text-center">Team</th>
-                        <th class="small-padding dark-background white-text text-center">Minutes</th>
-                        <th class="small-padding dark-background white-text text-center">G</th>
-                        <th class="small-padding dark-background white-text text-center">A</th>
-                        <th class="small-padding dark-background white-text text-center">xG</th>
-                        <th class="small-padding dark-background white-text text-center">xA</th>
-                        <th class="small-padding dark-background white-text text-center">xG/xA/90</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for season in player_season_data %}
-                    <tr>
-                        <td><p class="stat_text">{{ season['season'] }}</p></td>
-                        <td><p class="stat_text">{{ season['team_abbreviation'] }}</p></td>
-                        <td><p class="stat_text">{{ season['minutes_played'] }}</p></td>
-                        <td><p class="stat_text">{{ season['goals'] }}</p></td>
-                        <td><p class="stat_text">{{ season['primary_assists'] }}</p></td>
-                        <td><p class="stat_text">{{ season['xgoals'] }}</p></td>
-                        <td><p class="stat_text">{{ season['xassists'] }}</p></td>
-                        <td><p class="stat_text">{{ season['xgoals_xassists_per_90'] }}</p></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-    </section>
+        </div>
 </section>
 <div class="hidden">
 
@@ -305,4 +322,17 @@
         {{ stat }}: {{ player_goals_added_data[stat] }} (Position Average: {{ player_goals_added_data['avg_' + stat] }} Position Minimum: {{ player_goals_added_data['min_' + stat] }} Position Maximum: {{ player_goals_added_data['max_' + stat] }})
     {% endfor %}
 </div>
+
+<script>
+    function openTab(tabId) {
+        const buttons = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        buttons.forEach(btn => btn.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+</script>
 {% endblock %}
