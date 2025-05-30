@@ -31,135 +31,148 @@
         {% else %}
             <section class="player_report_stats_container">
         {% endif %}
+            <div class="row-container flex-all-center">
+                <button class="grid_button tab-button active moderate-margin" onclick="openTab('xg')">xGoals</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('goals-added')">Goals Added</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('career')">Career</button>
+            </div>
 
-            <div class="plot_container" id="keeper_xgoals_plot">
-            </div>
-            <script>
-                var keeperSpiderChartData = {{ keeper_fig_json_xgoals|safe }};
-                var keeperSpiderChartConfig = {{ keeper_config_xgoals|safe }};
-                Plotly.newPlot('keeper_xgoals_plot', keeperSpiderChartData.data, keeperSpiderChartData.layout, keeperSpiderChartConfig);
-            </script>
             <!-- XGoals -->
-            <h2>XGoals - {{keeper_xgoal_data['player_name']}}</h2>
-            <section class="report_stats_block">
-                <table class="stats_table">
-                    <thead>
-                        <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
-                        <th class="small-padding dark-background white-text"></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
-                    </thead>
-                    <tbody>
-                        {% for stat, abr, label in [
-                            ('minutes_played', 'MP', 'Minutes Played'),
-                            ('shots_faced', 'SF', 'Shots Faced'),
-                            ('goals_conceded', 'GC', 'Goals Conceded'),
-                            ('saves', 'SV', 'Saves'),
-                            ('share_headed_shots', 'SHS', 'Share of Headed Shots Faced'),
-                            ('xgoals_gk_faced', 'xG_F', 'Expected Goals Faced'),
-                            ('goals_minus_xgoals_gk', 'G-xG_F', 'Goals - xGoals Faced'),
-                            ('goals_divided_by_xgoals_gk', 'G/xG_F', 'Goals / Expected Goals Faced'),
-                            ('save_perc', 'S%', 'Save Percentage')
-                        ] %}
-                        <tr>
-                            <td class="text-left">
-                                <p class="stat_label stat_text">{{ label }}</p>
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ keeper_xgoal_data[stat] }}</p>
-                            </td>
-                            <td class="text-center">
-                                {% if stat in ['goals_conceded', 'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk', 'shots_faced'] %}
-                                    {% if keeper_xgoal_data[stat] == keeper_xgoal_data['min_' + stat] %}
-                                        <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
-                                    {% elif keeper_xgoal_data[stat] <= keeper_xgoal_data['avg_' + stat] %}
-                                        <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
-                                    {% else %}
-                                        <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
-                                    {% endif %}
-                                {% else %}
-                                    {% if keeper_xgoal_data[stat] == keeper_xgoal_data['max_' + stat] %}
-                                        <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
-                                    {% elif keeper_xgoal_data[stat] >= keeper_xgoal_data['avg_' + stat] %}
-                                        <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
-                                    {% else %}
-                                        <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
-                                    {% endif %}
-                                {% endif %}
-                            </td>
-                            <td class="player_stat_cell">
-                                <p class="stat_text">{{ keeper_xgoal_data['avg_' + stat] }}</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% include 'stat_legend.html' %}
-            </section>
-            
-            <div class="plot_container" id="keeper_goals_added_plot">
-            </div>
-            <script>
-                var keeperSpiderChartData = {{ keeper_fig_json_goals_added|safe }};
-                var keeperSpiderChartConfig = {{ keeper_config_goals_added|safe }};
-                Plotly.newPlot('keeper_goals_added_plot', keeperSpiderChartData.data, keeperSpiderChartData.layout, keeperSpiderChartConfig);
-            </script>
-            <!-- Goals Added -->
-            <h2>Goals Added - {{keeper_xgoal_data['player_name']}}</h2>
-            <section class="report_stats_block">
-                <table class="stats_table">
-                    <thead>
-                        <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
-                        <th class="small-padding dark-background white-text"></th>
-                        <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
-                    </thead>
-                    <tbody>
-                        {% for stat, abr, label in [
-                                ('claiming_goals_added_raw', 'CGA(R)', 'Claiming Goals Added (Raw)'),
-                                ('claiming_goals_added_above_avg', 'CGA(AA)', 'Claiming Goals Added (Above Avg)'),
-                                ('claiming_count_actions', 'CA', 'Claiming Actions'),
-                                ('fielding_goals_added_raw', 'FGA(R)', 'Fielding Goals Added (Raw)'),
-                                ('fielding_goals_added_above_avg', 'FGA(AA)', 'Fielding Goals Added (Above Avg)'),
-                                ('fielding_count_actions', 'FA', 'Fielding Actions'),
-                                ('handling_goals_added_raw', 'HGA(R)', 'Handling Goals Added (Raw)'),
-                                ('handling_goals_added_above_avg', 'HGA(AA)', 'Handling Goals Added (Above Avg)'),
-                                ('handling_count_actions', 'HA', 'Handling Actions'),
-                                ('passing_goals_added_raw', 'PGA(R)', 'Passing Goals Added (Raw)'),
-                                ('passing_goals_added_above_avg', 'PGA(AA)', 'Passing Goals Added (Above Avg)'),
-                                ('passing_count_actions', 'PA', 'Passing Actions'),
-                                ('shotstopping_goals_added_raw', 'SGA(R)', 'Shotstopping Goals Added (Raw)'),
-                                ('shotstopping_goals_added_above_avg', 'SGA(AA)', 'Shotstopping Goals Added (Above Avg)'),
-                                ('shotstopping_count_actions', 'SA', 'Shotstopping Actions'),
-                                ('sweeping_goals_added_raw', 'SWGA(R)', 'Sweeping Goals Added (Raw)'),
-                                ('sweeping_goals_added_above_avg', 'SWGA(AA)', 'Sweeping Goals Added (Above Avg)'),
-                                ('sweeping_count_actions', 'SWA', 'Sweeping Actions')
+            <div id="xg" class="tab-content active flex-all-center">
+                <div class="plot_container" id="keeper_xgoals_plot">
+                </div>
+                <script>
+                    var keeperSpiderChartData = {{ keeper_fig_json_xgoals|safe }};
+                    var keeperSpiderChartConfig = {{ keeper_config_xgoals|safe }};
+                    Plotly.newPlot('keeper_xgoals_plot', keeperSpiderChartData.data, keeperSpiderChartData.layout, keeperSpiderChartConfig);
+                </script>
+                <section class="report_stats_block">
+                    <table class="stats_table">
+                        <thead>
+                            <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                            <th class="small-padding dark-background white-text"></th>
+                            <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                        </thead>
+                        <tbody>
+                            {% for stat, abr, label in [
+                                ('minutes_played', 'MP', 'Minutes Played'),
+                                ('shots_faced', 'SF', 'Shots Faced'),
+                                ('goals_conceded', 'GC', 'Goals Conceded'),
+                                ('saves', 'SV', 'Saves'),
+                                ('share_headed_shots', 'SHS', 'Share of Headed Shots Faced'),
+                                ('xgoals_gk_faced', 'xG_F', 'Expected Goals Faced'),
+                                ('goals_minus_xgoals_gk', 'G-xG_F', 'Goals - xGoals Faced'),
+                                ('goals_divided_by_xgoals_gk', 'G/xG_F', 'Goals / Expected Goals Faced'),
+                                ('save_perc', 'S%', 'Save Percentage')
                             ] %}
-                                <tr>
-                                    <td class="text-left">
-                                        <p class="stat_label stat_text">{{ label }}</p>
-                                    </td>
-                                    <td class="player_stat_cell">
-                                        <p class="stat_text">{{ keeper_goals_added_data[stat] }}</p>
-                                    </td>
-                                    <td class="text-center">
-                                        {% if keeper_goals_added_data[stat] == keeper_goals_added_data['max_' + stat] %}
+                            <tr>
+                                <td class="text-left">
+                                    <p class="stat_label stat_text">{{ label }}</p>
+                                </td>
+                                <td class="player_stat_cell">
+                                    <p class="stat_text">{{ keeper_xgoal_data[stat] }}</p>
+                                </td>
+                                <td class="text-center">
+                                    {% if stat in ['goals_conceded', 'xgoals_gk_faced', 'goals_minus_xgoals_gk', 'goals_divided_by_xgoals_gk', 'shots_faced'] %}
+                                        {% if keeper_xgoal_data[stat] == keeper_xgoal_data['min_' + stat] %}
                                             <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
-                                        {% elif keeper_goals_added_data[stat] >= keeper_goals_added_data['avg_' + stat] %}
+                                        {% elif keeper_xgoal_data[stat] <= keeper_xgoal_data['avg_' + stat] %}
                                             <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
                                         {% else %}
                                             <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
                                         {% endif %}
-                                    </td>
-                                    <td class="player_stat_cell">
-                                        <p class="stat_text">{{ keeper_goals_added_data['avg_' + stat] }}</p>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% include 'stat_legend.html' %}
-            </section>            
+                                    {% else %}
+                                        {% if keeper_xgoal_data[stat] == keeper_xgoal_data['max_' + stat] %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
+                                        {% elif keeper_xgoal_data[stat] >= keeper_xgoal_data['avg_' + stat] %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+                                        {% else %}
+                                            <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td class="player_stat_cell">
+                                    <p class="stat_text">{{ keeper_xgoal_data['avg_' + stat] }}</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% include 'stat_legend.html' %}
+                </section>
+            </div>
+
+            <!-- Goals Added -->
+            <div id="goals-added" class="tab-content flex-all-center">
+                <div class="plot_container" id="keeper_goals_added_plot"></div>
+                    <script>
+                        var keeperSpiderChartData = {{ keeper_fig_json_goals_added|safe }};
+                        var keeperSpiderChartConfig = {{ keeper_config_goals_added|safe }};
+                        Plotly.newPlot('keeper_goals_added_plot', keeperSpiderChartData.data, keeperSpiderChartData.layout, keeperSpiderChartConfig);
+                    </script>
+                    <section class="report_stats_block">
+                        <table class="stats_table">
+                            <thead>
+                                <th class="small-padding dark-background white-text"><h4>Stat</h4></th>
+                                <th class="small-padding dark-background white-text"><h4 class="text-center">Value</h4></th>
+                                <th class="small-padding dark-background white-text"></th>
+                                <th class="small-padding dark-background white-text"><h4 class="text-center">Average</h4></th>
+                            </thead>
+                            <tbody>
+                                {% for stat, abr, label in [
+                                        ('claiming_goals_added_raw', 'CGA(R)', 'Claiming Goals Added (Raw)'),
+                                        ('claiming_goals_added_above_avg', 'CGA(AA)', 'Claiming Goals Added (Above Avg)'),
+                                        ('claiming_count_actions', 'CA', 'Claiming Actions'),
+                                        ('fielding_goals_added_raw', 'FGA(R)', 'Fielding Goals Added (Raw)'),
+                                        ('fielding_goals_added_above_avg', 'FGA(AA)', 'Fielding Goals Added (Above Avg)'),
+                                        ('fielding_count_actions', 'FA', 'Fielding Actions'),
+                                        ('handling_goals_added_raw', 'HGA(R)', 'Handling Goals Added (Raw)'),
+                                        ('handling_goals_added_above_avg', 'HGA(AA)', 'Handling Goals Added (Above Avg)'),
+                                        ('handling_count_actions', 'HA', 'Handling Actions'),
+                                        ('passing_goals_added_raw', 'PGA(R)', 'Passing Goals Added (Raw)'),
+                                        ('passing_goals_added_above_avg', 'PGA(AA)', 'Passing Goals Added (Above Avg)'),
+                                        ('passing_count_actions', 'PA', 'Passing Actions'),
+                                        ('shotstopping_goals_added_raw', 'SGA(R)', 'Shotstopping Goals Added (Raw)'),
+                                        ('shotstopping_goals_added_above_avg', 'SGA(AA)', 'Shotstopping Goals Added (Above Avg)'),
+                                        ('shotstopping_count_actions', 'SA', 'Shotstopping Actions'),
+                                        ('sweeping_goals_added_raw', 'SWGA(R)', 'Sweeping Goals Added (Raw)'),
+                                        ('sweeping_goals_added_above_avg', 'SWGA(AA)', 'Sweeping Goals Added (Above Avg)'),
+                                        ('sweeping_count_actions', 'SWA', 'Sweeping Actions')
+                                    ] %}
+                                        <tr>
+                                            <td class="text-left">
+                                                <p class="stat_label stat_text">{{ label }}</p>
+                                            </td>
+                                            <td class="player_stat_cell">
+                                                <p class="stat_text">{{ keeper_goals_added_data[stat] }}</p>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if keeper_goals_added_data[stat] == keeper_goals_added_data['max_' + stat] %}
+                                                    <img class="icon-small" src="{{ url_for('static', filename='img/star.png') }}">
+                                                {% elif keeper_goals_added_data[stat] >= keeper_goals_added_data['avg_' + stat] %}
+                                                    <img class="icon-small" src="{{ url_for('static', filename='img/up.png') }}">
+                                                {% else %}
+                                                    <img class="icon-small" src="{{ url_for('static', filename='img/down.png') }}">
+                                                {% endif %}
+                                            </td>
+                                            <td class="player_stat_cell">
+                                                <p class="stat_text">{{ keeper_goals_added_data['avg_' + stat] }}</p>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% include 'stat_legend.html' %}
+                    </section>
+                </div>
+            </div>
+            <!-- Career -->
+            <div id="career" class="tab-content flex-all-center">
+                Coming Soon
+            </div>
+            
+          
         </section>        
     </section>
 </section>
@@ -206,4 +219,16 @@
     
 
 </div>
+<script>
+    function openTab(tabId) {
+        const buttons = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        buttons.forEach(btn => btn.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+</script>
 {% endblock %}
