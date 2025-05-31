@@ -1,6 +1,6 @@
 import unittest
 import os
-from data import data_util, generate_player_season_id, get_db_path
+from data import data_util
 
 class TestDataUtils(unittest.TestCase):
     
@@ -166,6 +166,30 @@ class TestDataUtils(unittest.TestCase):
             data_util.validate_season("2025")
         with self.assertRaises(ValueError):
             data_util.validate_season(0)
+
+    def test_convert_utc_to_est_valid(self):
+        """Test converting a valid UTC datetime string to Eastern Time formatted string."""
+        utc_input = "2024-06-01 19:00:00 UTC"
+        result = data_util.convert_utc_to_est(utc_input)
+        self.assertIsInstance(result, str)
+        self.assertIn("at", result)
+        self.assertRegex(result, r"\w+, \w+ \d{1,2} at \d{1,2}:\d{2} [AP]M")
+
+    def test_convert_utc_to_est_with_placeholder_string(self):
+        """Test that placeholder string returns None."""
+        placeholder = "Unknown Last Updated Time"
+        result = data_util.convert_utc_to_est(placeholder)
+        self.assertIsNone(result)
+
+    def test_convert_utc_to_est_invalid_format(self):
+        """Test that invalid datetime format raises a ValueError."""
+        with self.assertRaises(ValueError):
+            data_util.convert_utc_to_est("01-06-2024 19:00 UTC")
+
+    def test_convert_utc_to_est_empty_string(self):
+        """Test that an empty string raises a ValueError."""
+        with self.assertRaises(ValueError):
+            data_util.convert_utc_to_est("")
         
 if __name__ == '__main__':
     unittest.main()

@@ -1,10 +1,20 @@
 from api import make_asa_api_call
-from .data_util import get_db_path
+from .data_util import get_db_path, validate_id, validate_season, convert_utc_to_est
 import sqlite3
 from datetime import datetime
 import pytz
 
-def insert_all_games_by_season(season):
+def insert_all_games_by_season(season): # pragma: no cover
+    """
+    Inserts all regular season games for a given NWSL season into the local database.
+
+    Args:
+        season (int): The season year to fetch and store games for.
+
+    Returns:
+        None
+    """
+    validate_season(season)
     print('Inserting games by season for:', season)
     api_string = 'nwsl/games?season_name={}&stage_name=Regular Season'.format(str(season))
     games_data = make_asa_api_call(api_string)[1]
@@ -13,7 +23,7 @@ def insert_all_games_by_season(season):
     for game in games_data:
         game_id = game.get('game_id', 'Unknown Game ID')
         date_time_utc = game.get('date_time_utc', 'Unknown Date/Time')
-        date_time_est = _convert_utc_to_est(date_time_utc)
+        date_time_est = convert_utc_to_est(date_time_utc)
         home_score = game.get('home_score', 0)
         away_score = game.get('away_score', 0)
         home_team_id = game.get('home_team_id', 'Unknown Home Team ID')
@@ -29,7 +39,7 @@ def insert_all_games_by_season(season):
         knockout_game = game.get('knockout_game', False)
         status = game.get('status', 'Unknown Status')
         last_updated_utc = game.get('last_updated_utc', 'Unknown Last Updated Time')
-        last_updated_est = _convert_utc_to_est(last_updated_utc)
+        last_updated_est = convert_utc_to_est(last_updated_utc)
 
         cursor.execute('''
         INSERT OR REPLACE INTO games (
@@ -51,6 +61,17 @@ def insert_all_games_by_season(season):
     conn.close()
 
 def get_all_games_by_season(season):
+    """
+    Retrieves all regular season games for a given NWSL season from the local database,
+    including joined metadata such as team names, abbreviations, and stadium name.
+
+    Args:
+        season (int): The season year to query games for.
+
+    Returns:
+        list[sqlite3.Row]: A list of games with enriched metadata, ordered by matchday descending.
+    """
+    validate_season(season)
     print('Fetching games for: {}'.format(season))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -91,8 +112,17 @@ def get_all_games_by_season(season):
     print('Games returned.')
     return rows
 
-
 def get_game_by_id(game_id):
+    """
+    Retrieves detailed game information for a given game ID, including team metadata.
+
+    Args:
+        game_id (str): The unique identifier of the game to retrieve.
+
+    Returns:
+        sqlite3.Row | None: A single row containing game and team details if found, otherwise None.
+    """
+    validate_id(game_id)
     print('Fetching game: {}'.format(game_id))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -126,6 +156,16 @@ def get_game_by_id(game_id):
     return row
 
 def get_game_ids_by_season(season):
+    """
+    Retrieves all game IDs for a given season.
+
+    Args:
+        season (int): The season year to filter games by.
+
+    Returns:
+        list[str]: A list of game ID strings for the specified season.
+    """
+    validate_season(season)
     print('Fetching game IDs for: {}'.format(season))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -147,6 +187,19 @@ def get_game_ids_by_season(season):
     return game_ids
 
 def get_latest_manager_id_by_team_and_season(team_id, season):
+    """
+    Retrieves the most recent manager ID for a given team in a specific season.
+
+    Args:
+        team_id (str): The unique identifier of the team.
+        season (int): The season to search within.
+
+    Returns:
+        str or None: The manager ID of the most recent match for the team in the specified season.
+                    Returns None if no matches are found.
+    """
+    validate_season(season)
+    validate_id(team_id)
     print(f'Fetching most recent manager for team: {team_id} in season: {season}')
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -173,6 +226,24 @@ def get_latest_manager_id_by_team_and_season(team_id, season):
     return result[0] if result else None
 
 def get_team_record_by_season(team_id, season):
+    """
+    Retrieves the win-loss-draw record for a team in a specific season.
+
+    Args:
+        team_id (str): The unique identifier for the team.
+        season (int): The season to evaluate the team record in.
+
+    Returns:
+        dict: A dictionary containing:
+            - 'wins' (int): Total number of games won by the team.
+            - 'losses' (int): Total number of games lost by the team.
+            - 'draws' (int): Total number of games that ended in a draw.
+
+    Raises:
+        ValueError: If `team_id` is not a non-empty string or `season` is not a valid integer.
+    """
+    validate_season(season)
+    validate_id(team_id)
     print(f'Fetching record for team: {team_id} in season: {season}')
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -208,16 +279,36 @@ def get_team_record_by_season(team_id, season):
     result = cursor.fetchone()
     conn.close()
 
-    if result:
-        return {
-            'wins': result[0],
-            'losses': result[1],
-            'draws': result[2]
-        }
-    else:
-        return {'wins': 0, 'losses': 0, 'draws': 0}
+    return {
+        'wins': result[0],
+        'losses': result[1],
+        'draws': result[2]
+    }
+
 
 def get_team_game_results(team_id, season):
+    """
+    Retrieves a team's match results for a given season.
+
+    Args:
+        team_id (str): The unique identifier of the team.
+        season (int): The season to filter match results by.
+
+    Returns:
+        list[dict]: A list of dictionaries, each representing a game result with fields for:
+            - game_id (str): The unique match ID.
+            - home_game (bool): True if the team was the home side, otherwise False.
+            - result (str): One of "win", "loss", or "draw".
+            - opponent (str): The opposing team's ID.
+            - opponent_name (str): The full name of the opposing team.
+            - opponent_short_name (str): The short name of the opposing team.
+            - opponent_abbreviation (str): The team abbreviation of the opponent.
+            - goals_scored (int): Goals scored by the team.
+            - goals_against (int): Goals conceded by the team.
+            - date_time_est (str): The local Eastern time of the match.
+    """
+    validate_season(season)
+    validate_id(team_id)
     print(f'Fetching game results for team: {team_id} in season: {season}')
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -286,6 +377,18 @@ def get_team_game_results(team_id, season):
     return results
 
 def get_most_recent_home_stadium_id(team_id, season):
+    """
+    Retrieves the stadium ID of the most recent completed home game for a given team and season.
+
+    Args:
+        team_id (str): The unique identifier for the home team.
+        season (int): The season to search within.
+
+    Returns:
+        str | None: The stadium ID of the most recent home game, or None if no matching game is found.
+    """
+    validate_season(season)
+    validate_id(team_id)
     print(f'Getting most recent home game stadium for team {team_id} in season {season}')
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -307,17 +410,3 @@ def get_most_recent_home_stadium_id(team_id, season):
     conn.close()
 
     return result[0] if result else None
-
-def _convert_utc_to_est(utc_str):
-    if utc_str == 'Unknown Last Updated Time':
-        return None
-
-    # Parse string to datetime
-    dt_utc = datetime.strptime(utc_str, "%Y-%m-%d %H:%M:%S %Z")
-    # Set UTC timezone
-    dt_utc = pytz.utc.localize(dt_utc)
-    # Convert to US Eastern time
-    dt_est = dt_utc.astimezone(pytz.timezone('US/Eastern'))
-
-    formatted = dt_est.strftime("%A, %B %-d at %-I:%M %p")
-    return formatted
