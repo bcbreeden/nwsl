@@ -1,8 +1,30 @@
 from api import make_asa_api_call
-from .data_util import generate_player_season_id, aggregate_position_data, MINIMUM_MINUTES, get_db_path
+from .data_util import generate_player_season_id, aggregate_position_data, MINIMUM_MINUTES, get_db_path, validate_season, validate_id
 import sqlite3
 
 def get_goalkeeper_goals_added_by_season(player_id, season):
+    """
+    Retrieve goalkeeper goals added data for a specific player and season.
+
+    This function queries the `goalkeeper_goals_added` table for a single row 
+    that matches the composite ID generated from the given player ID and season.
+    It also joins with `player_info` and `team_info` to include player and team 
+    metadata in the result.
+
+    Args:
+        player_id (str): 
+            The unique ID of the goalkeeper.
+        
+        season (int): 
+            The season year (e.g., 2024) for which to fetch data.
+
+    Returns:
+        sqlite3.Row or None: 
+            A single row containing the goalkeeper's goals added data and 
+            associated player/team info, or None if no match is found.
+    """
+    validate_id(player_id)
+    validate_season(season)
     print('Fetching goalkeeper xgoals for:{}, Season: {}'.format(player_id, season))
     obj_id = generate_player_season_id(player_id=player_id, season=str(season))
     db_path = get_db_path()
@@ -29,7 +51,7 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     '''
     cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
-    if row is None:
+    if row is None: # pragma: no cover
         print(f"WARNING: No goalkeeper goals added data found for player_id={player_id} season={season}.")
     conn.commit()
     conn.close()
@@ -37,6 +59,23 @@ def get_goalkeeper_goals_added_by_season(player_id, season):
     return row
 
 def get_all_goalkeeper_goals_added_by_season(season):
+    """
+    Retrieve all goalkeeper goals added data for a specific season.
+
+    This function queries the `goalkeeper_goals_added` table and joins 
+    with `player_info` and `team_info` to return a list of goalkeepers and their 
+    performance metrics for the given season.
+
+    Args:
+        season (int): 
+            The season year (e.g., 2024) to retrieve data for.
+
+    Returns:
+        list[sqlite3.Row]: 
+            A list of rows containing goalkeeper goals added data and 
+            associated player/team metadata. May be empty if no data exists.
+    """
+    validate_season(season)
     print('Fetching all goalkeeper goals added for season: {}'.format(season))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -62,7 +101,7 @@ def get_all_goalkeeper_goals_added_by_season(season):
     '''
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
-    if len(rows) == 0:
+    if len(rows) == 0: # pragma: no cover
         print(f"WARNING: No goalkeeper goals added data found for season={season}.")
     conn.commit()
     conn.close()
@@ -73,6 +112,22 @@ def get_all_goalkeeper_goals_added_by_season(season):
 INSERT GOALS ADDED DATA
 '''
 def insert_goalkeeper_goals_added_by_season(season): # pragma: no cover
+    """
+    Insert goalkeeper goals added data for a specific season.
+
+    This function pulls raw goalkeeper performance data from the ASA API or other 
+    external source using `fetch_keeper_goals_added_data`, computes statistics for 
+    each player, aggregates positional averages, and inserts the processed results 
+    into the local SQLite database under the `goalkeeper_goals_added` table.
+
+    Args:
+        season (int): 
+            The season year (e.g., 2024) to insert data for.
+
+    Returns:
+        None
+    """
+    validate_season(season)
     print(f'Inserting data for goalkeepers (goals added) for season: {season}')
     conn = sqlite3.connect(get_db_path())
 
@@ -110,7 +165,7 @@ def insert_goalkeeper_goals_added_by_season(season): # pragma: no cover
     conn.close()
     print(f'Keeper goals added data for season {season} inserted successfully.')
 
-def fetch_keeper_goals_added_data(season: int):
+def fetch_keeper_goals_added_data(season):
     """
     Fetch keeper data from the API for a specific season.
 
@@ -120,7 +175,7 @@ def fetch_keeper_goals_added_data(season: int):
     Returns:
         list: A list of keeper data dictionaries.
     """
-
+    validate_season(season)
     api_string = 'nwsl/goalkeepers/goals-added?season_name={}&stage_name=Regular Season'.format(str(season))
     keepers_data = make_asa_api_call(api_string)[1]
 
@@ -133,7 +188,7 @@ def fetch_keeper_goals_added_data(season: int):
 
     data = [keeper for keeper in keepers_data]
 
-    if len(data) == 0:
+    if len(data) == 0: # pragma: no cover
         print('WARNING: No data returned when fetching api data for goalkeeper goals added.')
 
     return data
@@ -151,7 +206,7 @@ def calculate_player_statistics(keepers_data: list):
 
     data = [player for player in keepers_data if player.get('minutes_played', 0) >= MINIMUM_MINUTES]
 
-    if len(data) == 0:
+    if len(data) == 0: # pragma: no cover
         print('WARNING: No data returned when calculating player statistics in goalkeeper goals added.')
 
     return data
@@ -167,6 +222,7 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
         stats_to_track (list): List of stats to track.
         season (int): The season year.
     """
+    validate_season(season)
     cursor = conn.cursor()
     for keeper in keepers_data:
         player_id = keeper.get('player_id', 'Unknown Player ID')

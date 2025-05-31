@@ -1,8 +1,6 @@
 from api import make_asa_api_call
 from .data_util import get_db_path, validate_id, validate_season, convert_utc_to_est
 import sqlite3
-from datetime import datetime
-import pytz
 
 def insert_all_games_by_season(season): # pragma: no cover
     """
