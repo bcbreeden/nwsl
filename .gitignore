@@ -2,8 +2,10 @@
 *.pyc
 *.env
 .coverage
+.coveragerc
+.DS_Store
 testing_file.py
 PR_template.py
 rankings_sample.py
-todo.tx
 venv/
+data/.DS_Store
