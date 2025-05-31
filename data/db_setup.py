@@ -1,7 +1,7 @@
 import sqlite3
 from .data_util import get_db_path
 
-def create_tables():
+def create_tables(): # pragma: no cover
     # Connect to SQLite database (or create it if it doesn't exist)
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
