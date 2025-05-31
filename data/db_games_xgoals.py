@@ -1,8 +1,24 @@
 from api import make_asa_api_call
-from .data_util import get_db_path
+from .data_util import get_db_path, validate_id, validate_season
 import sqlite3
 
 def insert_all_games_xgoals_by_season(season): # pragma: no cover
+    """
+    Insert xGoals data for all games in a given season.
+
+    This function calls the ASA API to retrieve expected goals data for all 
+    regular season games in the specified NWSL season. It parses the response 
+    and inserts each game record into the local `games_xgoals` table using 
+    INSERT OR REPLACE.
+
+    Args:
+        season (int): 
+            The season year (e.g., 2024) for which game xGoals data should be inserted.
+
+    Returns:
+        None
+    """
+    validate_season(season)
     print('Inserting games by season for:', season)
     api_string = 'nwsl/games/xgoals?season_name={}&stage_name=Regular Season'.format(str(season))
     games_data = make_asa_api_call(api_string)[1]
@@ -44,6 +60,21 @@ def insert_all_games_xgoals_by_season(season): # pragma: no cover
     conn.close()
 
 def get_all_games_xgoals_by_season(season):
+    """
+    Retrieve xGoals data for all games in a given season.
+
+    This function queries the local SQLite database for all rows in the 
+    `games_xgoals` table where the season matches the input year.
+
+    Args:
+        season (int): 
+            The season year (e.g., 2024) to retrieve game xGoals data for.
+
+    Returns:
+        list[sqlite3.Row]: 
+            A list of row objects, each containing xGoals data for one game.
+    """
+    validate_season(season)
     print('Fetching games xgoals for: {}'.format(season))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
@@ -57,6 +88,21 @@ def get_all_games_xgoals_by_season(season):
     return rows
 
 def get_game_xgoals_by_id(game_id):
+    """
+    Retrieve xGoals data for a single game by its ID.
+
+    This function queries the local SQLite database for a single row in the 
+    `games_xgoals` table that matches the specified game ID.
+
+    Args:
+        game_id (str): 
+            The unique identifier of the game to retrieve xGoals data for.
+
+    Returns:
+        sqlite3.Row or None: 
+            A row object containing the game xGoals data, or None if no match is found.
+    """
+    validate_id(game_id)
     print('Fetching game xgoals for: {}'.format(game_id))
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
