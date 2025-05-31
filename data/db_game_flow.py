@@ -4,7 +4,17 @@ import sqlite3
 from datetime import datetime
 import pytz
 
-def insert_flow_by_game_id(game_id):
+def insert_flow_by_game_id(game_id): # pragma: no cover
+    """
+    Inserts game flow data into the local SQLite database for a specific game.
+
+    Args:
+        game_id (str or int): The game ID for which to retrieve and insert 
+        flow data.
+
+    Returns:
+        None
+    """
     print('Inserting game flow for game ID:', game_id)
     api_string = 'nwsl/games/game-flow?game_id={}'.format(str(game_id))
     game_flow_data = make_asa_api_call(api_string)[1]
@@ -35,6 +45,17 @@ def insert_flow_by_game_id(game_id):
     conn.close()
 
 def get_game_flow_by_game_id(game_id):
+    """
+    Retrieves game flow data for a specific game from the local database.
+
+    Args:
+        game_id (str): The unique identifier for the game to fetch game flow data for.
+    
+    Returns:
+        list[sqlite3.Row]: A list of rows containing game flow data, including momentum 
+        values for both teams, period and minute information, and metadata such as team 
+        names and abbreviations.
+    """
     print('Fetching game flow for game ID:', game_id)
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)

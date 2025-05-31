@@ -55,6 +55,13 @@ def generate_player_season_id(player_id, season):
     return (str(player_id) + str(season))
 
 def get_db_path():
+    """
+    Get the absolute path to the project's SQLite database file.
+
+    Returns:
+        str: The full absolute path to the 'nwsl.db' file located in the same
+             directory as this script.
+    """
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(BASE_DIR, 'nwsl.db')
     return db_path
