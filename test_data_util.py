@@ -1,5 +1,5 @@
 import unittest
-from .data_util import aggregate_position_data
+from data import  data_util
 
 class TestAggregatePositionData(unittest.TestCase):
     
@@ -16,7 +16,7 @@ class TestAggregatePositionData(unittest.TestCase):
                 'max_score': 10
             }
         }
-        result = aggregate_position_data(filtered_players, stats_to_track)
+        result = data_util.aggregate_position_data(filtered_players, stats_to_track)
         self.assertEqual(result, expected)
         
     def test_multiple_players_same_position(self):
@@ -36,7 +36,7 @@ class TestAggregatePositionData(unittest.TestCase):
                 'max_assists': 3
             }
         }
-        result = aggregate_position_data(filtered_players, stats_to_track)
+        result = data_util.aggregate_position_data(filtered_players, stats_to_track)
         self.assertEqual(result, expected)
 
     def test_multiple_positions(self):
@@ -59,7 +59,7 @@ class TestAggregatePositionData(unittest.TestCase):
                 'max_goals': 2,
             }
         }
-        result = aggregate_position_data(filtered_players, stats_to_track)
+        result = data_util.aggregate_position_data(filtered_players, stats_to_track)
         self.assertEqual(result, expected)
     
     def test_missing_general_position(self):
@@ -75,7 +75,7 @@ class TestAggregatePositionData(unittest.TestCase):
                 'max_score': 10
             }
         }
-        result = aggregate_position_data(filtered_players, stats_to_track)
+        result = data_util.aggregate_position_data(filtered_players, stats_to_track)
         self.assertEqual(result, expected)
         
     def test_missing_stat_value(self):
@@ -92,7 +92,7 @@ class TestAggregatePositionData(unittest.TestCase):
                 'max_saves': 0
             }
         }
-        result = aggregate_position_data(filtered_players, stats_to_track)
+        result = data_util.aggregate_position_data(filtered_players, stats_to_track)
         self.assertEqual(result, expected)
         
     def test_empty_filtered_players(self):
@@ -100,7 +100,7 @@ class TestAggregatePositionData(unittest.TestCase):
         filtered_players = []
         stats_to_track = ['score']
         expected = {}
-        result = aggregate_position_data(filtered_players, stats_to_track)
+        result = data_util.aggregate_position_data(filtered_players, stats_to_track)
         self.assertEqual(result, expected)
         
 if __name__ == '__main__':
