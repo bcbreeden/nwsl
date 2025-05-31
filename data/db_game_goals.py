@@ -2,7 +2,17 @@ from .data_util import get_db_path
 import sqlite3
 from .db_game_shots import get_shots_by_game_id
 
-def insert_game_goals_by_game_id(game_id):
+def insert_game_goals_by_game_id(game_id): # pragma: no cover
+    """
+    Inserts goal-related shot data into the game_goals table for a specific game.
+
+    Args:
+        game_id (str): The unique identifier for the game whose goals should be 
+        inserted into the database.
+    
+    Returns:
+        None
+    """
     print(f"Inserting goal shots for game {game_id}")
     game_shot_data = get_shots_by_game_id(game_id)
     
@@ -35,6 +45,17 @@ def insert_game_goals_by_game_id(game_id):
     conn.close()
 
 def get_goals_by_game_id(game_id):
+    """
+    Retrieves goal records for a specific game from the local database.
+
+    Args:
+        game_id (str): The unique identifier for the game to fetch goal data for.
+    
+    Returns:
+        list[sqlite3.Row]: A list of goal records, each including details such as 
+        the scoring player, assisting player (if applicable), team ID, 
+        expanded minute, and pattern of play.
+    """
     print('Fetching goal records for game id:', game_id)
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
