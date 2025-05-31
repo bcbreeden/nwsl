@@ -1,8 +1,10 @@
 from api import make_asa_api_call
-from .data_util import get_db_path
+from .data_util import get_db_path, validate_id, validate_season
 import sqlite3
 
 def insert_all_game_shots(game_id, season): # pragma: no cover
+    validate_id(game_id)
+    validate_season(season)
     print(f'Attempting to insert all shots for game {game_id}, season: {season}...')
     shots_data = make_asa_api_call(f'nwsl/games/shots?game_id={game_id}')[1]
     conn = sqlite3.connect(get_db_path())
@@ -82,6 +84,7 @@ def insert_all_game_shots(game_id, season): # pragma: no cover
     print(f'All shots for game {game_id} successfully entered into the database.')
 
 def get_shots_by_game_id(game_id):
+    validate_id(game_id)
     print(f'Fetching all shots for game {game_id}...')
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
@@ -100,6 +103,7 @@ def get_shots_by_game_id(game_id):
     return rows
 
 def get_goals_by_game_id(game_id):
+    validate_id(game_id)
     print(f'Fetching all goals for game {game_id}...')
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
@@ -118,6 +122,7 @@ def get_goals_by_game_id(game_id):
     return rows
 
 def get_shots_by_type(shot_type, season):
+    validate_season(season)
     print(f'Fetching all {shot_type} shots...')
     available_shot_types = ['regular', 'set piece', 'fastbreak', 'free kick', 'penalty']
     shot_type = shot_type.lower()
@@ -143,6 +148,8 @@ def get_shots_by_type(shot_type, season):
     return rows
 
 def get_total_psxg_by_team_and_season(team_id, season):
+    validate_id(team_id)
+    validate_season(season)
     print(f'Fetching total PSxG for team {team_id} in season {season}...')
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
@@ -161,6 +168,7 @@ def get_total_psxg_by_team_and_season(team_id, season):
     return total_psxg
 
 def get_total_psxg_by_game_id(game_id):
+    validate_id(game_id)
     print(f'Fetching total PSxG for both teams in game {game_id}...')
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
@@ -186,6 +194,7 @@ def get_total_psxg_by_game_id(game_id):
     return {team_id: round(total, 2) for team_id, total in psxg_by_team.items()}
 
 def get_total_shots_by_game_id(game_id):
+    validate_id(game_id)
     print(f'Fetching total shots for both teams in game {game_id}...')
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
@@ -211,6 +220,7 @@ def get_total_shots_by_game_id(game_id):
 
 
 def get_total_shots_on_target_by_game_id(game_id):
+    validate_id(game_id)
     print(f'Fetching total shots on target for both teams in game {game_id}...')
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row

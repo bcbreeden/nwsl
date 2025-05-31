@@ -1,5 +1,5 @@
 from api import make_asa_api_call
-from .data_util import get_db_path
+from .data_util import get_db_path, validate_id
 import sqlite3
 from datetime import datetime
 import pytz
@@ -15,6 +15,7 @@ def insert_flow_by_game_id(game_id): # pragma: no cover
     Returns:
         None
     """
+    validate_id(game_id)
     print('Inserting game flow for game ID:', game_id)
     api_string = 'nwsl/games/game-flow?game_id={}'.format(str(game_id))
     game_flow_data = make_asa_api_call(api_string)[1]
@@ -56,6 +57,7 @@ def get_game_flow_by_game_id(game_id):
         values for both teams, period and minute information, and metadata such as team 
         names and abbreviations.
     """
+    validate_id(game_id)
     print('Fetching game flow for game ID:', game_id)
     db_path = get_db_path()
     conn = sqlite3.connect(db_path)
