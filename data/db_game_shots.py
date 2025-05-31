@@ -2,7 +2,7 @@ from api import make_asa_api_call
 from .data_util import get_db_path
 import sqlite3
 
-def insert_all_game_shots(game_id, season):
+def insert_all_game_shots(game_id, season): # pragma: no cover
     print(f'Attempting to insert all shots for game {game_id}, season: {season}...')
     shots_data = make_asa_api_call(f'nwsl/games/shots?game_id={game_id}')[1]
     conn = sqlite3.connect(get_db_path())

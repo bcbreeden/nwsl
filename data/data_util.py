@@ -65,3 +65,29 @@ def get_db_path():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(BASE_DIR, 'nwsl.db')
     return db_path
+
+def validate_id(id):
+    """
+    Validates that a game ID is a non-empty string.
+
+    Args:
+        game_id (str): The game ID to validate.
+
+    Raises:
+        ValueError: If the game ID is not a string or is empty.
+    """
+    if not id or not isinstance(id, str):
+        raise ValueError("ID must be a non-empty string")
+
+def validate_season(season):
+    """
+    Validates that a season value is a valid integer.
+
+    Args:
+        season (int): The season value to validate.
+
+    Raises:
+        ValueError: If the season is not an integer or is null/zero.
+    """
+    if not season or not isinstance(season, int):
+        raise ValueError("season must be a valid integer")

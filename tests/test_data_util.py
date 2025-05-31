@@ -134,6 +134,38 @@ class TestDataUtils(unittest.TestCase):
         expected_dir = os.path.dirname(os.path.abspath(data_util.__file__))
         expected_path = os.path.join(expected_dir, 'nwsl.db')
         assert data_util.get_db_path() == expected_path
+    
+    def test_validate_id_valid(self):
+        """Test that validate_id passes with a non-empty string."""
+        try:
+            data_util.validate_id("abc123")  # Should not raise
+        except Exception as e:
+            self.fail(f"validate_id raised an exception unexpectedly: {e}")
+
+    def test_validate_id_invalid(self):
+        """Test that validate_id raises ValueError with None or non-string."""
+        with self.assertRaises(ValueError):
+            data_util.validate_id(None)
+        with self.assertRaises(ValueError):
+            data_util.validate_id(123)
+        with self.assertRaises(ValueError):
+            data_util.validate_id("")
+
+    def test_validate_season_valid(self):
+        """Test that validate_season passes with a valid integer."""
+        try:
+            data_util.validate_season(2025)  # Should not raise
+        except Exception as e:
+            self.fail(f"validate_season raised an exception unexpectedly: {e}")
+
+    def test_validate_season_invalid(self):
+        """Test that validate_season raises ValueError with None, 0, or non-int."""
+        with self.assertRaises(ValueError):
+            data_util.validate_season(None)
+        with self.assertRaises(ValueError):
+            data_util.validate_season("2025")
+        with self.assertRaises(ValueError):
+            data_util.validate_season(0)
         
 if __name__ == '__main__':
     unittest.main()
