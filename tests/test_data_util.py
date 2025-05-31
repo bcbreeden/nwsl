@@ -1,7 +1,8 @@
 import unittest
-from data import  data_util
+import os
+from data import data_util, generate_player_season_id, get_db_path
 
-class TestAggregatePositionData(unittest.TestCase):
+class TestDataUtils(unittest.TestCase):
     
     def test_single_player(self):
         """Test with a single player for a single stat."""
@@ -102,6 +103,37 @@ class TestAggregatePositionData(unittest.TestCase):
         expected = {}
         result = data_util.aggregate_position_data(filtered_players, stats_to_track)
         self.assertEqual(result, expected)
+    
+    def test_generate_player_season_id_basic(self):
+        """Test that generate_player_season_id returns correct string for typical input."""
+        result = data_util.generate_player_season_id(123, 2025)
+        assert result == "1232025"
+
+    def test_generate_player_season_id_with_zero(self):
+        """Test generate_player_season_id when player_id or season is 0."""
+        result = data_util.generate_player_season_id(0, 2020)
+        assert result == "02020"
+
+    def test_generate_player_season_id_with_string_input(self):
+        """Test generate_player_season_id with string player_id."""
+        result = data_util.generate_player_season_id("abc", 2024)
+        assert result == "abc2024"
+
+    def test_get_db_path_absolute(self):
+        """Test that get_db_path returns an absolute path."""
+        db_path = data_util.get_db_path()
+        assert os.path.isabs(db_path)
+
+    def test_get_db_path_filename(self):
+        """Test that get_db_path ends with 'nwsl.db'."""
+        db_path = data_util.get_db_path()
+        assert db_path.endswith('nwsl.db')
+
+    def test_get_db_path_location(self):
+        """Test that get_db_path returns the correct location."""
+        expected_dir = os.path.dirname(os.path.abspath(data_util.__file__))
+        expected_path = os.path.join(expected_dir, 'nwsl.db')
+        assert data_util.get_db_path() == expected_path
         
 if __name__ == '__main__':
     unittest.main()
