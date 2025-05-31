@@ -38,3 +38,6 @@ class TestGetGoalsByGameId(unittest.TestCase):
 
             self.assertIsInstance(row["pattern_of_play"], str)
             self.assertTrue(row["pattern_of_play"], "pattern_of_play should not be empty")
+
+if __name__ == '__main__':
+    unittest.main()

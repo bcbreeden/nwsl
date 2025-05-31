@@ -3,6 +3,16 @@ from .data_util import get_db_path, validate_id, validate_season
 import sqlite3
 
 def insert_all_game_shots(game_id, season): # pragma: no cover
+    """
+    Inserts shot-level data into the game_shots table for a specific game and season.
+
+    Args:
+        game_id (str): The unique identifier for the game to insert shot data for.
+        season (int): The season the game belongs to.
+    
+    Returns:
+        None
+    """
     validate_id(game_id)
     validate_season(season)
     print(f'Attempting to insert all shots for game {game_id}, season: {season}...')
@@ -84,6 +94,15 @@ def insert_all_game_shots(game_id, season): # pragma: no cover
     print(f'All shots for game {game_id} successfully entered into the database.')
 
 def get_shots_by_game_id(game_id):
+    """
+    Retrieves all shot records for a specific game from the local database.
+
+    Args:
+        game_id (str): The unique identifier for the game to fetch shot data for.
+
+    Returns:
+        list[sqlite3.Row]: A list of shot records ordered by shot sequence.
+    """
     validate_id(game_id)
     print(f'Fetching all shots for game {game_id}...')
     conn = sqlite3.connect(get_db_path())
@@ -102,31 +121,21 @@ def get_shots_by_game_id(game_id):
     print(f'{len(rows)} shots retrieved for game {game_id}.')
     return rows
 
-def get_goals_by_game_id(game_id):
-    validate_id(game_id)
-    print(f'Fetching all goals for game {game_id}...')
-    conn = sqlite3.connect(get_db_path())
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-
-    cursor.execute('''
-        SELECT * FROM game_shots
-        WHERE game_id = ? AND goal = 1
-        ORDER BY shot_order ASC
-    ''', (game_id,))
-    
-    rows = cursor.fetchall()
-    conn.close()
-
-    print(f'{len(rows)} goals retrieved for game {game_id}.')
-    return rows
-
 def get_shots_by_type(shot_type, season):
+    """
+    Retrieves all shots of a specific pattern of play for a given season.
+
+    Args:
+        shot_type (str): The shot type to filter by (e.g., 'regular', 'set piece', 'fastbreak').
+        season (int): The season to filter shot data by.
+
+    Returns:
+        list[sqlite3.Row]: A list of shot records matching the specified type and season.
+    """
     validate_season(season)
     print(f'Fetching all {shot_type} shots...')
     available_shot_types = ['regular', 'set piece', 'fastbreak', 'free kick', 'penalty']
     shot_type = shot_type.lower()
-
 
     if shot_type not in available_shot_types:
         raise ValueError(f"Invalid shot type. Available types are: {', '.join(available_shot_types)}")
@@ -148,6 +157,16 @@ def get_shots_by_type(shot_type, season):
     return rows
 
 def get_total_psxg_by_team_and_season(team_id, season):
+    """
+    Retrieves the total post-shot expected goals (PSxG) for a given team and season.
+
+    Args:
+        team_id (str): The unique identifier for the team.
+        season (int): The season to filter shot data by.
+
+    Returns:
+        float: The total PSxG value for the specified team and season.
+    """
     validate_id(team_id)
     validate_season(season)
     print(f'Fetching total PSxG for team {team_id} in season {season}...')
@@ -168,6 +187,15 @@ def get_total_psxg_by_team_and_season(team_id, season):
     return total_psxg
 
 def get_total_psxg_by_game_id(game_id):
+    """
+    Retrieves the total post-shot expected goals (PSxG) for both teams in a specific game.
+
+    Args:
+        game_id (str): The unique identifier for the game.
+
+    Returns:
+        dict[str, float]: A dictionary mapping team IDs to their total PSxG values for the game.
+    """
     validate_id(game_id)
     print(f'Fetching total PSxG for both teams in game {game_id}...')
     conn = sqlite3.connect(get_db_path())
@@ -194,6 +222,16 @@ def get_total_psxg_by_game_id(game_id):
     return {team_id: round(total, 2) for team_id, total in psxg_by_team.items()}
 
 def get_total_shots_by_game_id(game_id):
+    """
+    Retrieves the total number of shots taken by each team in a specific game.
+
+    Args:
+        game_id (str): The unique identifier for the game to fetch shot counts for.
+
+    Returns:
+        dict[str, int]: A dictionary mapping team IDs to the total number of shots 
+        they took in the specified game.
+    """
     validate_id(game_id)
     print(f'Fetching total shots for both teams in game {game_id}...')
     conn = sqlite3.connect(get_db_path())
@@ -220,6 +258,19 @@ def get_total_shots_by_game_id(game_id):
 
 
 def get_total_shots_on_target_by_game_id(game_id):
+    """
+    Retrieves the total number of shots on target for both teams in a specific game.
+
+    Args:
+        game_id (str): The unique identifier for the game to analyze.
+
+    Returns:
+        dict[str, int]: A dictionary where each key is a team_id and the corresponding value 
+        is the count of shots on target for that team. A shot is considered on target if:
+            - It is a goal OR has a non-zero PSxG value,
+            - It was not blocked,
+            - It has a valid (non-null and > 0) PSxG value.
+    """
     validate_id(game_id)
     print(f'Fetching total shots on target for both teams in game {game_id}...')
     conn = sqlite3.connect(get_db_path())

@@ -35,3 +35,5 @@ class TestGetGameFlowByGameId(unittest.TestCase):
             for key in ["home_team_name", "away_team_name", "home_abbreviation", "away_abbreviation"]:
                 self.assertIsInstance(row[key], str, f"{key} should be a string")
 
+if __name__ == '__main__':
+    unittest.main()
