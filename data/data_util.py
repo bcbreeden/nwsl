@@ -94,7 +94,7 @@ def validate_season(season):
     if not season or not isinstance(season, int):
         raise ValueError("season must be a valid integer")
 
-def convert_utc_to_est(utc_str):
+def old_convert_utc_to_est(utc_str):
     """
     Converts a UTC datetime string to a formatted US Eastern Time string.
 
@@ -117,3 +117,34 @@ def convert_utc_to_est(utc_str):
 
     formatted = dt_est.strftime("%A, %B %-d at %-I:%M %p")
     return formatted
+
+def convert_utc_to_est(utc_str):
+    """
+    Converts a UTC datetime string to a formatted US Eastern Time string.
+
+    Args:
+        utc_str (str): A UTC datetime string in the format "%Y-%m-%d %H:%M:%S %Z".
+
+    Returns:
+        str or None: The datetime converted to US Eastern Time and formatted as 
+        "Weekday, Month Day at Hour:Minute AM/PM". Returns None if the input is a placeholder string.
+    """
+    if utc_str == 'Unknown Last Updated Time':
+        return None
+
+    # Parse string to datetime
+    dt_utc = datetime.strptime(utc_str, "%Y-%m-%d %H:%M:%S %Z")
+    dt_utc = pytz.utc.localize(dt_utc)
+
+    # Convert to US Eastern time
+    dt_est = dt_utc.astimezone(pytz.timezone('US/Eastern'))
+
+    # Format manually for cross-platform support
+    weekday = dt_est.strftime("%A")
+    month = dt_est.strftime("%B")
+    day = str(dt_est.day)  # no leading zero
+    hour = dt_est.strftime("%I").lstrip('0')  # remove leading zero
+    minute = dt_est.strftime("%M")
+    am_pm = dt_est.strftime("%p")
+
+    return f"{weekday}, {month} {day} at {hour}:{minute} {am_pm}"

@@ -169,7 +169,7 @@ class TestDataUtils(unittest.TestCase):
 
     def test_convert_utc_to_est_valid(self):
         """Test converting a valid UTC datetime string to Eastern Time formatted string."""
-        utc_input = "2024-06-01 19:00:00 UTC"
+        utc_input = "2025-05-26 02:00:00 UTC"
         result = data_util.convert_utc_to_est(utc_input)
         self.assertIsInstance(result, str)
         self.assertIn("at", result)
