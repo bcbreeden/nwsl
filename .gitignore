@@ -9,3 +9,4 @@ PR_template.py
 rankings_sample.py
 venv/
 data/.DS_Store
+static/.DS_Store

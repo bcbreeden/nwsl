@@ -94,30 +94,6 @@ def validate_season(season):
     if not season or not isinstance(season, int):
         raise ValueError("season must be a valid integer")
 
-def old_convert_utc_to_est(utc_str):
-    """
-    Converts a UTC datetime string to a formatted US Eastern Time string.
-
-    Args:
-        utc_str (str): A UTC datetime string in the format "%Y-%m-%d %H:%M:%S %Z".
-
-    Returns:
-        str or None: The datetime converted to US Eastern Time and formatted as 
-        "Weekday, Month Day at Hour:Minute AM/PM". Returns None if the input is a placeholder string.
-    """
-    if utc_str == 'Unknown Last Updated Time':
-        return None
-
-    # Parse string to datetime
-    dt_utc = datetime.strptime(utc_str, "%Y-%m-%d %H:%M:%S %Z")
-    # Set UTC timezone
-    dt_utc = pytz.utc.localize(dt_utc)
-    # Convert to US Eastern time
-    dt_est = dt_utc.astimezone(pytz.timezone('US/Eastern'))
-
-    formatted = dt_est.strftime("%A, %B %-d at %-I:%M %p")
-    return formatted
-
 def convert_utc_to_est(utc_str):
     """
     Converts a UTC datetime string to a formatted US Eastern Time string.
