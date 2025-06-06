@@ -2,7 +2,20 @@ from api import make_asa_api_call
 from .data_util import get_db_path
 import sqlite3
 
-def insert_all_manager_info():
+def insert_all_manager_info(): # pragma: no cover
+    """
+    Inserts or updates all manager information into the `manager_info` table.
+
+    This function makes an API call to retrieve all current manager data,
+    then inserts or replaces records in the `manager_info` table using the
+    values retrieved.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     print('Attempting to insert all managers info...')
     managers_data = make_asa_api_call('nwsl/managers')[1]
     conn = sqlite3.connect(get_db_path())
@@ -24,6 +37,16 @@ def insert_all_manager_info():
     print('All managers info successfully entered into the database.')
 
 def get_manager_by_id(manager_id):
+    """
+    Retrieves manager information by manager ID from the database.
+
+    Args:
+        manager_id (str): The unique ID of the manager.
+
+    Returns:
+        sqlite3.Row or None: A dictionary-like row object containing the manager's
+        information if found, or None if no match is found.
+    """
     print('Attempting to get manager info by ID:', manager_id)
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
