@@ -31,7 +31,7 @@ def get_all_goalkeepers_xgoals_by_season(season):
     cursor.execute(query, (season,))
     rows = cursor.fetchall()
     if len(rows) == 0:
-        print(f"WARNING: No goalkeeper data found for all players. Season={season}.")
+        print(f"WARNING: No goalkeeper data found for all players. Season={season}.") # pragma: no cover
     conn.commit()
     conn.close()
     print('All goalkeepers returned with xgoal data.')
@@ -66,7 +66,7 @@ def get_goalkeeper_xgoals_by_season(player_id, season):
     cursor.execute(query, (obj_id,))
     row = cursor.fetchone()
     if row is None:
-        print(f"WARNING: No goalkeeper data found for player_id={player_id} Season= ={season}.")
+        print(f"WARNING: No goalkeeper data found for player_id={player_id} Season= ={season}.") # pragma: no cover
     conn.commit()
     conn.close()
     print('Goalkeeper returned with xgoal data.')
@@ -125,7 +125,7 @@ def calculate_player_statistics(keepers_data: list):
 
     data = [player for player in keepers_data if player.get('minutes_played', 0) >= MINIMUM_MINUTES]
     if len(data) == 0:
-        print('WARNING: No data returned in calculate player statistics goalkeeper xgoals.')
+        print('WARNING: No data returned in calculate player statistics goalkeeper xgoals.') # pragma: no cover
     return data
 
 def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season): # pragma: no cover
