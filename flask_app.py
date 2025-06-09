@@ -217,7 +217,7 @@ def game():
 
         # SHOT DATA
         all_shots_data = db_game_shots.get_shots_by_game_id(request.form.get('game_id'))
-        all_shot_data_with_markers = _insert_event_markers(all_shots_data)
+        all_shot_data_with_markers = _insert_event_markers(all_shots_data, home_team_id, away_team_id)
         home_shots_data = [shot for shot in all_shots_data if shot['team_id'] == home_team_id]
         away_shots_data = [shot for shot in all_shots_data if shot['team_id'] == away_team_id]
         home_shot_map_json, home_shot_map_config = generate_shot_marker_plot(request.form.get('game_id'), game_data, player_info, home_shots_data, home_team_abbr)
@@ -387,7 +387,7 @@ def goalkeeper():
                            season = season_manager.season,
                            seasons = season_manager.seasons)
 
-def _insert_event_markers(shot_data):
+def _insert_event_markers(shot_data, home_team_id, away_team_id):
     new_data = []
     halftime_inserted = False
 
@@ -395,13 +395,20 @@ def _insert_event_markers(shot_data):
         if i == 0:
             # Handle edge case: first shot is not a goal but score has changed
             if shot['goal'] == 0 and (shot['home_score'] != 0 or shot['away_score'] != 0):
+                if shot['home_score'] > 0:
+                    benefiting_team_id = home_team_id
+                elif shot['away_score'] > 0:
+                    benefiting_team_id = away_team_id
+                else:
+                    benefiting_team_id = 'Unknown'
+
                 own_goal_marker = {
                     'type': 'own_goal',
                     'home_score': shot['home_score'],
                     'away_score': shot['away_score'],
                     'expanded_minute': shot['expanded_minute'],
                     'period_id': shot['period_id'],
-                    'team_id': shot['team_id']  # the team that took the shot is the conceding team
+                    'team_id': benefiting_team_id
                 }
                 new_data.append(own_goal_marker)
 
@@ -414,13 +421,20 @@ def _insert_event_markers(shot_data):
             both_no_goals = prev_shot['goal'] == 0 and shot['goal'] == 0
 
             if score_changed and both_no_goals:
+                if shot['home_score'] > prev_shot['home_score']:
+                    benefiting_team_id = home_team_id
+                elif shot['away_score'] > prev_shot['away_score']:
+                    benefiting_team_id = away_team_id
+                else:
+                    benefiting_team_id = 'Unknown'
+
                 own_goal_marker = {
                     'type': 'own_goal',
                     'home_score': shot['home_score'],
                     'away_score': shot['away_score'],
                     'expanded_minute': shot['expanded_minute'],
                     'period_id': shot['period_id'],
-                    'team_id': shot['team_id']  # consistent logic: conceding team = shooter
+                    'team_id': benefiting_team_id
                 }
                 new_data.append(own_goal_marker)
 
@@ -443,6 +457,7 @@ def _insert_event_markers(shot_data):
         })
 
     return new_data
+
 
 if __name__ == '__main__':
     app.run(debug=True)
