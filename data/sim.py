@@ -1,88 +1,205 @@
 import random
 import numpy as np
+from collections import Counter, defaultdict
 
-from .db_game_shots import get_shots_for_team, get_avg_shots_for_team
-from .db_goalkeeper_xgoals import get_goalkeeper_for_team
+from data.db_game_shots import get_shots_for_team, get_avg_shots_for_team
+from data.db_goalkeeper_xgoals import get_goalkeeper_for_team
+from data.db_player_info import get_player_name_map
+from data.db_team_info import get_team_name_map
+from data.db_team_xgoals import get_team_xga_per_game
 
-def simulate_shot_outcome(shot, gk_modifier=0.0):
-    """
-    Simulates whether a shot results in a goal.
 
-    Args:
-        shot (dict): Shot row with 'shot_xg' field.
-        gk_modifier (float): Adjustment factor based on goalkeeper PSxG overperformance (e.g., -0.1 reduces scoring chance).
+class MatchSimulator:
+    def __init__(self, home_team_id, away_team_id, season, mode="shot", exclude_penalties=True, use_psxg=False):
+        self.home_team_id = home_team_id
+        self.away_team_id = away_team_id
+        self.season = season
+        self.mode = mode
+        self.exclude_penalties = exclude_penalties
+        self.n_simulations = 0
+        self.use_psxg = use_psxg
 
-    Returns:
-        bool: True if goal scored, else False.
-    """
-    base_xg = shot['shot_xg']
-    adjusted_xg = max(0.01, min(0.95, base_xg * (1.0 + gk_modifier)))
-    return random.random() < adjusted_xg
+        self.player_name_map = get_player_name_map()
+        self.team_name_map = get_team_name_map()
 
-def simulate_team_goals(team_id, opponent_id, season, mode="shot", exclude_penalties=True):
-    if mode == "shot":
-        shot_data = get_shots_for_team(team_id, season)
-        if exclude_penalties:
-            shot_data = [s for s in shot_data if s['pattern_of_play'] and s['pattern_of_play'].lower() != 'penalty']
-        avg_shots_per_game = get_avg_shots_for_team(team_id, season)
-        sample_size = max(1, int(random.gauss(avg_shots_per_game, 2)))
-        sampled_shots = random.sample(shot_data, min(sample_size, len(shot_data)))
+        self.scorelines = Counter()
+        self.outcomes = Counter()
+        self.goal_totals = defaultdict(list)
+        self.scorer_totals = defaultdict(Counter)
 
-        gk_stats = get_goalkeeper_for_team(opponent_id, season)
-        gk_modifier = 0.0
-        if gk_stats and gk_stats['xgoals_gk_faced'] > 0:
-            over = gk_stats['goals_minus_xgoals_gk']
-            xg_faced = gk_stats['xgoals_gk_faced']
-            gk_modifier = -1.0 * (over / xg_faced)
+    def simulate_match(self):
+        home_goals, home_scorers = self.simulate_team_goals(self.home_team_id, self.away_team_id)
+        away_goals, away_scorers = self.simulate_team_goals(self.away_team_id, self.home_team_id)
 
-        goals = 0
+        for pid in home_scorers:
+            self.scorer_totals[self.home_team_id][pid] += 1
+        for pid in away_scorers:
+            self.scorer_totals[self.away_team_id][pid] += 1
+
+        return home_goals, away_goals
+
+    def simulate_team_goals(self, team_id, opponent_id):
         scorers = []
+        goals = 0
 
-        for shot in sampled_shots:
-            if simulate_shot_outcome(shot, gk_modifier):
-                goals += 1
-                scorers.append({
-                    'player_id': shot['shooter_player_id'],
-                    'xg': shot['shot_xg'],
-                    'minute': shot['expanded_minute'],
-                    'shot_type': (
-                        "Header" if "head" in shot.keys() and shot["head"] else
-                        "Through Ball" if "assist_through_ball" in shot.keys() and shot["assist_through_ball"] else
-                        "Cross" if "assist_cross" in shot.keys() and shot["assist_cross"] else
-                        "Open Play"
-                    )
-                })
+        if self.mode == "shot":
+            shots = get_shots_for_team(team_id, self.season)
+            if self.exclude_penalties:
+                shots = [s for s in shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
+
+            avg_shots = get_avg_shots_for_team(team_id, self.season)
+            sample_size = max(1, int(random.gauss(avg_shots, 2)))
+            sampled = random.sample(shots, min(sample_size, len(shots)))
+
+            gk = get_goalkeeper_for_team(opponent_id, self.season)
+            gk_modifier = 0.0
+            if gk and gk["xgoals_gk_faced"] > 0:
+                over = gk["goals_minus_xgoals_gk"]
+                faced = gk["xgoals_gk_faced"]
+                gk_modifier = -1.0 * (over / faced)
+
+            for shot in sampled:
+                base_prob = shot["shot_psxg"] if self.use_psxg else shot["shot_xg"]
+                if base_prob is None:
+                    continue
+
+                if self.use_psxg:
+                    adj_prob = base_prob
+                else:
+                    adj_prob = max(0.01, min(0.95, base_prob * (1.0 + gk_modifier)))
+
+                if random.random() < adj_prob:
+                    goals += 1
+                    scorers.append(shot["shooter_player_id"])
+
+        elif self.mode == "poisson":
+            shots = get_shots_for_team(team_id, self.season)
+            total_xg = sum(s["shot_xg"] for s in shots)
+            total_games = len(set(s["game_id"] for s in shots))
+            avg_xg_per_game = total_xg / total_games if total_games > 0 else 1.0
+
+            gk = get_goalkeeper_for_team(opponent_id, self.season)
+            gk_modifier = 0.0
+            if gk and gk["xgoals_gk_faced"] > 0:
+                over = gk["goals_minus_xgoals_gk"]
+                faced = gk["xgoals_gk_faced"]
+                gk_modifier = -1.0 * (over / faced)
+
+            lam = max(0.1, avg_xg_per_game * (1.0 + gk_modifier))
+            goals = np.random.poisson(lam)
+
+        else:
+            raise ValueError(f"Invalid mode: {self.mode}")
 
         return goals, scorers
 
-    elif mode == "poisson":
-        # Same as before; scorers not tracked in this mode
-        shot_data = get_shots_for_team(team_id, season)
-        total_xg = sum(s['shot_xg'] for s in shot_data)
-        total_games = len(set(s['game_id'] for s in shot_data))
-        avg_xg_per_game = total_xg / total_games if total_games > 0 else 1.0
+    def run_simulations(self, n):
+        self.n_simulations = n
+        for _ in range(n):
+            h_goals, a_goals = self.simulate_match()
+            self.scorelines[(h_goals, a_goals)] += 1
+            self.goal_totals["home"].append(h_goals)
+            self.goal_totals["away"].append(a_goals)
 
-        gk_stats = get_goalkeeper_for_team(opponent_id, season)
-        gk_modifier = 0.0
-        if gk_stats and gk_stats['xgoals_gk_faced'] > 0:
-            over = gk_stats['goals_minus_xgoals_gk']
-            xg_faced = gk_stats['xgoals_gk_faced']
-            gk_modifier = -1.0 * (over / xg_faced)
+            if h_goals > a_goals:
+                self.outcomes["home_win"] += 1
+            elif h_goals < a_goals:
+                self.outcomes["away_win"] += 1
+            else:
+                self.outcomes["draw"] += 1
 
-        adjusted_lambda = max(0.1, avg_xg_per_game * (1.0 + gk_modifier))
-        return np.random.poisson(adjusted_lambda), []  # no scorers
+    def get_summary(self):
+        return {
+            "home_team_id": self.home_team_id,
+            "away_team_id": self.away_team_id,
+            "home_team_name": self.team_name_map.get(self.home_team_id, "Home"),
+            "away_team_name": self.team_name_map.get(self.away_team_id, "Away"),
+            "home_win_pct": self.outcomes["home_win"] / self.n_simulations,
+            "away_win_pct": self.outcomes["away_win"] / self.n_simulations,
+            "draw_pct": self.outcomes["draw"] / self.n_simulations,
+            "avg_home_goals": sum(self.goal_totals["home"]) / self.n_simulations,
+            "avg_away_goals": sum(self.goal_totals["away"]) / self.n_simulations
+        }
 
+    def get_scoreline_distribution(self):
+        return {
+            f"{h}-{a}": {
+                "count": count,
+                "pct": count / self.n_simulations
+            }
+            for (h, a), count in self.scorelines.items()
+        }
 
-def simulate_match(home_team_id, away_team_id, season, mode="shot"):
-    home_goals, home_scorers = simulate_team_goals(home_team_id, away_team_id, season, mode=mode)
-    away_goals, away_scorers = simulate_team_goals(away_team_id, home_team_id, season, mode=mode)
+    def get_top_scorers(self, side, limit=10):
+        team_id = self.home_team_id if side == "home" else self.away_team_id
+        scorers = self.scorer_totals[team_id].most_common(limit)
+        return [
+            {
+                "player_id": pid,
+                "player_name": self.player_name_map.get(pid, f"[{pid}]"),
+                "goals": count
+            }
+            for pid, count in scorers
+        ]
 
-    return {
-        'home_team_id': home_team_id,
-        'away_team_id': away_team_id,
-        'home_goals': home_goals,
-        'away_goals': away_goals,
-        'home_scorers': home_scorers,
-        'away_scorers': away_scorers
-    }
+    def generate_analysis_paragraphs(self):
+        summary = self.get_summary()
+        home_name = summary["home_team_name"]
+        away_name = summary["away_team_name"]
 
+        lines = []
+
+        # 1. Results
+        lines.append(f"Over {self.n_simulations} simulated matches between {home_name} and {away_name}, "
+                     f"{home_name} won {summary['home_win_pct']:.1%}, {away_name} won {summary['away_win_pct']:.1%}, "
+                     f"and {summary['draw_pct']:.1%} ended in draws.")
+
+        lines.append(f"Avg goals per match: {home_name} {summary['avg_home_goals']:.2f}, "
+                     f"{away_name} {summary['avg_away_goals']:.2f}.")
+
+        # 2. Shot quality
+        home_xg = sum(s["shot_xg"] for s in get_shots_for_team(self.home_team_id, self.season))
+        away_xg = sum(s["shot_xg"] for s in get_shots_for_team(self.away_team_id, self.season))
+        lines.append(f"Season xG totals: {home_name} {home_xg:.1f}, {away_name} {away_xg:.1f}.")
+
+        # 3. Defense via xGA
+        home_xga = get_team_xga_per_game(self.home_team_id, self.season)
+        away_xga = get_team_xga_per_game(self.away_team_id, self.season)
+        lines.append(f"Season xGA per game: {home_name} {home_xga:.2f}, {away_name} {away_xga:.2f}.")
+
+        # 4. Goalkeeper performance
+        def gk_adj(gk): return gk["goals_minus_xgoals_gk"] / gk["xgoals_gk_faced"] if gk and gk["xgoals_gk_faced"] > 0 else 0
+        home_gk = gk_adj(get_goalkeeper_for_team(self.home_team_id, self.season))
+        away_gk = gk_adj(get_goalkeeper_for_team(self.away_team_id, self.season))
+
+        if home_gk < -0.05:
+            lines.append(f"{home_name}'s goalkeeper was a strength, exceeding expectations.")
+        elif home_gk > 0.05:
+            lines.append(f"{home_name}'s goalkeeper underperformed relative to xG faced.")
+
+        if away_gk < -0.05:
+            lines.append(f"{away_name}'s goalkeeper was notably strong.")
+        elif away_gk > 0.05:
+            lines.append(f"{away_name}'s keeper conceded more than expected.")
+
+        # 5. Scorers
+        top_home = self.get_top_scorers("home", 3)
+        top_away = self.get_top_scorers("away", 3)
+        if top_home:
+            top_str = ", ".join(f"{p['player_name']} ({p['goals']})" for p in top_home)
+            lines.append(f"Top scorers for {home_name}: {top_str}.")
+        if top_away:
+            top_str = ", ".join(f"{p['player_name']} ({p['goals']})" for p in top_away)
+            lines.append(f"Top scorers for {away_name}: {top_str}.")
+
+        # 6. Outliers
+        if home_xg > away_xg and summary["home_win_pct"] < summary["away_win_pct"]:
+            lines.append(f"Despite more xG, {home_name} won fewer simulations—perhaps due to poor finishing or defense.")
+        elif away_xg > home_xg and summary["away_win_pct"] < summary["home_win_pct"]:
+            lines.append(f"{home_name} won more despite lower xG—likely better execution.")
+
+        # 7. Conclusion
+        favored = home_name if summary["home_win_pct"] > summary["away_win_pct"] else away_name
+        lines.append(f"In conclusion, {favored} appears to hold the edge based on simulation outcomes.")
+
+        return "\n\n".join(lines)

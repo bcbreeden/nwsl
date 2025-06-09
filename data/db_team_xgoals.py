@@ -357,6 +357,28 @@ def get_team_strength_by_season(season):
     conn.close()
     return rows
 
+def get_team_xga_per_game(team_id, season):
+    """
+    Returns xGA per game for the specified team in the given season.
+    """
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = """
+    SELECT xgoals_against, count_games
+    FROM team_xgoals
+    WHERE team_id = ? AND season = ?
+    """
+    cursor.execute(query, (team_id, season))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row and row['count_games'] > 0:
+        return row['xgoals_against'] / row['count_games']
+    return None
+
+
 '''
 ======================
    Misc Helpers Strength Helpers
