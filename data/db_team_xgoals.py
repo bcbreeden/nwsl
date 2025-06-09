@@ -249,24 +249,9 @@ def insert_team_strength_history(season):
         print(f"No team strength data found for season {season}.")
         return
 
-    # Check which teams need an update by comparing count_games
-    teams_to_update = []
-    for row in rows:
-        team_id = row['team_id']
-        cursor.execute('''
-            SELECT count_games, team_strength FROM team_strength_history
-            WHERE season = ? AND team_id = ?
-            ORDER BY count_games DESC
-            LIMIT 1
-        ''', (season, team_id))
-        existing = cursor.fetchone()
-
-        if existing is None:
-            teams_to_update.append(row)
-        elif row['count_games'] > existing['count_games']:
-            teams_to_update.append(row)
-        elif row['count_games'] == existing['count_games'] and abs(row['team_strength'] - existing['team_strength']) > 0.001:
-            teams_to_update.append(row)
+    # Group teams by the highest count_games value available
+    latest_count = max(row['count_games'] for row in rows)
+    teams_to_update = [r for r in rows if r['count_games'] == latest_count]
 
     if not teams_to_update:
         print(f"No updates needed for season {season}.")
