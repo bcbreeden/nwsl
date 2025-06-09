@@ -208,3 +208,17 @@ def get_player_info_by_id(player_id):
     conn.close()
     print('Players info returned.')
     return row
+
+def get_player_name_map():
+    """
+    Returns a dictionary mapping player_id → player_name from player_info table.
+    """
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT player_id, player_name FROM player_info')
+    rows = cursor.fetchall()
+    conn.close()
+
+    return {row['player_id']: row['player_name'] for row in rows}

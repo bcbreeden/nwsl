@@ -1,13 +1,17 @@
 from collections import Counter, defaultdict
-from data import sim
+from data import sim, db_player_info, db_team_info
 
 home_team = 'aDQ0lzvQEv'
 away_team = 'zeQZeazqKw'
 season = 2025
-n_simulations = 100
-mode = "shot"  # Use "shot" for scorer tracking
+n_simulations = 1000
+mode = "shot"  # Use "shot" to track scorers
 
-# Tracking results
+# Load mappings
+player_name_map = db_player_info.get_player_name_map()
+team_name_map = db_team_info.get_team_name_map()
+
+# Tracking
 scorelines = Counter()
 outcomes = Counter()
 goal_totals = defaultdict(list)
@@ -34,34 +38,39 @@ for _ in range(n_simulations):
     else:
         outcomes['draw'] += 1
 
-    # Tally scorers if shot-based
     if mode == "shot":
         for scorer in result.get('home_scorers', []):
             scorer_totals[home_team][scorer['player_id']] += 1
         for scorer in result.get('away_scorers', []):
             scorer_totals[away_team][scorer['player_id']] += 1
 
-# Print summary
-print(f"--- {home_team} vs {away_team} ({n_simulations} simulations, mode='{mode}') ---")
-print(f"Home Wins: {outcomes['home_win']} ({outcomes['home_win'] / n_simulations:.1%})")
-print(f"Draws:     {outcomes['draw']} ({outcomes['draw'] / n_simulations:.1%})")
-print(f"Away Wins: {outcomes['away_win']} ({outcomes['away_win'] / n_simulations:.1%})")
+# Final print summary
+home_name = team_name_map.get(home_team, home_team)
+away_name = team_name_map.get(away_team, away_team)
+
+print(f"--- {home_name} vs {away_name} ({n_simulations} simulations, mode='{mode}') ---")
+print(f"{home_name} Wins: {outcomes['home_win']} ({outcomes['home_win'] / n_simulations:.1%})")
+print(f"Draws:            {outcomes['draw']} ({outcomes['draw'] / n_simulations:.1%})")
+print(f"{away_name} Wins: {outcomes['away_win']} ({outcomes['away_win'] / n_simulations:.1%})")
+
+# Scoreline distribution
 print("\nAll scorelines:")
 for (h, a), count in scorelines.most_common():
-    print(f"  {h}-{a}: {count} times ({count / n_simulations:.1%})")
+    print(f"  {home_name} {h} - {a} {away_name}: {count} times ({count / n_simulations:.1%})")
 
 # Average goals
 avg_home_goals = sum(goal_totals['home']) / n_simulations
 avg_away_goals = sum(goal_totals['away']) / n_simulations
-print(f"\nAvg Home Goals: {avg_home_goals:.2f}")
-print(f"Avg Away Goals: {avg_away_goals:.2f}")
+print(f"\nAvg Goals — {home_name}: {avg_home_goals:.2f}, {away_name}: {avg_away_goals:.2f}")
 
 # Top scorers
 if mode == "shot":
-    print(f"\nTop scorers for {home_team}:")
+    print(f"\nTop scorers for {home_name}:")
     for player_id, count in scorer_totals[home_team].most_common(10):
-        print(f"  {player_id}: {count} goals")
+        name = player_name_map.get(player_id, f"[{player_id}]")
+        print(f"  {name}: {count} goals")
 
-    print(f"\nTop scorers for {away_team}:")
+    print(f"\nTop scorers for {away_name}:")
     for player_id, count in scorer_totals[away_team].most_common(10):
-        print(f"  {player_id}: {count} goals")
+        name = player_name_map.get(player_id, f"[{player_id}]")
+        print(f"  {name}: {count} goals")

@@ -51,3 +51,17 @@ def get_team_info_by_id(team_id):
     conn.close()
     print('Team info returned.')
     return row
+
+def get_team_name_map():
+    """
+    Returns a dictionary mapping team_id → team_name from team_info table.
+    """
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT team_id, team_name FROM team_info')
+    rows = cursor.fetchall()
+    conn.close()
+
+    return {row['team_id']: row['team_name'] for row in rows}
