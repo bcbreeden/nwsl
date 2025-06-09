@@ -392,9 +392,21 @@ def _insert_event_markers(shot_data):
     halftime_inserted = False
 
     for i, shot in enumerate(shot_data):
-        if i > 0:
-            prev_shot = shot_data[i - 1]
+        if i == 0:
+            # Handle edge case: first shot is not a goal but score has changed
+            if shot['goal'] == 0 and (shot['home_score'] != 0 or shot['away_score'] != 0):
+                own_goal_marker = {
+                    'type': 'own_goal',
+                    'home_score': shot['home_score'],
+                    'away_score': shot['away_score'],
+                    'expanded_minute': shot['expanded_minute'],
+                    'period_id': shot['period_id'],
+                    'team_id': shot['team_id']  # the team that took the shot is the conceding team
+                }
+                new_data.append(own_goal_marker)
 
+        else:
+            prev_shot = shot_data[i - 1]
             score_changed = (
                 shot['home_score'] != prev_shot['home_score'] or
                 shot['away_score'] != prev_shot['away_score']
@@ -402,16 +414,13 @@ def _insert_event_markers(shot_data):
             both_no_goals = prev_shot['goal'] == 0 and shot['goal'] == 0
 
             if score_changed and both_no_goals:
-                # Infer team that conceded: the one not credited with this shot
-                conceding_team_id = prev_shot['team_id'] if shot['team_id'] != prev_shot['team_id'] else 'Unknown'
-
                 own_goal_marker = {
                     'type': 'own_goal',
                     'home_score': shot['home_score'],
                     'away_score': shot['away_score'],
                     'expanded_minute': shot['expanded_minute'],
                     'period_id': shot['period_id'],
-                    'team_id': conceding_team_id
+                    'team_id': shot['team_id']  # consistent logic: conceding team = shooter
                 }
                 new_data.append(own_goal_marker)
 
@@ -432,9 +441,8 @@ def _insert_event_markers(shot_data):
             'home_score': final_shot['home_score'],
             'away_score': final_shot['away_score']
         })
+
     return new_data
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
