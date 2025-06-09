@@ -149,57 +149,122 @@ class MatchSimulator:
 
         lines = []
 
-        # 1. Results
-        lines.append(f"Over {self.n_simulations} simulated matches between {home_name} and {away_name}, "
-                     f"{home_name} won {summary['home_win_pct']:.1%}, {away_name} won {summary['away_win_pct']:.1%}, "
-                     f"and {summary['draw_pct']:.1%} ended in draws.")
+        # 1. Match Simulation Results
+        lines.append(
+            f"Over {self.n_simulations} simulated matches between {home_name} and {away_name}, "
+            f"{home_name} won {summary['home_win_pct']:.1%}, {away_name} won {summary['away_win_pct']:.1%}, "
+            f"and {summary['draw_pct']:.1%} ended in draws."
+        )
+        lines.append(
+            f"Avg goals per match: {home_name} {summary['avg_home_goals']:.2f}, "
+            f"{away_name} {summary['avg_away_goals']:.2f}."
+        )
 
-        lines.append(f"Avg goals per match: {home_name} {summary['avg_home_goals']:.2f}, "
-                     f"{away_name} {summary['avg_away_goals']:.2f}.")
-
-        # 2. Shot quality
+        # 2. Shot Quality (xG)
         home_xg = sum(s["shot_xg"] for s in get_shots_for_team(self.home_team_id, self.season))
         away_xg = sum(s["shot_xg"] for s in get_shots_for_team(self.away_team_id, self.season))
-        lines.append(f"Season xG totals: {home_name} {home_xg:.1f}, {away_name} {away_xg:.1f}.")
+        xg_gap = abs(home_xg - away_xg)
+
+        if xg_gap < 1.0:
+            xg_desc = "a negligible difference in xG"
+        elif xg_gap < 3.0:
+            xg_desc = "a modest edge in xG"
+        else:
+            xg_desc = "a significant xG advantage"
+
+        xg_favored = home_name if home_xg > away_xg else away_name
+
+        lines.append(
+            f"Season xG totals show {xg_desc} favoring {xg_favored}: "
+            f"{home_name} generated {home_xg:.1f} xG, while {away_name} produced {away_xg:.1f}."
+        )
+
 
         # 3. Defense via xGA
         home_xga = get_team_xga_per_game(self.home_team_id, self.season)
         away_xga = get_team_xga_per_game(self.away_team_id, self.season)
-        lines.append(f"Season xGA per game: {home_name} {home_xga:.2f}, {away_name} {away_xga:.2f}.")
+        lines.append(
+            f"Defensively, {away_name if away_xga < home_xga else home_name} allowed fewer expected goals per match. "
+            f"xGA per game: {home_name} {home_xga:.2f}, {away_name} {away_xga:.2f}."
+        )
 
-        # 4. Goalkeeper performance
+        # 4. Goalkeeper Performance
         def gk_adj(gk): return gk["goals_minus_xgoals_gk"] / gk["xgoals_gk_faced"] if gk and gk["xgoals_gk_faced"] > 0 else 0
-        home_gk = gk_adj(get_goalkeeper_for_team(self.home_team_id, self.season))
-        away_gk = gk_adj(get_goalkeeper_for_team(self.away_team_id, self.season))
+        home_gk = get_goalkeeper_for_team(self.home_team_id, self.season)
+        away_gk = get_goalkeeper_for_team(self.away_team_id, self.season)
 
-        if home_gk < -0.05:
-            lines.append(f"{home_name}'s goalkeeper was a strength, exceeding expectations.")
-        elif home_gk > 0.05:
-            lines.append(f"{home_name}'s goalkeeper underperformed relative to xG faced.")
+        home_gk_adj = gk_adj(home_gk)
+        away_gk_adj = gk_adj(away_gk)
 
-        if away_gk < -0.05:
-            lines.append(f"{away_name}'s goalkeeper was notably strong.")
-        elif away_gk > 0.05:
-            lines.append(f"{away_name}'s keeper conceded more than expected.")
+        home_gk_name = self.player_name_map.get(home_gk["player_id"], "the goalkeeper") if home_gk else "the goalkeeper"
+        away_gk_name = self.player_name_map.get(away_gk["player_id"], "the goalkeeper") if away_gk else "the goalkeeper"
 
-        # 5. Scorers
+        # Add detailed stat-driven commentary
+        if home_gk:
+            lines.append(
+                f"{home_name}'s goalkeeper {home_gk_name} faced {home_gk['xgoals_gk_faced']:.1f} xG "
+                f"and conceded {home_gk['goals_conceded']} goals "
+                f"({home_gk['goals_divided_by_xgoals_gk']:.2f} goals per xG)."
+            )
+            if home_gk_adj < -0.05:
+                lines.append(f"{home_gk_name} was a clear strength, outperforming expectations by preventing difficult goals.")
+            elif home_gk_adj > 0.05:
+                lines.append(f"{home_gk_name} conceded more than expected, indicating some vulnerability in goal.")
+
+        if away_gk:
+            lines.append(
+                f"{away_name}'s goalkeeper {away_gk_name} faced {away_gk['xgoals_gk_faced']:.1f} xG "
+                f"and conceded {away_gk['goals_conceded']} goals "
+                f"({away_gk['goals_divided_by_xgoals_gk']:.2f} goals per xG)."
+            )
+            if away_gk_adj < -0.05:
+                lines.append(f"{away_gk_name} showed strong form with saves exceeding expected performance.")
+            elif away_gk_adj > 0.05:
+                lines.append(f"{away_gk_name} struggled against high-quality chances, conceding more than expected.")
+
+
+
+        # 5. Top Scorers
         top_home = self.get_top_scorers("home", 3)
         top_away = self.get_top_scorers("away", 3)
         if top_home:
-            top_str = ", ".join(f"{p['player_name']} ({p['goals']})" for p in top_home)
-            lines.append(f"Top scorers for {home_name}: {top_str}.")
+            home_scorers = ", ".join(f"{p['player_name']} ({p['goals']})" for p in top_home)
+            lines.append(f"Top scorers for {home_name}: {home_scorers}.")
         if top_away:
-            top_str = ", ".join(f"{p['player_name']} ({p['goals']})" for p in top_away)
-            lines.append(f"Top scorers for {away_name}: {top_str}.")
+            away_scorers = ", ".join(f"{p['player_name']} ({p['goals']})" for p in top_away)
+            lines.append(f"Top scorers for {away_name}: {away_scorers}.")
 
-        # 6. Outliers
+        # 6. Reconciling Contradictions
         if home_xg > away_xg and summary["home_win_pct"] < summary["away_win_pct"]:
-            lines.append(f"Despite more xG, {home_name} won fewer simulations—perhaps due to poor finishing or defense.")
+            lines.append(
+                f"Interestingly, {home_name} generated more xG over the season, but still won fewer simulated matches. "
+                f"This suggests issues with finishing quality or defensive lapses under pressure."
+            )
         elif away_xg > home_xg and summary["away_win_pct"] < summary["home_win_pct"]:
-            lines.append(f"{home_name} won more despite lower xG—likely better execution.")
+            lines.append(
+                f"Despite producing more xG over the season, {away_name} fell short in simulations—possibly due to "
+                f"poor shot conversion or weaker goalkeeper performance."
+            )
 
-        # 7. Conclusion
+        # 7. Final Insight
         favored = home_name if summary["home_win_pct"] > summary["away_win_pct"] else away_name
-        lines.append(f"In conclusion, {favored} appears to hold the edge based on simulation outcomes.")
+        home_win_pct = summary["home_win_pct"]
+        away_win_pct = summary["away_win_pct"]
+        win_gap = abs(home_win_pct - away_win_pct)
+
+        if win_gap >= 0.30:
+            matchup_desc = "an overwhelming advantage"
+        elif win_gap >= 0.15:
+            matchup_desc = "a clear advantage"
+        elif win_gap >= 0.05:
+            matchup_desc = "a small edge"
+        else:
+            matchup_desc = "a fairly even matchup"
+        lines.append(
+            f"In conclusion, {favored} holds {matchup_desc} in this matchup based on simulation outcomes. "
+            f"That said, small differences in finishing, goalkeeping, or tactical execution could still sway any real-world result."
+        )
+
 
         return "\n\n".join(lines)
+

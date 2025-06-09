@@ -1,9 +1,8 @@
 from data import sim
 
-# simulator = sim.MatchSimulator('aDQ0lzvQEv', 'zeQZeazqKw', 2025, mode="shot")
-simulator = sim.MatchSimulator('aDQ0lzvQEv', 'zeQZeazqKw', 2025, mode="shot", use_psxg=True)
+simulator = sim.MatchSimulator('4wM4rZdqjB', 'XVqKeVKM01', 2025, mode="shot", use_psxg=True)
 
-simulator.run_simulations(100)
+simulator.run_simulations(1000)
 
 
 scorelines = simulator.get_scoreline_distribution()
