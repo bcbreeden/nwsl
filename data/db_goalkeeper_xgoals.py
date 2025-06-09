@@ -1,5 +1,5 @@
 from api import make_asa_api_call
-from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES, get_db_path
+from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES, get_db_path, validate_id
 import sqlite3
 
 def get_all_goalkeepers_xgoals_by_season(season):
@@ -221,3 +221,39 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
             ))
         
     conn.commit()
+
+def get_goalkeeper_for_team(team_id, season):
+    """
+    Retrieves the goalkeeper with the most minutes played for a given team and season.
+
+    Args:
+        team_id (str): The unique identifier for the team.
+        season (int): The season to filter on.
+
+    Returns:
+        sqlite3.Row or None: The goalkeeper record with the most minutes, or None if no data exists.
+    """
+    validate_id(team_id)
+    print(f'Fetching primary goalkeeper for team {team_id} in season {season}...')
+
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT * FROM goalkeeper_xgoals
+        WHERE team_id = ?
+          AND season = ?
+        ORDER BY minutes_played DESC
+        LIMIT 1
+    ''', (team_id, season))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        print(f'Goalkeeper {row["player_id"]} selected with {row["minutes_played"]} minutes.')
+    else:
+        print(f'No goalkeeper data found for team {team_id} in season {season}.')
+
+    return row

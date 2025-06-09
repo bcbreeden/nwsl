@@ -305,3 +305,74 @@ def get_total_shots_on_target_by_game_id(game_id):
         print(f'Team {team_id} shots on target: {total}')
 
     return shots_on_target_by_team
+
+def get_shots_for_team(team_id, season):
+    """
+    Retrieves all shot records for a specific team in a given season.
+
+    Args:
+        team_id (str): The unique identifier for the team.
+        season (int): The season to fetch shot data for.
+
+    Returns:
+        list[sqlite3.Row]: A list of shot records ordered by game and shot sequence.
+    """
+    validate_id(team_id)
+    print(f'Fetching all shots for team {team_id} in season {season}...')
+    
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT * FROM game_shots
+        WHERE team_id = ?
+          AND season = ?
+        ORDER BY game_id ASC, shot_order ASC
+    ''', (team_id, season))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    print(f'{len(rows)} shots retrieved for team {team_id} in season {season}.')
+    return rows
+
+
+def get_avg_shots_for_team(team_id, season):
+    """
+    Calculates the average number of shots per game for a team in a given season.
+
+    Args:
+        team_id (str): The unique identifier for the team.
+        season (int): The season to consider.
+
+    Returns:
+        float: The average number of shots per game, or 0.0 if no data found.
+    """
+    validate_id(team_id)
+    print(f'Calculating average shots per game for team {team_id} in season {season}...')
+
+    conn = sqlite3.connect(get_db_path())
+    cursor = conn.cursor()
+
+    # Total shots taken by the team
+    cursor.execute('''
+        SELECT COUNT(*) FROM game_shots
+        WHERE team_id = ?
+          AND season = ?
+    ''', (team_id, season))
+    total_shots = cursor.fetchone()[0]
+
+    # Total games the team played in
+    cursor.execute('''
+        SELECT COUNT(DISTINCT game_id) FROM game_shots
+        WHERE team_id = ?
+          AND season = ?
+    ''', (team_id, season))
+    total_games = cursor.fetchone()[0]
+
+    conn.close()
+
+    avg_shots = total_shots / total_games if total_games > 0 else 0.0
+    print(f'Team {team_id} averaged {avg_shots:.2f} shots per game over {total_games} games.')
+    return avg_shots
