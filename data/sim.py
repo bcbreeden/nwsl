@@ -14,7 +14,7 @@ class MatchSimulator:
         self.home_team_id = home_team_id
         self.away_team_id = away_team_id
         self.season = season
-        self.mode = mode
+        self.mode = mode.lower()
         self.exclude_penalties = exclude_penalties
         self.n_simulations = 0
         self.use_psxg = use_psxg

@@ -179,6 +179,10 @@ ul {
     align-items: center;
 }
 
+.table_vertical_top {
+    vertical-align: top;
+}
+
 /* ======================
    Colors
 ====================== */

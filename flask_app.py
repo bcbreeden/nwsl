@@ -392,10 +392,17 @@ def simulations():
     home_team_id = 'zeQZeazqKw'
     away_team_id = 'Pk5LeeNqOW'
     season = 2025
-    mode = "shot"
+    mode = "Shot"
+    use_psxg = True
+    exclude_penalties = True
     n_simulations = 10
 
-    simulator = sim.MatchSimulator(home_team_id, away_team_id, season, mode=mode)
+    simulator = sim.MatchSimulator(home_team_id=home_team_id,
+                                   away_team_id=away_team_id,
+                                   season=season,
+                                   mode=mode,
+                                   exclude_penalties=exclude_penalties,
+                                   use_psxg=use_psxg)
     simulator.run_simulations(n_simulations)
 
     summary = simulator.get_summary()
@@ -409,7 +416,10 @@ def simulations():
                             home_scorers=home_scorers,
                             away_scorers=away_scorers,
                             n_simulations=n_simulations,
-                            mode=mode)
+                            mode=mode,
+                            use_psxg=use_psxg,
+                            exclude_penalties=exclude_penalties,
+                            season=season)
 
 def _insert_event_markers(shot_data, home_team_id, away_team_id):
     new_data = []
