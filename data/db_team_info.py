@@ -65,3 +65,17 @@ def get_team_name_map():
     conn.close()
 
     return {row['team_id']: row['team_name'] for row in rows}
+
+def get_team_abbreviation_map():
+    """
+    Returns a dictionary mapping team_id → team_abbreviation from team_info table.
+    """
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT team_id, team_abbreviation FROM team_info')
+    rows = cursor.fetchall()
+    conn.close()
+
+    return {row['team_id']: row['team_abbreviation'] for row in rows}

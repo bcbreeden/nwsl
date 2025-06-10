@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
-                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
+                db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
                 db_stadium_info, db_team_strength, db_team_xgoals_boundaries, db_team_xpass_boundaries,
-                db_team_goals_added_boundaries, db_game_shots, db_game_goals)
+                db_team_goals_added_boundaries, db_game_shots, db_game_goals, sim)
 from plots import (plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results, get_donut_plot_for_goals,
                 get_donut_plot_for_pass_completion, plot_bar_chart, generate_shot_marker_plot)
 from momentum_plot import generate_momentum_plot
@@ -386,6 +386,30 @@ def goalkeeper():
                            keeper_data = goalkeeper_data,
                            season = season_manager.season,
                            seasons = season_manager.seasons)
+
+@app.route('/simulations', methods=['GET', 'POST'])
+def simulations():
+    home_team_id = 'zeQZeazqKw'
+    away_team_id = 'Pk5LeeNqOW'
+    season = 2025
+    mode = "shot"
+    n_simulations = 10
+
+    simulator = sim.MatchSimulator(home_team_id, away_team_id, season, mode=mode)
+    simulator.run_simulations(n_simulations)
+
+    summary = simulator.get_summary()
+    scorelines = simulator.get_scoreline_distribution()
+    home_scorers = simulator.get_top_scorers("home", limit = 5)
+    away_scorers = simulator.get_top_scorers("away", limit = 5)
+
+    return render_template('simulations.html',
+                            summary=summary,
+                            scorelines=scorelines,
+                            home_scorers=home_scorers,
+                            away_scorers=away_scorers,
+                            n_simulations=n_simulations,
+                            mode=mode)
 
 def _insert_event_markers(shot_data, home_team_id, away_team_id):
     new_data = []

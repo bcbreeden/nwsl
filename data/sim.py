@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 from data.db_game_shots import get_shots_for_team, get_avg_shots_for_team
 from data.db_goalkeeper_xgoals import get_goalkeeper_for_team
 from data.db_player_info import get_player_name_map
-from data.db_team_info import get_team_name_map
+from data.db_team_info import get_team_name_map, get_team_abbreviation_map
 from data.db_team_xgoals import get_team_xga_per_game
 
 
@@ -21,6 +21,7 @@ class MatchSimulator:
 
         self.player_name_map = get_player_name_map()
         self.team_name_map = get_team_name_map()
+        self.team_abbreviation_map = get_team_abbreviation_map()
 
         self.scorelines = Counter()
         self.outcomes = Counter()
@@ -114,6 +115,8 @@ class MatchSimulator:
             "away_team_id": self.away_team_id,
             "home_team_name": self.team_name_map.get(self.home_team_id, "Home"),
             "away_team_name": self.team_name_map.get(self.away_team_id, "Away"),
+            "home_team_abbreviation": self.team_abbreviation_map.get(self.home_team_id, "Home"),
+            "away_team_abbreviation": self.team_abbreviation_map.get(self.away_team_id, "Away"),
             "home_win_pct": self.outcomes["home_win"] / self.n_simulations,
             "away_win_pct": self.outcomes["away_win"] / self.n_simulations,
             "draw_pct": self.outcomes["draw"] / self.n_simulations,
@@ -122,12 +125,17 @@ class MatchSimulator:
         }
 
     def get_scoreline_distribution(self):
+        sorted_scorelines = sorted(
+            self.scorelines.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
         return {
             f"{h}-{a}": {
                 "count": count,
                 "pct": count / self.n_simulations
             }
-            for (h, a), count in self.scorelines.items()
+            for (h, a), count in sorted_scorelines
         }
 
     def get_top_scorers(self, side, limit=10):

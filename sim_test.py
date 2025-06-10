@@ -1,6 +1,6 @@
 from data import sim
 
-simulator = sim.MatchSimulator('4wM4rZdqjB', 'XVqKeVKM01', 2025, mode="shot", use_psxg=True)
+simulator = sim.MatchSimulator('zeQZeazqKw', 'Pk5LeeNqOW', 2025, mode="shot", exclude_penalties=False, use_psxg=True)
 
 simulator.run_simulations(1000)
 

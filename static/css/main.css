@@ -276,6 +276,10 @@ ul {
     font-weight: bolder
 }
 
+.text-weight-500 {
+    font-weight: 500;
+}
+
 .white-text {
     color: var(--block-bg);
 }
