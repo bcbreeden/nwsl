@@ -387,20 +387,29 @@ def goalkeeper():
                            season = season_manager.season,
                            seasons = season_manager.seasons)
 
-@app.route('/simulations', methods=['GET', 'POST'])
+@app.route('/simulations')
 def simulations():
-    home_team_id = 'zeQZeazqKw'
-    away_team_id = 'Pk5LeeNqOW'
-    mode = "Shot"
-    use_psxg = True
-    exclude_penalties = True
-    n_simulations = 10
+    team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
+    return render_template('simulations.html',
+                            season=season_manager.season,
+                            seasons = season_manager.seasons,
+                            teams=team_data)
+
+@app.route('/simulation_results', methods=['GET', 'POST'])
+def simulation_results():
+    home_team_id = request.form.get("home_team")            # e.g. "zeQZeazqKw"
+    away_team_id = request.form.get("away_team")            # e.g. "Pk5LeeNqOW"
+    model_type = request.form.get("model_type")             # e.g. "Shot" or "Poisson"
+    n_simulations = int(request.form.get("num_sims", 0))    # Convert to int with fallback
+
+    use_psxg = "psxg" in request.form                        # Checkbox checked = True
+    include_penalties = "pks" in request.form           # Inverted logic if PKs are *excluded*
 
     simulator = sim.MatchSimulator(home_team_id=home_team_id,
                                    away_team_id=away_team_id,
                                    season=season_manager.season,
-                                   mode=mode,
-                                   exclude_penalties=exclude_penalties,
+                                   mode=model_type,
+                                   exclude_penalties=include_penalties,
                                    use_psxg=use_psxg)
     simulator.run_simulations(n_simulations)
 
@@ -409,15 +418,15 @@ def simulations():
     home_scorers = simulator.get_top_scorers("home", limit = 5)
     away_scorers = simulator.get_top_scorers("away", limit = 5)
 
-    return render_template('simulations.html',
+    return render_template('simulation_results.html',
                             summary=summary,
                             scorelines=scorelines,
                             home_scorers=home_scorers,
                             away_scorers=away_scorers,
                             n_simulations=n_simulations,
-                            mode=mode,
+                            mode=model_type,
                             use_psxg=use_psxg,
-                            exclude_penalties=exclude_penalties,
+                            exclude_penalties=include_penalties,
                             season=season_manager.season,
                             seasons = season_manager.seasons)
 

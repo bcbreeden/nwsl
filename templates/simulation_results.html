@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="report">
+    <section class="column-container flex-all-center">
+        <h2 class="text-audiowide">{{ summary.home_team_name }} vs {{ summary.away_team_name }}</h2>
+        <p class="no-padding-no-margin"><strong>Season:</strong> {{ season }}</p>
+        <p class="no-padding-no-margin"><strong>Simulations:</strong> {{ n_simulations }}</p>
+        <p class="no-padding-no-margin"><strong>Mode:</strong> {{ mode }}</p>
+        <p class="no-padding-no-margin"><strong>PsXG:</strong> {{ use_psxg }}</p>
+        <p class="no-padding-no-margin"><strong>Include PKs:</strong> {{ exclude_penalties }}</p>
+    </section>
+    <section class="column-container flex-all-center">
+        <table class="width-100-fixed max-width-800">
+            <colgroup>
+                <col style="width: 40%">
+                <col style="width: 20%">
+                <col style="width: 40%">
+            </colgroup>
+            <tr>
+                <td class="text-center">
+                    <img class="team_logo" src="{{ url_for('static', filename='img/' + summary.home_team_abbreviation + '.png') }}">
+                </td>
+                <td></td>
+                <td class="text-center">
+                    <img class="team_logo" src="{{ url_for('static', filename='img/' + summary.away_team_abbreviation + '.png') }}">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-center">
+                    <p class="text-weight-bolder text-montserrat text-large">
+                        {{ (summary.home_win_pct * 100) | round(1) }}
+                    </p>
+                </td>
+                <td class="text-center">
+                    <p class="text-montserrat text-large text-weight-500">Win %</p>
+                </td>
+                <td class="text-center">
+                    <p class="text-weight-bolder text-montserrat text-large">
+                        {{ (summary.away_win_pct * 100) | round(1) }}
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-center">
+                    <p class="text-weight-bolder text-montserrat text-large">
+                        {{ (summary.draw_pct * 100) | round(1) }}
+                    </p>
+                </td>
+                <td class="text-center">
+                    <p class="text-montserrat text-large text-weight-500">Draw %</p>
+                </td>
+                <td class="text-center">
+                    <p class="text-weight-bolder text-montserrat text-large">
+                        {{ (summary.draw_pct * 100) | round(1) }}
+                    </p>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="text-center">
+                    <p class="text-weight-bolder text-montserrat text-large">
+                        {{ summary.avg_home_goals | round(2) }}
+                    </p>
+                </td>
+                <td class="text-center">
+                    <p class="text-montserrat text-large text-weight-500 no-padding-no-margin">Average</p>
+                    <p class="text-montserrat no-padding-no-margin text-small">(Goals/Game)</p>
+                </td>
+                <td class="text-center">
+                    <p class="text-weight-bolder text-montserrat text-large">
+                        {{ summary.avg_away_goals | round(2) }}
+                    </p>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="text-center table_vertical_top">
+                    {% for scorer in home_scorers %}
+                        <p class="no-padding-no-margin">
+                            {{ scorer.player_name }} - {{ (scorer.goals / n_simulations)|round(2) }}
+                        </p>
+                    {% endfor %}
+                </td>
+                <td class="text-center table_vertical_top">
+                    <p class="text-montserrat text-large text-weight-500 no-padding-no-margin">Top Scorers</p>
+                    <p class="text-montserrat no-padding-no-margin text-small">(Goals/Game)</p>
+                </td>
+                <td class="text-center table_vertical_top">
+                    {% for scorer in away_scorers %}
+                        <p class="no-padding-no-margin">
+                            {{ scorer.player_name }} - {{ (scorer.goals / n_simulations)|round(2) }}
+                        </p>
+                    {% endfor %}
+                </td>
+            </tr>
+        </table>
+    </section>
+
+
+    <div class="scorelines">
+        <h3>Scoreline Distribution</h3>
+        <ul>
+        {% for score, data in scorelines.items() %}
+            <li>{{ score }} – {{ data.count }} times ({{ (data.pct * 100) | round(1) }}%)</li>
+        {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% endblock %}
