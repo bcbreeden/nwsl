@@ -391,7 +391,6 @@ def goalkeeper():
 def simulations():
     home_team_id = 'zeQZeazqKw'
     away_team_id = 'Pk5LeeNqOW'
-    season = 2025
     mode = "Shot"
     use_psxg = True
     exclude_penalties = True
@@ -399,7 +398,7 @@ def simulations():
 
     simulator = sim.MatchSimulator(home_team_id=home_team_id,
                                    away_team_id=away_team_id,
-                                   season=season,
+                                   season=season_manager.season,
                                    mode=mode,
                                    exclude_penalties=exclude_penalties,
                                    use_psxg=use_psxg)
@@ -419,7 +418,8 @@ def simulations():
                             mode=mode,
                             use_psxg=use_psxg,
                             exclude_penalties=exclude_penalties,
-                            season=season)
+                            season=season_manager.season,
+                            seasons = season_manager.seasons)
 
 def _insert_event_markers(shot_data, home_team_id, away_team_id):
     new_data = []
