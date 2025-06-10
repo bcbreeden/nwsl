@@ -134,6 +134,10 @@ ul {
    Generic
 ====================== */
 
+.max-width-800 {
+    max-width: 800px;
+}
+
 /* ======================
    Alignment
 ====================== */
@@ -179,8 +183,23 @@ ul {
     align-items: center;
 }
 
+/* ======================
+   Tables
+====================== */
+
 .table_vertical_top {
     vertical-align: top;
+}
+
+.width-100-fixed {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.row-border td {
+    border-bottom: 2px solid #ccc;
 }
 
 /* ======================
@@ -244,13 +263,6 @@ ul {
 
 .large_padding {
     padding: 20px;
-}
-
-/* ======================
-   Tables
-====================== */
-.row-border td {
-    border-bottom: 2px solid #ccc;
 }
 
 /* ======================
