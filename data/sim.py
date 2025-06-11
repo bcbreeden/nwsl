@@ -6,7 +6,7 @@ from data.db_game_shots import get_shots_for_team, get_avg_shots_for_team
 from data.db_goalkeeper_xgoals import get_goalkeeper_for_team
 from data.db_player_info import get_player_name_map
 from data.db_team_info import get_team_name_map, get_team_abbreviation_map
-from data.db_team_xgoals import get_team_xga_per_game
+from data.db_team_xgoals import get_team_xga_per_game, get_league_avg_xga_per_game
 
 
 class MatchSimulator:
@@ -23,6 +23,10 @@ class MatchSimulator:
         self.cached_avg_shots = {}
         self.cached_goalkeepers = {}
         self.cached_avg_xg_per_game = {}
+        self.cached_xga_per_game = {
+            team_id: get_team_xga_per_game(team_id, self.season)
+            for team_id in [self.home_team_id, self.away_team_id]
+        }
 
         self.player_name_map = get_player_name_map()
         self.team_name_map = get_team_name_map()
@@ -69,9 +73,17 @@ class MatchSimulator:
                 shots = [s for s in shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
 
             avg_shots = self.cached_avg_shots[team_id]
-            sample_size = max(1, int(random.gauss(avg_shots, 2)))
+
+            # Incorporate opponent defensive strength using xGA
+            opponent_xga = self.cached_xga_per_game.get(opponent_id, 1.5)  # default to league avg if missing
+            league_avg_xga = get_league_avg_xga_per_game(self.season)
+            defense_modifier = opponent_xga / league_avg_xga
+            adjusted_avg_shots = avg_shots * defense_modifier
+
+            sample_size = max(1, int(random.gauss(adjusted_avg_shots, 2)))
             sampled = random.sample(shots, min(sample_size, len(shots)))
 
+            # Goalkeeper adjustment
             gk = self.cached_goalkeepers.get(opponent_id)
             gk_modifier = 0.0
             if gk and gk["xgoals_gk_faced"] > 0:
@@ -85,7 +97,7 @@ class MatchSimulator:
                     continue
 
                 if self.use_psxg:
-                    adj_prob = base_prob
+                    adj_prob = base_prob  # PSxG already accounts for goalkeeper
                 else:
                     adj_prob = max(0.01, min(0.95, base_prob * (1.0 + gk_modifier)))
 
@@ -95,6 +107,8 @@ class MatchSimulator:
 
         elif self.mode == "poisson":
             avg_xg_per_game = self.cached_avg_xg_per_game[team_id]
+
+            # Goalkeeper modifier
             gk = self.cached_goalkeepers.get(opponent_id)
             gk_modifier = 0.0
             if gk and gk["xgoals_gk_faced"] > 0:
@@ -102,13 +116,19 @@ class MatchSimulator:
                 faced = gk["xgoals_gk_faced"]
                 gk_modifier = -1.0 * (over / faced)
 
-            lam = max(0.1, avg_xg_per_game * (1.0 + gk_modifier))
+            # Defensive modifier
+            opponent_xga = self.cached_xga_per_game.get(opponent_id, 1.5)
+            league_avg_xga = 1.5
+            defense_modifier = opponent_xga / league_avg_xga
+
+            lam = max(0.1, avg_xg_per_game * defense_modifier * (1.0 + gk_modifier))
             goals = np.random.poisson(lam)
 
         else:
             raise ValueError(f"Invalid mode: {self.mode}")
 
         return goals, scorers
+
 
     def run_simulations(self, n):
         self.n_simulations = n

@@ -363,6 +363,28 @@ def get_team_xga_per_game(team_id, season):
         return row['xgoals_against'] / row['count_games']
     return None
 
+def get_league_avg_xga_per_game(season):
+    """
+    Returns the league-wide average xGA per game for the given season.
+    """
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = """
+    SELECT SUM(xgoals_against) AS total_xga, SUM(count_games) AS total_games
+    FROM team_xgoals
+    WHERE season = ?
+    """
+    cursor.execute(query, (season,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row and row['total_games'] > 0:
+        return row['total_xga'] / row['total_games']
+    return None
+
+
 
 '''
 ======================
