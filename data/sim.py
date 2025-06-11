@@ -70,70 +70,45 @@ class MatchSimulator:
         scorers = []
         goals = 0
 
-        if self.mode == "shot":
-            shots = self.cached_team_shots[team_id]
-            if self.exclude_penalties:
-                shots = [s for s in shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
+        shots = self.cached_team_shots[team_id]
+        if self.exclude_penalties:
+            shots = [s for s in shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
 
-            avg_shots = self.cached_avg_shots[team_id]
+        avg_shots = self.cached_avg_shots[team_id]
 
-            # Incorporate opponent defensive strength using xGA
-            opponent_xga = self.cached_xga_per_game.get(opponent_id, 1.5)  # default to league avg if missing
-            league_avg_xga = get_league_avg_xga_per_game(self.season)
-            defense_modifier = opponent_xga / league_avg_xga
-            adjusted_avg_shots = avg_shots * defense_modifier
+        # Incorporate opponent defensive strength using xGA
+        opponent_xga = self.cached_xga_per_game.get(opponent_id, 1.5)  # default to league avg if missing
+        league_avg_xga = get_league_avg_xga_per_game(self.season)
+        defense_modifier = opponent_xga / league_avg_xga
+        adjusted_avg_shots = avg_shots * defense_modifier
 
-            advantage = self.home_advantage if team_id == self.home_team_id else self.away_advantage
-            sample_size = max(1, int(random.gauss(adjusted_avg_shots * advantage, 2)))
-            sampled = random.sample(shots, min(sample_size, len(shots)))
+        advantage = self.home_advantage if team_id == self.home_team_id else self.away_advantage
+        sample_size = max(1, int(random.gauss(adjusted_avg_shots * advantage, 2)))
+        sampled = random.sample(shots, min(sample_size, len(shots)))
 
-            # Goalkeeper adjustment
-            gk = self.cached_goalkeepers.get(opponent_id)
-            gk_modifier = 0.0
-            if gk and gk["xgoals_gk_faced"] > 0:
-                over = gk["goals_minus_xgoals_gk"]
-                faced = gk["xgoals_gk_faced"]
-                gk_modifier = -1.0 * (over / faced)
+        # Goalkeeper adjustment
+        gk = self.cached_goalkeepers.get(opponent_id)
+        gk_modifier = 0.0
+        if gk and gk["xgoals_gk_faced"] > 0:
+            over = gk["goals_minus_xgoals_gk"]
+            faced = gk["xgoals_gk_faced"]
+            gk_modifier = -1.0 * (over / faced)
 
-            for shot in sampled:
-                base_prob = shot["shot_psxg"] if self.use_psxg else shot["shot_xg"]
-                if base_prob is None:
-                    continue
+        for shot in sampled:
+            base_prob = shot["shot_psxg"] if self.use_psxg else shot["shot_xg"]
+            if base_prob is None:
+                continue
 
-                if self.use_psxg:
-                    adj_prob = base_prob  # PSxG already accounts for goalkeeper
-                else:
-                    adj_prob = max(0.01, min(0.95, base_prob * (1.0 + gk_modifier)))
+            if self.use_psxg:
+                adj_prob = base_prob  # PSxG already accounts for goalkeeper
+            else:
+                adj_prob = max(0.01, min(0.95, base_prob * (1.0 + gk_modifier)))
 
-                if random.random() < adj_prob:
-                    goals += 1
-                    scorers.append(shot["shooter_player_id"])
-
-        elif self.mode == "poisson":
-            avg_xg_per_game = self.cached_avg_xg_per_game[team_id]
-
-            # Goalkeeper modifier
-            gk = self.cached_goalkeepers.get(opponent_id)
-            gk_modifier = 0.0
-            if gk and gk["xgoals_gk_faced"] > 0:
-                over = gk["goals_minus_xgoals_gk"]
-                faced = gk["xgoals_gk_faced"]
-                gk_modifier = -1.0 * (over / faced)
-
-            # Defensive modifier
-            opponent_xga = self.cached_xga_per_game.get(opponent_id, 1.5)
-            league_avg_xga = 1.5
-            defense_modifier = opponent_xga / league_avg_xga
-
-            advantage = self.home_advantage if team_id == self.home_team_id else self.away_advantage
-            lam = max(0.1, avg_xg_per_game * (1.0 + gk_modifier) * advantage)
-            goals = np.random.poisson(lam)
-
-        else:
-            raise ValueError(f"Invalid mode: {self.mode}")
+            if random.random() < adj_prob:
+                goals += 1
+                scorers.append(shot["shooter_player_id"])
 
         return goals, scorers
-
 
     def run_simulations(self, n):
         self.n_simulations = n

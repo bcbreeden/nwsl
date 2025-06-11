@@ -3,35 +3,30 @@
 {% block content %}
     <section class="column-container max-width-800 flex-vert-top-hori-center large-margin">
         <h2 class="text-audiowide text-xxlarge">NWSL Match Simulator</h2>
+
         <p class="text-weight-500">
-        Welcome to the NWSL Match Simulator, a tool that lets you simulate head-to-head outcomes between any two NWSL teams using real player, team, and match-level data. Whether you're a fan, analyst, or developer, this tool allows you to explore likely results based on real performance trends, not just guesswork.
+        Welcome to the NWSL Match Simulator, a tool that lets you simulate head-to-head outcomes between any two NWSL teams using real player, team, and match-level data. Whether you're a fan, analyst, or developer, this tool allows you to explore likely results based on performance trends, not guesswork.
         </p>
 
         <p class="text-weight-500">
-        The simulator incorporates advanced metrics like expected goals (xG), post-shot xG (PSxG), goalkeeper over/underperformance, and now expected goals against (xGA); allowing defensive strength to directly influence the number of shot opportunities a team faces. This creates more accurate simulations that reflect not only how well a team attacks, but how well they defend.
+        This simulator is built on shot-based modeling: it samples actual shot events from each team, adjusts for the strength of the opposing goalkeeper, and scales shot volume based on expected goals against (xGA). This means stronger defenses limit chances, while weaker ones open the floodgates, just like in real matches.
         </p>
 
         <p class="text-weight-500">
-        You can customize the simulation by choosing the number of runs (to reduce randomness), and selecting between two simulation modes: <strong>Shot-based</strong> (sampling real shot events) or <strong>Poisson</strong> (based on average expected goals per game). Each mode provides a unique lens for exploring how NWSL matches might play out.
+        It also factors in post-shot expected goals (PSxG) and team shooting tendencies to produce a more accurate view of how a match might unfold. By running the simulation hundreds of times, you get a clearer picture of outcome probabilities, goal distributions, and even likely scorers.
         </p>
 
-
-
-
-        <section class="column-container flex-all-center moderate-margin">
-            <h3 class="text-audiowide text-xlarge">Available Models</h3>
-            <p class="no-padding-no-margin text-weight-500"><strong>Shot Model:</strong> Uses actual shot-level data from each team to simulate goals one by one.</p>
-            <p class="no-padding-no-margin text-weight-500"><strong>Poisson Model:</strong> Uses each team’s average expected goals to simulate full match results.</p>
+        <section class="column-container flex-all-center">
+            <h3 class="text-audiowide text-xlarge moderate-margin">Customization Options</h3>
+            <section class="column-container">
+                <p class="no-padding-no-margin text-weight-500"><strong>Simulations:</strong> The number of match simulations to run (more = better accuracy).</p>
+                <p class="no-padding-no-margin text-weight-500"><strong>Include Penalties:</strong> Choose whether to include penalty kicks in team shooting data.</p>
+                <p class="no-padding-no-margin text-weight-500"><strong>Use PSxG:</strong> Enable post-shot expected goals, which captures shot quality based on placement and trajectory.</p>
+            </section>
         </section>
 
-        <section class="column-container flex-all-center moderate-margin">
-            <h3 class="text-audiowide text-xlarge">Additional Options</h3>
-            <p class="no-padding-no-margin text-weight-500"><strong>Simulations:</strong> The number of simulations to run.</p>
-            <p class="no-padding-no-margin text-weight-500"><strong>Include Penalties:</strong> Should penalties be included when modeling team strength?</p>
-            <p class="no-padding-no-margin text-weight-500"><strong>Use PSxG:</strong> Toggle to include post-shot xG for shot quality.</p>
-        </section>
+        <p class="text-weight-800 moderate-margin">Please be patient—simulations may take a few moments to complete.</p>
 
-        <p class="text-weight-800">Please be patient, simulations may take a few minutes to run.</p>
 
         <form class="max-width-300 border-3 border-radius-5 large_padding large-margin" id="simulation_form" action="/simulation_results" method="POST">
             <label class="hidden" for="home_team">Select Option 1:</label>
@@ -50,12 +45,6 @@
                     {% for team in teams %}
                         <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
                     {% endfor %}
-                </select>
-
-                <select class="width-100" id="model_type" name="model_type" required>
-                    <option value="">--Model Type--</option>
-                    <option value="Shot">Shot Simulation</option>
-                    <option value="Poisson">Poisson</option>
                 </select>
 
                 <select class="width-100" id="num_sims" name="num_sims" required>
