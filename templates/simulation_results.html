@@ -97,13 +97,34 @@
                 </td>
             </tr>
         </table>
-    </section>
 
-    <section>
-        <h3>Scoreline Distribution</h3>
-        {% for score, data in scorelines.items() %}
-            <p>{{ score }} ({{ data.count }} times - {{ (data.pct * 100) | round(1) }}%)</p>
-        {% endfor %}
+        <section class="column-container text-center large-margin">
+            <h3>Scoreline Distribution</h3>
+            <table class="width-100-fixed max-width-500">
+                <colgroup>
+                    <col style="width: 40%">
+                    <col style="width: 20%">
+                    <col style="width: 40%">
+                </colgroup>
+                <th class="text-center"><img class="icon-medium" src="{{ url_for('static', filename='img/' + summary.home_team_abbreviation + '.png') }}"></th>
+                <th class="text-center">Count</th>
+                <th class="text-center"><img class="icon-medium" src="{{ url_for('static', filename='img/' + summary.away_team_abbreviation + '.png') }}"></th>
+                {% for entry in scorelines %}
+                    <tr>
+                        <td>
+                            <p class="text-weight-bolder text-montserrat text-large">{{ entry.home_goals }}</p>
+                        </td>
+                        <td>
+                            <p class="text-montserrat text-small text-weight-500 no-padding-no-margin">{{ entry.count }}</p>
+                            <p class="text-montserrat text-small text-weight-500 no-padding-no-margin">({{ (entry.pct * 100) | round(1) }}%)</p>
+                        </td>
+                        <td>
+                            <p class="text-weight-bolder text-montserrat text-large">{{ entry.away_goals }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </section>
     </section>
 </section>
 

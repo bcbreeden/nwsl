@@ -130,13 +130,16 @@ class MatchSimulator:
             key=lambda x: x[1],
             reverse=True
         )
-        return {
-            f"{h}-{a}": {
+        return [
+            {
+                "scoreline": f"{h}-{a}",
+                "home_goals": h,
+                "away_goals": a,
                 "count": count,
                 "pct": count / self.n_simulations
             }
             for (h, a), count in sorted_scorelines
-        }
+        ]
 
     def get_top_scorers(self, side, limit=10):
         team_id = self.home_team_id if side == "home" else self.away_team_id
