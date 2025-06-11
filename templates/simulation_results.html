@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="report">
+<section class="max-width-800 large-margin column-container">
     <section class="column-container flex-all-center">
-        <h2 class="text-audiowide">{{ summary.home_team_name }} vs {{ summary.away_team_name }}</h2>
+        <h2 class="text-audiowide moderate-margin">{{ summary.home_team_name }} vs {{ summary.away_team_name }}</h2>
         <p class="no-padding-no-margin"><strong>Season:</strong> {{ season }}</p>
         <p class="no-padding-no-margin"><strong>Simulations:</strong> {{ n_simulations }}</p>
         <p class="no-padding-no-margin"><strong>Mode:</strong> {{ mode }}</p>
@@ -99,15 +99,12 @@
         </table>
     </section>
 
-
-    <div class="scorelines">
+    <section>
         <h3>Scoreline Distribution</h3>
-        <ul>
         {% for score, data in scorelines.items() %}
-            <li>{{ score }} – {{ data.count }} times ({{ (data.pct * 100) | round(1) }}%)</li>
+            <p>{{ score }} ({{ data.count }} times - {{ (data.pct * 100) | round(1) }}%)</p>
         {% endfor %}
-        </ul>
-    </div>
+    </section>
 </section>
 
 {% endblock %}
