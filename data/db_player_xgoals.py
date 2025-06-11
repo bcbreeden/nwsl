@@ -2,8 +2,6 @@ from api import make_asa_api_call
 from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES, get_db_path
 import sqlite3
 
-# MINUTE_LIMIT = 180
-
 def get_player_xgoal_data_all_seasons(player_id: str):
     """
     Fetches and returns player xGoals data for all seasons.

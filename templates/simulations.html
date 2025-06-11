@@ -37,7 +37,7 @@
         </div>
 
         <div id="configuration" class="tab-content">
-            <form class="max-width-300 border-3 border-radius-5 large_padding large-margin" id="simulation_form" action="/simulation_results" method="POST">
+            <form class="max-width-800 border-3 border-radius-5 large_padding large-margin" id="simulation_form" action="/simulation_results" method="POST" autocomplete="off">
                 <label class="hidden" for="home_team">Select Option 1:</label>
                 <div class="column-container flex-all-center" >
                     <h3 class="text-audiowide text-xlarge">Configuration</h3>
@@ -88,6 +88,22 @@
                         <input type="checkbox" name="psxg" value="yes">
                         Use PSxG?
                     </label>
+                    
+                    <section class="row-container moderate-margin">
+                        <div class="player-toggle-container column-container flex-vert-top-hori-center">
+                            <img id="home_team_logo" class="team_logo hidden" style="width: 80px; height: auto; margin-bottom: 10px;">
+                            <h4 id="home_players_header" class="text-weight-600 hidden"></h4>
+                            <div id="home_players_container"></div>
+                        </div>
+
+                        <div class="player-toggle-container column-container flex-vert-top-hori-center">
+                            <img id="away_team_logo" class="team_logo hidden" style="width: 80px; height: auto; margin-bottom: 10px;">
+                            <h4 id="away_players_header" class="text-weight-600 hidden"></h4>
+                            <div id="away_players_container"></div>
+                        </div>
+                    </section>
+
+
                     <button class="form_button moderate-margin" type="submit">Submit</button>
                 </div>
             </form>
@@ -105,5 +121,84 @@
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
         }
+
+        const playersByTeam = {{ players_by_team | tojson }};
+        const teams = {{ teams_dict | tojson }};
+        const homeTeamSelect = document.getElementById('home_team');
+        const awayTeamSelect = document.getElementById('away_team');
+
+        function populatePlayerToggles(teamId, label, containerId, headerId, logoId) {
+            const container = document.getElementById(containerId);
+            const header = document.getElementById(headerId);
+            const logo = document.getElementById(logoId);
+
+            // Clear previous player checkboxes
+            container.innerHTML = '';
+
+            const selectedTeam = teams.find(t => t.team_id === teamId);
+
+            if (!teamId || !playersByTeam[teamId] || !selectedTeam) {
+                header.classList.add('hidden');
+                if (logo) logo.classList.add('hidden');
+                return;
+            }
+
+            // Update header with team name
+            header.textContent = `Player Exclusions`;
+            header.classList.remove('hidden');
+
+            // Update and show logo
+            if (logo) {
+                logo.src = `/static/img/${selectedTeam.team_abbreviation}.png`;
+                logo.alt = `${selectedTeam.team_name} Logo`;
+                logo.classList.remove('hidden');
+            }
+
+            // Create checkboxes for each player
+            playersByTeam[teamId].forEach(player => {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'exclude_players';
+                checkbox.value = player.player_id;
+                checkbox.id = `${label.toLowerCase()}-player-${player.player_id}`;
+
+                const labelElem = document.createElement('label');
+                labelElem.htmlFor = checkbox.id;
+                labelElem.textContent = ` ${player.player_name}`;
+                labelElem.classList.add('dark-text', 'text-weight-500');
+
+                const wrapper = document.createElement('div');
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(labelElem);
+
+                container.appendChild(wrapper);
+            });
+        }
+
+        homeTeamSelect.addEventListener('change', () => {
+            populatePlayerToggles(
+                homeTeamSelect.value,
+                'Home Team',
+                'home_players_container',
+                'home_players_header',
+                'home_team_logo'
+            );
+        });
+
+        awayTeamSelect.addEventListener('change', () => {
+            populatePlayerToggles(
+                awayTeamSelect.value,
+                'Away Team',
+                'away_players_container',
+                'away_players_header',
+                'away_team_logo'
+            );
+        });
+
+        window.addEventListener('load', function() {
+            const form = document.getElementById('simulation_form');
+            if (form) form.reset();
+        });
     </script>
+
 {% endblock %}

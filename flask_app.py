@@ -7,9 +7,8 @@ from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalke
 from plots import (plot_deviation_from_average_chart, plot_team_strength_donut, get_donut_plot_for_team_results, get_donut_plot_for_goals,
                 get_donut_plot_for_pass_completion, plot_bar_chart, generate_shot_marker_plot)
 from momentum_plot import generate_momentum_plot
-import plotly.graph_objects as go
-import plotly.io as pio
 from datetime import datetime
+from collections import defaultdict
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -390,21 +389,31 @@ def goalkeeper():
 @app.route('/simulations')
 def simulations():
     team_data = db_team_xgoals.get_top_team_xgoals_stat(season_manager.season, 'points')
+    teams_dict = [dict(team) for team in team_data]
+
+    players_data = db_player_xgoals.get_top_player_xgoals_stat(season=season_manager.season)
+    players_by_team = defaultdict(list)
+    for player in players_data:
+        players_by_team[player['team_id']].append(dict(player))  # Convert sqlite3.Row → dict
+
     return render_template('simulations.html',
-                            season=season_manager.season,
-                            seasons = season_manager.seasons,
-                            teams=team_data)
+                           season=season_manager.season,
+                           seasons=season_manager.seasons,
+                           teams=team_data,
+                           teams_dict = teams_dict,
+                           players_by_team=dict(players_by_team))
+
 
 @app.route('/simulation_results', methods=['GET', 'POST'])
 def simulation_results():
     home_team_id = request.form.get("home_team")
     away_team_id = request.form.get("away_team")           
     n_simulations = int(request.form.get("num_sims", 0))
-
     use_psxg = "psxg" in request.form
     include_penalties = "pks" in request.form
     home_advantage = float(request.form.get("home_advantage", 1.05))
     away_advantage = float(request.form.get("away_advantage", 0.95))
+    excluded_player_ids = set(request.form.getlist("exclude_players"))
 
     simulator = sim.MatchSimulator(home_team_id=home_team_id,
                                    away_team_id=away_team_id,
@@ -412,7 +421,8 @@ def simulation_results():
                                    exclude_penalties=include_penalties,
                                    use_psxg=use_psxg,
                                    home_advantage=home_advantage,
-                                   away_advantage=away_advantage)
+                                   away_advantage=away_advantage,
+                                   excluded_player_ids=excluded_player_ids)
     simulator.run_simulations(n_simulations)
 
     summary = simulator.get_summary()

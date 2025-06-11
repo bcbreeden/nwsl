@@ -1,5 +1,4 @@
 import random
-import numpy as np
 from collections import Counter, defaultdict
 
 from data.db_game_shots import get_shots_for_team, get_avg_shots_for_team
@@ -10,7 +9,7 @@ from data.db_team_xgoals import get_team_xga_per_game, get_league_avg_xga_per_ga
 
 
 class MatchSimulator:
-    def __init__(self, home_team_id, away_team_id, season, home_advantage, away_advantage, mode="shot", exclude_penalties=True, use_psxg=False):
+    def __init__(self, home_team_id, away_team_id, season, home_advantage, away_advantage, mode="shot", exclude_penalties=True, use_psxg=False, excluded_player_ids=None):
         self.home_team_id = home_team_id
         self.away_team_id = away_team_id
         self.season = season
@@ -18,7 +17,6 @@ class MatchSimulator:
         self.exclude_penalties = exclude_penalties
         self.n_simulations = 0
         self.use_psxg = use_psxg
-
         self.cached_team_shots = {}
         self.cached_avg_shots = {}
         self.cached_goalkeepers = {}
@@ -39,6 +37,8 @@ class MatchSimulator:
 
         self.home_advantage = home_advantage
         self.away_advantage = away_advantage
+
+        self.excluded_player_ids = set(excluded_player_ids or [])
 
         # Preload shots and goalkeeper data once
         for team_id in [self.home_team_id, self.away_team_id]:
@@ -70,9 +70,12 @@ class MatchSimulator:
         scorers = []
         goals = 0
 
-        shots = self.cached_team_shots[team_id]
-        if self.exclude_penalties:
-            shots = [s for s in shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
+        shots = [
+            s for s in self.cached_team_shots[team_id]
+            if s["shooter_player_id"] not in self.excluded_player_ids and
+            (not self.exclude_penalties or (s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"))
+        ]
+
 
         avg_shots = self.cached_avg_shots[team_id]
 
