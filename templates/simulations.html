@@ -3,9 +3,18 @@
 {% block content %}
     <section class="column-container max-width-800 flex-vert-top-hori-center large-margin">
         <h2 class="text-audiowide text-xxlarge">NWSL Match Simulator</h2>
-        <p class="text-weight-500">Welcome to the NWSL Match Simulator, a tool that lets you simulate head-to-head outcomes between any two NWSL teams using real player and match data. Whether you're a fan, analyst, or developer, this tool allows you to explore likely outcomes based on statistical models rather than pure guesswork.</p>
+        <p class="text-weight-500">
+        Welcome to the NWSL Match Simulator, a tool that lets you simulate head-to-head outcomes between any two NWSL teams using real player, team, and match-level data. Whether you're a fan, analyst, or developer, this tool allows you to explore likely results based on real performance trends, not just guesswork.
+        </p>
 
-        <p class="text-weight-500">The simulator leverages advanced metrics like expected goals (xG), post-shot xG (PSxG), and goalkeeper performance to create realistic matchups. You can customize the simulation by adjusting the number of runs (to reduce randomness) and by choosing between two different simulation modes, each offering a unique perspective on how games might play out.</p>
+        <p class="text-weight-500">
+        The simulator incorporates advanced metrics like expected goals (xG), post-shot xG (PSxG), goalkeeper over/underperformance, and now expected goals against (xGA); allowing defensive strength to directly influence the number of shot opportunities a team faces. This creates more accurate simulations that reflect not only how well a team attacks, but how well they defend.
+        </p>
+
+        <p class="text-weight-500">
+        You can customize the simulation by choosing the number of runs (to reduce randomness), and selecting between two simulation modes: <strong>Shot-based</strong> (sampling real shot events) or <strong>Poisson</strong> (based on average expected goals per game). Each mode provides a unique lens for exploring how NWSL matches might play out.
+        </p>
+
 
 
 

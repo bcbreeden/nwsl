@@ -37,6 +37,9 @@ class MatchSimulator:
         self.goal_totals = defaultdict(list)
         self.scorer_totals = defaultdict(Counter)
 
+        self.home_advantage = 1.05
+        self.away_advantage = 0.95
+
         # Preload shots and goalkeeper data once
         for team_id in [self.home_team_id, self.away_team_id]:
             all_shots = get_shots_for_team(team_id, self.season)
@@ -80,7 +83,8 @@ class MatchSimulator:
             defense_modifier = opponent_xga / league_avg_xga
             adjusted_avg_shots = avg_shots * defense_modifier
 
-            sample_size = max(1, int(random.gauss(adjusted_avg_shots, 2)))
+            advantage = self.home_advantage if team_id == self.home_team_id else self.away_advantage
+            sample_size = max(1, int(random.gauss(adjusted_avg_shots * advantage, 2)))
             sampled = random.sample(shots, min(sample_size, len(shots)))
 
             # Goalkeeper adjustment
@@ -121,7 +125,8 @@ class MatchSimulator:
             league_avg_xga = 1.5
             defense_modifier = opponent_xga / league_avg_xga
 
-            lam = max(0.1, avg_xg_per_game * defense_modifier * (1.0 + gk_modifier))
+            advantage = self.home_advantage if team_id == self.home_team_id else self.away_advantage
+            lam = max(0.1, avg_xg_per_game * (1.0 + gk_modifier) * advantage)
             goals = np.random.poisson(lam)
 
         else:
