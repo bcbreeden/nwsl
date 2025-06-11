@@ -10,7 +10,7 @@ from data.db_team_xgoals import get_team_xga_per_game, get_league_avg_xga_per_ga
 
 
 class MatchSimulator:
-    def __init__(self, home_team_id, away_team_id, season, mode="shot", exclude_penalties=True, use_psxg=False):
+    def __init__(self, home_team_id, away_team_id, season, home_advantage, away_advantage, mode="shot", exclude_penalties=True, use_psxg=False):
         self.home_team_id = home_team_id
         self.away_team_id = away_team_id
         self.season = season
@@ -37,8 +37,8 @@ class MatchSimulator:
         self.goal_totals = defaultdict(list)
         self.scorer_totals = defaultdict(Counter)
 
-        self.home_advantage = 1.05
-        self.away_advantage = 0.95
+        self.home_advantage = home_advantage
+        self.away_advantage = away_advantage
 
         # Preload shots and goalkeeper data once
         for team_id in [self.home_team_id, self.away_team_id]:

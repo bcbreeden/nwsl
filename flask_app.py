@@ -399,16 +399,20 @@ def simulations():
 def simulation_results():
     home_team_id = request.form.get("home_team")
     away_team_id = request.form.get("away_team")           
-    n_simulations = int(request.form.get("num_sims", 0))    # Convert to int with fallback
+    n_simulations = int(request.form.get("num_sims", 0))
 
-    use_psxg = "psxg" in request.form                        # Checkbox checked = True
+    use_psxg = "psxg" in request.form
     include_penalties = "pks" in request.form
+    home_advantage = float(request.form.get("home_advantage", 1.05))
+    away_advantage = float(request.form.get("away_advantage", 0.95))
 
     simulator = sim.MatchSimulator(home_team_id=home_team_id,
                                    away_team_id=away_team_id,
                                    season=season_manager.season,
                                    exclude_penalties=include_penalties,
-                                   use_psxg=use_psxg)
+                                   use_psxg=use_psxg,
+                                   home_advantage=home_advantage,
+                                   away_advantage=away_advantage)
     simulator.run_simulations(n_simulations)
 
     summary = simulator.get_summary()

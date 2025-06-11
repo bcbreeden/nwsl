@@ -451,6 +451,63 @@ ul {
     color: #ffffff;                 /* Text: white for strong contrast */
     border-left: var(--shot-border-width) solid #c8102e; /* Secondary: bold red */
 }
+
+/* ======================
+   Slider
+====================== */
+
+input[type="range"] {
+  -webkit-appearance: none; /* Remove default styling in WebKit browsers */
+  width: 100%;
+  height: 6px;
+  background: #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: var(--contrast-alt); /* Your desired track color */
+  border-radius: 5px;
+}
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: var(--dark-bg);
+  border-radius: 5px;
+}
+input[type="range"]::-ms-track {
+  height: 6px;
+  background: #0077b6;
+  border-radius: 5px;
+  border-color: transparent;
+  color: transparent;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--contrast-alt); /* Your desired thumb color */
+  margin-top: -5px;
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #03045e;
+  cursor: pointer;
+}
+input[type="range"]::-ms-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #03045e;
+  cursor: pointer;
+}
   
 /* ======================
    Classes
