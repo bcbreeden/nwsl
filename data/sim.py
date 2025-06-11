@@ -19,6 +19,11 @@ class MatchSimulator:
         self.n_simulations = 0
         self.use_psxg = use_psxg
 
+        self.cached_team_shots = {}
+        self.cached_avg_shots = {}
+        self.cached_goalkeepers = {}
+        self.cached_avg_xg_per_game = {}
+
         self.player_name_map = get_player_name_map()
         self.team_name_map = get_team_name_map()
         self.team_abbreviation_map = get_team_abbreviation_map()
@@ -27,6 +32,21 @@ class MatchSimulator:
         self.outcomes = Counter()
         self.goal_totals = defaultdict(list)
         self.scorer_totals = defaultdict(Counter)
+
+        # Preload shots and goalkeeper data once
+        for team_id in [self.home_team_id, self.away_team_id]:
+            all_shots = get_shots_for_team(team_id, self.season)
+            if self.exclude_penalties:
+                all_shots = [s for s in all_shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
+            self.cached_team_shots[team_id] = all_shots
+            self.cached_avg_shots[team_id] = get_avg_shots_for_team(team_id, self.season)
+            self.cached_goalkeepers[team_id] = get_goalkeeper_for_team(team_id, self.season)
+        
+        for team_id in [self.home_team_id, self.away_team_id]:
+            shots = self.cached_team_shots[team_id]
+            total_xg = sum(s["shot_xg"] for s in shots)
+            total_games = len(set(s["game_id"] for s in shots))
+            self.cached_avg_xg_per_game[team_id] = total_xg / total_games if total_games > 0 else 1.0
 
     def simulate_match(self):
         home_goals, home_scorers = self.simulate_team_goals(self.home_team_id, self.away_team_id)
@@ -44,15 +64,15 @@ class MatchSimulator:
         goals = 0
 
         if self.mode == "shot":
-            shots = get_shots_for_team(team_id, self.season)
+            shots = self.cached_team_shots[team_id]
             if self.exclude_penalties:
                 shots = [s for s in shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
 
-            avg_shots = get_avg_shots_for_team(team_id, self.season)
+            avg_shots = self.cached_avg_shots[team_id]
             sample_size = max(1, int(random.gauss(avg_shots, 2)))
             sampled = random.sample(shots, min(sample_size, len(shots)))
 
-            gk = get_goalkeeper_for_team(opponent_id, self.season)
+            gk = self.cached_goalkeepers.get(opponent_id)
             gk_modifier = 0.0
             if gk and gk["xgoals_gk_faced"] > 0:
                 over = gk["goals_minus_xgoals_gk"]
@@ -74,12 +94,8 @@ class MatchSimulator:
                     scorers.append(shot["shooter_player_id"])
 
         elif self.mode == "poisson":
-            shots = get_shots_for_team(team_id, self.season)
-            total_xg = sum(s["shot_xg"] for s in shots)
-            total_games = len(set(s["game_id"] for s in shots))
-            avg_xg_per_game = total_xg / total_games if total_games > 0 else 1.0
-
-            gk = get_goalkeeper_for_team(opponent_id, self.season)
+            avg_xg_per_game = self.cached_avg_xg_per_game[team_id]
+            gk = self.cached_goalkeepers.get(opponent_id)
             gk_modifier = 0.0
             if gk and gk["xgoals_gk_faced"] > 0:
                 over = gk["goals_minus_xgoals_gk"]
