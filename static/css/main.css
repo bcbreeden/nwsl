@@ -138,6 +138,26 @@ ul {
     max-width: 800px;
 }
 
+.max-width-300 {
+    max-width: 300px;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+/* ======================
+   Borders
+====================== */
+
+.border-3 {
+    border: 3px solid var(--dark-bg);
+}
+
+.border-radius-5 {
+    border-radius: 5px;
+}
+
 /* ======================
    Alignment
 ====================== */
@@ -169,6 +189,11 @@ ul {
 
 .flex-vert-top {
     align-content: flex-end;
+}
+
+.flex-vert-top-hori-center {
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .flex-vert-center-hori-left-col {
@@ -212,6 +237,10 @@ ul {
 
 .white-text {
     color: white;
+}
+
+.dark-text {
+    color: var(--dark-bg);
 }
 
 /* ======================
@@ -280,6 +309,10 @@ ul {
     font-size: large;
 }
 
+.text-xlarge {
+    font-size: x-large;
+}
+
 .text-xxlarge {
     font-size: xx-large;
 }
@@ -292,8 +325,16 @@ ul {
     font-weight: bolder
 }
 
+.text-weight-300 {
+    font-weight: 300;
+}
+
 .text-weight-500 {
     font-weight: 500;
+}
+
+.text-weight-800 {
+    font-weight: 800;
 }
 
 .white-text {

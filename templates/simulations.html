@@ -1,11 +1,34 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <section class="column-container max-width-800 flex-vert-top-hori-center large-margin">
+        <h2 class="text-audiowide text-xxlarge">NWSL Match Simulator</h2>
+        <p class="text-weight-500">Welcome to the NWSL Match Simulator, a tool that lets you simulate head-to-head outcomes between any two NWSL teams using real player and match data. Whether you're a fan, analyst, or developer, this tool allows you to explore likely outcomes based on statistical models rather than pure guesswork.</p>
 
-        <form id="simulation_form" action="/simulation_results" method="POST">
+        <p class="text-weight-500">The simulator leverages advanced metrics like expected goals (xG), post-shot xG (PSxG), and goalkeeper performance to create realistic matchups. You can customize the simulation by adjusting the number of runs (to reduce randomness) and by choosing between two different simulation modes, each offering a unique perspective on how games might play out.</p>
+
+
+
+        <section class="column-container flex-all-center moderate-margin">
+            <h3 class="text-audiowide text-xlarge">Available Models</h3>
+            <p class="no-padding-no-margin text-weight-500"><strong>Shot Model:</strong> Uses actual shot-level data from each team to simulate goals one by one.</p>
+            <p class="no-padding-no-margin text-weight-500"><strong>Poisson Model:</strong> Uses each team’s average expected goals to simulate full match results.</p>
+        </section>
+
+        <section class="column-container flex-all-center moderate-margin">
+            <h3 class="text-audiowide text-xlarge">Additional Options</h3>
+            <p class="no-padding-no-margin text-weight-500"><strong>Simulations:</strong> The number of simulations to run.</p>
+            <p class="no-padding-no-margin text-weight-500"><strong>Include Penalties:</strong> Should penalties be included when modeling team strength?</p>
+            <p class="no-padding-no-margin text-weight-500"><strong>Use PSxG:</strong> Toggle to include post-shot xG for shot quality.</p>
+        </section>
+
+        <p class="text-weight-800">Please be patient, simulations may take a few minutes to run.</p>
+
+        <form class="max-width-300 border-3 border-radius-5 large_padding large-margin" id="simulation_form" action="/simulation_results" method="POST">
             <label class="hidden" for="home_team">Select Option 1:</label>
-            <div class="team_comparison_select">
-                <select id="home_team" name="home_team" required>
+            <div class="column-container flex-all-center" >
+                <h3 class="text-audiowide text-xlarge">Configuration</h3>
+                <select class="width-100" id="home_team" name="home_team" required>
                     <option value="">--Select Home Team--</option>
                     {% for team in teams %}
                         <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
@@ -13,14 +36,20 @@
                 </select>
 
                 <label class="hidden" for="away_team">Select Option 2:</label>
-                <select id="away_team" name="away_team" required>
+                <select class="width-100" id="away_team" name="away_team" required>
                     <option value="">--Select Away Team--</option>
                     {% for team in teams %}
                         <option value="{{ team['team_id'] }}">{{ team['team_name'] }}</option>
                     {% endfor %}
                 </select>
 
-                <select id="num_sims" name="num_sims" required>
+                <select class="width-100" id="model_type" name="model_type" required>
+                    <option value="">--Model Type--</option>
+                    <option value="Shot">Shot Simulation</option>
+                    <option value="Poisson">Poisson</option>
+                </select>
+
+                <select class="width-100" id="num_sims" name="num_sims" required>
                     <option value="">--Number of Simulations--</option>
                     <option value="1">1</option>
                     <option value="10">10</option>
@@ -29,24 +58,17 @@
                     <option value="10000">10000</option>
                 </select>
 
-                <select id="model_type" name="model_type" required>
-                    <option value="">--Model Type--</option>
-                    <option value="Shot">Shot Simulation</option>
-                    <option value="Poisson">Poisson</option>
-                </select>
-
-                <label>
+                <label class="dark-text text-weight-500">
                     <input type="checkbox" name="pks" value="yes">
                     Include PKs?
                 </label>
 
-                <label>
+                <label class="dark-text text-weight-500">
                     <input type="checkbox" name="psxg" value="yes">
                     Use PSxG?
                 </label>
+                <button class="form_button moderate-margin" type="submit">Submit</button>
             </div>
-
-            <button class="form_button" type="submit">Submit</button>
         </form>
-
+    </section>
 {% endblock %}
