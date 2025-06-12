@@ -21,6 +21,7 @@ class MatchSimulator:
         self.cached_avg_shots = {}
         self.cached_goalkeepers = {}
         self.cached_avg_xg_per_game = {}
+        self.filtered_team_shots = {} # Will hold the shots with all filters and exclusions applied.
         self.cached_xga_per_game = {
             team_id: get_team_xga_per_game(team_id, self.season)
             for team_id in [self.home_team_id, self.away_team_id]
@@ -40,20 +41,31 @@ class MatchSimulator:
 
         self.excluded_player_ids = set(excluded_player_ids or [])
 
-        # Preload shots and goalkeeper data once
         for team_id in [self.home_team_id, self.away_team_id]:
+            # Get all shots
             all_shots = get_shots_for_team(team_id, self.season)
+
+            # Optionally filter penalties
             if self.exclude_penalties:
-                all_shots = [s for s in all_shots if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"]
+                all_shots = [
+                    s for s in all_shots
+                    if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"
+                ]
+            
+            # Cache unfiltered shots
             self.cached_team_shots[team_id] = all_shots
+
+            # Cache average shots per game
             self.cached_avg_shots[team_id] = get_avg_shots_for_team(team_id, self.season)
+
+            # Cache goalkeeper stats
             self.cached_goalkeepers[team_id] = get_goalkeeper_for_team(team_id, self.season)
-        
-        for team_id in [self.home_team_id, self.away_team_id]:
-            shots = self.cached_team_shots[team_id]
-            total_xg = sum(s["shot_xg"] for s in shots)
-            total_games = len(set(s["game_id"] for s in shots))
-            self.cached_avg_xg_per_game[team_id] = total_xg / total_games if total_games > 0 else 1.0
+
+            # Cache filtered shots (exclude players)
+            self.filtered_team_shots[team_id] = [
+                s for s in all_shots
+                if s["shooter_player_id"] not in self.excluded_player_ids
+            ]
 
     def simulate_match(self):
         home_goals, home_scorers = self.simulate_team_goals(self.home_team_id, self.away_team_id)
@@ -70,12 +82,7 @@ class MatchSimulator:
         scorers = []
         goals = 0
 
-        shots = [
-            s for s in self.cached_team_shots[team_id]
-            if s["shooter_player_id"] not in self.excluded_player_ids and
-            (not self.exclude_penalties or (s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"))
-        ]
-
+        shots = self.filtered_team_shots[team_id]
 
         avg_shots = self.cached_avg_shots[team_id]
 
