@@ -384,6 +384,61 @@ def get_league_avg_xga_per_game(season):
         return row['total_xga'] / row['total_games']
     return None
 
+def get_team_shots_against_per_game(team_id, season):
+    """
+    Returns the average number of shots against per game for a team in a given season.
+
+    Args:
+        team_id (str): The team ID.
+        season (int): The season year.
+
+    Returns:
+        float or None: The average shots against per game, or None if data is unavailable.
+    """
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = """
+    SELECT shots_against, count_games
+    FROM team_xgoals
+    WHERE team_id = ? AND season = ?
+    """
+    cursor.execute(query, (team_id, season))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row and row['count_games'] > 0:
+        return row['shots_against'] / row['count_games']
+    return None
+
+def get_league_avg_shots_against_per_game(season):
+    """
+    Returns the league-wide average shots against per game for the given season.
+
+    Args:
+        season (int): The season year.
+
+    Returns:
+        float or None: The league average shots against per game.
+    """
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = """
+    SELECT SUM(shots_against) AS total_sa, SUM(count_games) AS total_games
+    FROM team_xgoals
+    WHERE season = ?
+    """
+    cursor.execute(query, (season,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row and row['total_games'] > 0:
+        return row['total_sa'] / row['total_games']
+    return None
+
 
 
 '''
