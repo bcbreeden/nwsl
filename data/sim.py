@@ -14,7 +14,8 @@ from data.db_team_xgoals import (
 class MatchSimulator:
     def __init__(self, home_team_id, away_team_id, season, home_advantage, away_advantage, mode="shot", exclude_penalties=True, use_psxg=False, excluded_player_ids=None):
         """
-        Initializes the MatchSimulator with preloaded shot-level data and modifiers for simulation.
+        Initializes the MatchSimulator with preloaded shot-level data, modifiers, and
+        team-specific filters for use in Monte Carlo match simulations.
 
         Args:
             home_team_id (str): ID of the home team.
@@ -22,28 +23,37 @@ class MatchSimulator:
             season (int): Season year to pull data from.
             home_advantage (float): Modifier applied to the home team's shot volume (e.g., 1.05 = +5%).
             away_advantage (float): Modifier applied to the away team's shot volume.
-            mode (str, optional): Currently unused but reserved for future xG simulation types. Defaults to "shot".
+            mode (str, optional): Reserved for future extensions of simulation behavior. Defaults to "shot".
             exclude_penalties (bool, optional): Whether to exclude penalty shots from simulation. Defaults to True.
-            use_psxg (bool, optional): Whether to use post-shot xG (PSxG) instead of xG. Defaults to False.
+            use_psxg (bool, optional): Whether to use post-shot xG (PSxG) instead of regular xG. Defaults to False.
             excluded_player_ids (list[str], optional): List of player IDs to exclude from all simulations. Defaults to None.
 
         Attributes:
-            cached_team_shots (dict): All shot events for each team, filtered for penalties if specified.
-            filtered_team_shots (dict): Shots filtered to exclude any taken by excluded players.
-            cached_avg_shots (dict): Average number of shots per game per team.
-            cached_goalkeepers (dict): Goalkeeper over/under-performance data.
-            cached_avg_xg_per_game (dict): Team-level average xG per game, used for context and normalization.
-            cached_xga_per_game (dict): Opponent defensive strength based on expected goals allowed (xGA).
+            cached_team_shots (dict): All shot events per team, filtered for penalties if configured.
+            filtered_team_shots (dict): Further-filtered shots excluding any from `excluded_player_ids`.
+            cached_avg_shots (dict): Average number of shots per game for each team.
+            cached_avg_xg_per_game (dict): Team-level average xG per game, for possible contextual use.
+            cached_goalkeepers (dict): Opponent goalkeeper over/under-performance metrics.
+            cached_xga_per_game (dict): Team-level expected goals against per game (xGA), used in shot volume adjustment.
+            cached_sapg_per_game (dict): Team-level average shots against per game (SAPG), used in shot volume adjustment.
+            league_avg_xga (float): League-wide average xGA per team per game, for normalization.
+            league_avg_sapg (float): League-wide average shots against per game, for normalization.
             player_name_map (dict): Maps player IDs to human-readable names.
-            team_name_map (dict): Maps team IDs to human-readable names.
+            team_name_map (dict): Maps team IDs to full team names.
             team_abbreviation_map (dict): Maps team IDs to short display abbreviations.
-            home_advantage (float): Shot volume modifier for home team.
-            away_advantage (float): Shot volume modifier for away team.
-            n_simulations (int): Number of simulations run.
-            scorelines (Counter): Tracks scoreline outcomes (e.g., (1, 0): 87).
-            outcomes (Counter): Tracks win/draw/loss frequencies.
-            goal_totals (defaultdict): Tracks total goals scored by each side across simulations.
-            scorer_totals (defaultdict): Tracks goals scored per player across simulations.
+            home_advantage (float): Multiplier applied to the home team's adjusted shot count.
+            away_advantage (float): Multiplier applied to the away team's adjusted shot count.
+            excluded_player_ids (set): Set of player IDs to exclude from shot sampling.
+            n_simulations (int): Number of match simulations run.
+            scorelines (Counter): Tally of each unique (home_goals, away_goals) outcome.
+            outcomes (Counter): Tally of "home_win", "away_win", or "draw" across all simulations.
+            goal_totals (defaultdict): Per-side list of goals scored in each simulation (for mean calculation).
+            scorer_totals (defaultdict): Per-team tallies of goals scored per player across simulations.
+
+        Example:
+            >>> sim = MatchSimulator("NC", "SD", 2024, 1.05, 0.95, use_psxg=True)
+            >>> sim.run_simulations(1000)
+            >>> print(sim.get_summary())
         """
         self.home_team_id = home_team_id
         self.away_team_id = away_team_id
