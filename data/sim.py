@@ -1,6 +1,5 @@
 import random
 from collections import Counter, defaultdict
-
 from data.db_game_shots import get_shots_for_team, get_avg_shots_for_team
 from data.db_goalkeeper_xgoals import get_goalkeeper_for_team
 from data.db_player_info import get_player_name_map
@@ -104,6 +103,31 @@ class MatchSimulator:
             ]
 
     def simulate_match(self):
+        """
+        Simulates a single match between the selected home and away teams.
+
+        This function performs the following:
+            1. Calls `simulate_team_goals` for both the home and away teams.
+            2. Tracks which players scored in the match.
+            3. Updates internal scorer tally for each team.
+            4. Returns the simulated final scoreline.
+
+        The results from this method are used by `run_simulations()` to build
+        aggregate statistics like scoreline distributions, win/draw/loss rates,
+        and top scorers.
+
+        Returns:
+            tuple:
+                home_goals (int): The number of goals scored by the home team.
+                away_goals (int): The number of goals scored by the away team.
+
+        Example:
+            >>> sim = MatchSimulator(...)
+            >>> sim.simulate_match()
+            (2, 1)
+
+            This means the home team scored 2 and the away team scored 1 in this sim.
+        """
         home_goals, home_scorers = self.simulate_team_goals(self.home_team_id, self.away_team_id)
         away_goals, away_scorers = self.simulate_team_goals(self.away_team_id, self.home_team_id)
 
@@ -173,6 +197,33 @@ class MatchSimulator:
 
 
     def run_simulations(self, n):
+        """
+        Runs N full-match simulations between the selected home and away teams.
+
+        This method:
+            1. Repeatedly calls `simulate_match()` N times.
+            2. Records the resulting scoreline (e.g., 2–1) in a frequency counter.
+            3. Tracks goal totals per team across all simulations.
+            4. Aggregates match outcomes as home wins, away wins, or draws.
+            5. Updates internal state used by other summary/reporting functions.
+
+        Args:
+            n (int): Number of match simulations to run.
+
+        Side Effects:
+            - Updates `self.n_simulations` to reflect the count.
+            - Populates or updates:
+                - `self.scorelines`: Counter of (home_goals, away_goals)
+                - `self.goal_totals`: Dict of all home and away goal values
+                - `self.outcomes`: Counter of win/draw categories
+                - `self.scorer_totals`: (via `simulate_match()`)
+
+        Example:
+            >>> sim = MatchSimulator(...)
+            >>> sim.run_simulations(1000)
+            >>> sim.scorelines[(1, 0)]  # Number of 1–0 results
+            243
+        """
         self.n_simulations = n
         for _ in range(n):
             h_goals, a_goals = self.simulate_match()
@@ -188,6 +239,32 @@ class MatchSimulator:
                 self.outcomes["draw"] += 1
 
     def get_summary(self):
+        """
+        Returns a high-level summary of simulation results, including team identifiers,
+        win percentages, and average goals scored.
+
+        This method should be called after `run_simulations()` has been executed.
+
+        Returns:
+            dict: A dictionary containing:
+                - home_team_id (str): The ID of the home team.
+                - away_team_id (str): The ID of the away team.
+                - home_team_name (str): Full name of the home team.
+                - away_team_name (str): Full name of the away team.
+                - home_team_abbreviation (str): Short name/abbreviation of the home team.
+                - away_team_abbreviation (str): Short name/abbreviation of the away team.
+                - home_win_pct (float): Proportion of simulations won by the home team.
+                - away_win_pct (float): Proportion of simulations won by the away team.
+                - draw_pct (float): Proportion of simulations that ended in a draw.
+                - avg_home_goals (float): Average number of goals scored by the home team.
+                - avg_away_goals (float): Average number of goals scored by the away team.
+
+        Example:
+            >>> sim.run_simulations(1000)
+            >>> summary = sim.get_summary()
+            >>> summary["home_win_pct"]
+            0.41
+        """
         return {
             "home_team_id": self.home_team_id,
             "away_team_id": self.away_team_id,
@@ -203,6 +280,30 @@ class MatchSimulator:
         }
 
     def get_scoreline_distribution(self):
+        """
+        Returns a list of scoreline outcomes sorted by frequency, based on all simulations run.
+
+        Each entry includes the raw goal counts, frequency, and percentage of total simulations.
+
+        Returns:
+            list[dict]: List of dictionaries, each containing:
+                - scoreline (str): Formatted as "X-Y" (home-away goals).
+                - home_goals (int): Number of goals scored by the home team.
+                - away_goals (int): Number of goals scored by the away team.
+                - count (int): How many times this scoreline occurred.
+                - pct (float): Frequency as a percentage of total simulations.
+
+        Example:
+            >>> sim.run_simulations(1000)
+            >>> sim.get_scoreline_distribution()[0]
+            {
+                "scoreline": "1-0",
+                "home_goals": 1,
+                "away_goals": 0,
+                "count": 187,
+                "pct": 0.187
+            }
+        """
         sorted_scorelines = sorted(
             self.scorelines.items(),
             key=lambda x: x[1],
@@ -220,6 +321,27 @@ class MatchSimulator:
         ]
 
     def get_top_scorers(self, side, limit=10):
+        """
+        Returns the top scorers for either the home or away team across all simulations.
+
+        Args:
+            side (str): Either "home" or "away" — determines which team's scorers to return.
+            limit (int, optional): Maximum number of top scorers to return. Defaults to 10.
+
+        Returns:
+            list[dict]: List of top scorer dictionaries, each containing:
+                - player_id (str): The player’s ID.
+                - player_name (str): Human-readable name of the player (from lookup).
+                - goals (int): Number of goals scored by this player in all simulations.
+
+        Example:
+            >>> sim.get_top_scorers("home", limit=3)
+            [
+                {"player_id": "player123", "player_name": "Debinha", "goals": 14},
+                {"player_id": "player456", "player_name": "Kerolin", "goals": 11},
+                ...
+            ]
+        """
         team_id = self.home_team_id if side == "home" else self.away_team_id
         scorers = self.scorer_totals[team_id].most_common(limit)
         return [
