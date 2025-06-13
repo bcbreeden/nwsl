@@ -469,13 +469,19 @@ def blog_post(slug):
     post = get_post_by_slug(slug)
     if not post:
         abort(404)
-    html_body = markdown.markdown(post["body"])
+
+    html_body = markdown.markdown(
+        post["body"],
+        extensions=["fenced_code", "tables", "attr_list"]
+    )
+
     meta = {
         "title": post["title"],
         "description": post["excerpt"],
         "image": url_for('static', filename=post["featured_image"], _external=True),
         "url": request.url,
     }
+
     return render_template("blog_post.html",
                            post=post,
                            html_body=html_body,
