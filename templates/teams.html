@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="teams_container">
-        <!-- DATA TABLE -->
+    <div class="container-column width-80p large-margin">
+        <h2>Teams</h2>
         <table id='teams'>
             <thead>
                 <tr>
@@ -45,6 +45,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% include "abbr_legend.html" %}
     </div>
 
 

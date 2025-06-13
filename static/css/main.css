@@ -150,8 +150,16 @@ ul {
     max-width: 100px;
 }
 
+.width-80p {
+    width: 80%;
+}
+
 .width-100 {
     width: 100%;
+}
+
+.height-100p {
+    height: 100%;
 }
 
 
@@ -174,6 +182,14 @@ ul {
 
 .border-1-bottom {
     border-bottom: 1px solid var(--dark-bg);
+}
+
+.border-1 {
+    border: 1px solid var(--dark-bg);
+}
+
+.border-collapse {
+    border-collapse: collapse;
 }
 
 /* ======================
