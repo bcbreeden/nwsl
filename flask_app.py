@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
@@ -9,9 +9,13 @@ from plots import (plot_deviation_from_average_chart, plot_team_strength_donut, 
 from momentum_plot import generate_momentum_plot
 from datetime import datetime
 from collections import defaultdict
+from blog_loader import load_blog_posts, get_post_by_slug
+import markdown
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
+
+TESTPASS = 'abc123'
 
 class SeasonManager:
     def __init__(self):
@@ -440,6 +444,20 @@ def simulation_results():
                             exclude_penalties=include_penalties,
                             season=season_manager.season,
                             seasons = season_manager.seasons)
+
+@app.route("/blog")
+def blog():
+    posts = load_blog_posts()
+    return render_template("blog.html", posts=posts)
+
+@app.route("/blog/<slug>")
+def blog_post(slug):
+    post = get_post_by_slug(slug)
+    if not post:
+        abort(404)
+    html_body = markdown.markdown(post["body"])
+    return render_template("blog_post.html", post=post, html_body=html_body)
+
 
 def _insert_event_markers(shot_data, home_team_id, away_team_id):
     new_data = []

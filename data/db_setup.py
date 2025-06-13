@@ -931,6 +931,20 @@ def create_tables(): # pragma: no cover
         UNIQUE(game_id, shooter_player_id, assist_player_id, expanded_minute)
     )
 ''')
+    
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS blog_posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        publish_date TEXT,
+        draft INTEGER NOT NULL DEFAULT 1,
+        title TEXT NOT NULL,
+        excerpt TEXT,
+        body TEXT NOT NULL,
+        tags TEXT,
+        featured_image TEXT,
+        slug TEXT UNIQUE
+    )
+''')
 
 
 

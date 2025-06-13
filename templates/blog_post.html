@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>{{ post.title }}</h1>
+    <p><em>{{ post.publish_date }}</em> — Tags: {{ post.tags }}</p>
+    <hr>
+    <div>{{ html_body | safe }}</div>
+    <p><a href="/blog">← Back to blog</a></p>
+    <img src="{{ url_for('static', filename=post.featured_image) }}" alt="Featured Image">
+
+{% endblock %}
