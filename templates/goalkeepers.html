@@ -6,22 +6,25 @@
         <table id='players'>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Player Name</th>
-                    <th>Team</th>
-                    <th>Player Strength</th>
-                    <th>Minutes</th>
-                    <th>Shots Faced</th>
-                    <th>Goals Conceded</th>
-                    <th>Saves</th>
-                    <th>Headed Shots</th>
-                    <th>XG Faced</th>
-                    <th>Goals - XG Faced</th>
-                    <th>G/xG Faced</th>
+                    <th>Str</th>
+                    <th>MP</th>
+                    <th>SF</th>
+                    <th>GC</th>
+                    <th>S</th>
+                    <th>xGF</th>
+                    <th style="white-space: nowrap;">G-xGF</th>
+                    <th style="white-space: nowrap;">G/xGF</th>
                 </tr>
             </thead>
             <tbody>
                 {% for player in keeper_data %}
                 <tr>
+                    <td>
+                        <img class="icon-medium" src="{{ url_for('static', filename='img/' + player['team_abbreviation'] + '.png') }}">
+                        <p class="hidden">{{ player['team_name'] }}</p>
+                    </td>
                     <td>
                         <form action="/goalkeeper" method="POST">
                             <input type="hidden" id="player_id" name="player_id" value="{{ player['player_id'] }}">
@@ -30,13 +33,11 @@
                             <p class="hidden">{{ player['player_name'] }}</p>
                         </form> 
                     </td>
-                     <td>{{ player['team_name'] }}</td>
                      <td>{{ player['player_strength'] }}</td>
                      <td>{{ player['minutes_played'] }}</td>
                      <td>{{ player['shots_faced'] }}</td>
                      <td>{{ player['goals_conceded'] }}</td>
                      <td>{{ player['saves'] }}</td>
-                     <td>{{ player['share_headed_shots'] }}</td>
                      <td>{{ player['xgoals_gk_faced'] }}</td>
                      <td>{{ player['goals_minus_xgoals_gk'] }}</td>
                      <td>{{ player['goals_divided_by_xgoals_gk'] }}</td>
@@ -46,9 +47,14 @@
         </table>
     </div>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
-            <script>
-                $(document).ready( function () {
-                    $('#players').DataTable();
-                } );
+    <script>
+        $(document).ready(function () {
+            new DataTable('#players', {
+                columnDefs: [
+                    { orderable: false, targets: 0 } // disables ordering on the first column (team logo)
+                ],
+                order: [[2, 'desc']] // sorts ascending by player strength
+            });
+        });
     </script>
 {% endblock %}
