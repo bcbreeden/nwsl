@@ -2,7 +2,8 @@
 import os
 import yaml
 
-BLOG_DIR = "data/blog"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BLOG_DIR = os.path.join(BASE_DIR, "data", "blog")
 
 def load_blog_posts():
     posts = []
