@@ -8,8 +8,9 @@
         </div>
 
         {% for post in posts %}
-            <div class="border-3-top-bottom">
+            <div class="border-3-top">
                 <h2><a class="grid_button" href="/blog/{{ post.slug }}">{{ post.title }}</a></h2>
+                <p class="text-justified no-padding-no-margin">{{ post.publish_date }}</p>
                 <p class="text-justified">"{{ post.excerpt }}"</p>
 
                 <div class="row-container">

@@ -162,8 +162,12 @@ ul {
     border-radius: 5px;
 }
 
-.border-3-top-bottom {
+.border-3-top {
     border-top: 3px solid var(--dark-bg);
+}
+
+.border-1-bottom {
+    border-bottom: 1px solid var(--dark-bg);
 }
 
 /* ======================
@@ -199,6 +203,11 @@ ul {
     align-content: flex-end;
 }
 
+.flex-vert-top-hori-left {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 .flex-vert-top-hori-center {
     justify-content: flex-start;
     align-items: center;
@@ -214,6 +223,10 @@ ul {
     justify-content: flex-start;
     align-content: center;
     align-items: center;
+}
+
+.align-self-left {
+    align-self: flex-start;
 }
 
 /* ======================

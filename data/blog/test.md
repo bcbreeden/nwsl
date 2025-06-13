@@ -5,7 +5,7 @@ tags: [soccer, analysis, nwsl]
 publish_date: 2025-06-12
 slug: my-first-post
 draft: false
-featured_image: img/NC.png
+featured_image: img/blog/test-img.jpg
 ---
 
 # My First Blog Post

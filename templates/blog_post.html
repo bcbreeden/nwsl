@@ -1,12 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-    <h1>{{ post.title }}</h1>
-    <p><em>{{ post.publish_date }}</em> — Tags: {{ post.tags }}</p>
-    <hr>
-    <div>{{ html_body | safe }}</div>
-    <p><a href="/blog">← Back to blog</a></p>
-    <img src="{{ url_for('static', filename=post.featured_image) }}" alt="Featured Image">
-
+    <section class="column-container max-width-800 flex-vert-top-hori-center large-margin-top-bottom">
+        <a class="grid_button align-self-left" href="/blog">← Back to blog</a>
+        <img class="large-margin-top-bottom max-width-800" src="{{ url_for('static', filename=post.featured_image) }}" alt="Featured Image">
+        <section class="column-container width-100 flex-vert-top-hori-left">
+            <h1 class="black-text">{{ post.title }}</h1>
+            <h2 class="text-weight-300 black-text text-large">{{ post.publish_date }}</h2>
+            <div class="row-container">
+                {% for tag in post.tags %}
+                    <p class="text-weight-500 white-text dark-background moderate-padding border-radius-5 moderate-margin-right">{{ tag }}</p>{% if not loop.last %} {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+        <div class="border-1-bottom">
+            {{ html_body | safe }}
+        </div>
+        <a class="grid_button align-self-left" href="/blog">← Back to blog</a>
+    </section>
 {% endblock %}
