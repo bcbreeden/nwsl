@@ -6,24 +6,28 @@
         <table id='players'>
             <thead>
                 <tr>
+                    <th></th>
                     <th>Player Name</th>
-                    <th>Team</th>
                     <th>Position</th>
-                    <th>Player Strength</th>
-                    <th>xG/xA per 90</th>
-                    <th>XAssists</th>
-                    <th>Shots</th>
+                    <th>Str</th>
+                    <th>xG/xA/90</th>
+                    <th>xA</th>
+                    <th>S</th>
                     <th>SoT</th>
-                    <th>Goals</th>
-                    <th>XGoals</th>
-                    <th>Assists</th>
-                    <th>Points Added</th>
-                    <th>Minutes Played</th>
+                    <th>G</th>
+                    <th>xG</th>
+                    <th>A</th>
+                    <th>PA</th>
+                    <th>MP</th>
                 </tr>
             </thead>
             <tbody>
                 {% for player_xgoal, player_xpass in player_data %}
                 <tr>
+                    <td>
+                        <img class="icon-medium" src="{{ url_for('static', filename='img/' + player_xgoal['team_abbreviation'] + '.png') }}">
+                        <p class="hidden">{{ player_xgoal['team_name'] }}</p>
+                    </td>
                     <td>
                         <form action="/player" method="POST">
                             <input type="hidden" id="player_id" name="player_id" value="{{ player_xgoal['player_id'] }}">
@@ -32,7 +36,6 @@
                             <p class="hidden">{{ player_xgoal['player_name'] }}</p>
                         </form> 
                     </td>
-                    <td>{{ player_xgoal['team_name'] }}</td>
                     <td class="stat">{{ player_xgoal['general_position'] }}</td>
                     <td class="stat">{{ player_xgoal['player_strength'] }}</td>
                     <td class="stat">{{ player_xgoal['xgoals_xassists_per_90']}}</td>
@@ -50,9 +53,14 @@
         </table>
     </div>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
-            <script>
-                $(document).ready( function () {
-                    $('#players').DataTable();
-                } );
+    <script>
+        $(document).ready(function () {
+            new DataTable('#players', {
+                columnDefs: [
+                    { orderable: false, targets: 0 } // disables ordering on the first column (team logo)
+                ],
+                order: [[3, 'desc']] // sorts ascending by player strength
+            });
+        });
     </script>
 {% endblock %}
