@@ -146,9 +146,15 @@ ul {
     max-width: 300px;
 }
 
+.max-width-100 {
+    max-width: 100px;
+}
+
 .width-100 {
     width: 100%;
 }
+
+
 
 /* ======================
    Borders
