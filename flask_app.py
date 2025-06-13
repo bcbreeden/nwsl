@@ -11,6 +11,7 @@ from datetime import datetime
 from collections import defaultdict
 from blog_loader import load_blog_posts, get_post_by_slug
 import markdown
+import random
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -448,7 +449,20 @@ def simulation_results():
 @app.route("/blog")
 def blog():
     posts = load_blog_posts()
-    return render_template("blog.html", posts=posts)
+    subheaders = [
+        "If it looks smart, it was probably an accident.",
+        "Because yelling at data is cheaper than therapy.",
+        "From numbers to nonsense in record time.",
+        "Bringing data to life and then arguing with it.",
+        "I swear this made sense in my head.",
+        "A broken model is still right twice a season.",
+        "Every few posts, I nail it.",
+        "Sometimes I connect the dots. Sometimes I just draw circles.",
+        "Every now and then I have a good idea."
+    ]
+    return render_template("blog.html",
+                           posts=posts,
+                           subheader=random.choice(subheaders))
 
 @app.route("/blog/<slug>")
 def blog_post(slug):

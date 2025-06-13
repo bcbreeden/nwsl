@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-    <h1>Blog Posts</h1>
-    {% for post in posts %}
-        <div>
-            <h2><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h2>
-            <p><em>{{ post.publish_date }}</em> — Tags: {{ post.tags }}</p>
-            <p>{{ post.excerpt }}</p>
+    <div class="column-container max-width-800">
+        <div class="column-container large-margin-top-bottom">
+            <h1 class="black-text">Writings and Such</h1>
+            <h2 class="text-weight-300 black-text"><i>{{ subheader }}</i></h2>
         </div>
-    {% endfor %}
+
+        {% for post in posts %}
+            <div class="border-3-top-bottom">
+                <h2><a class="grid_button" href="/blog/{{ post.slug }}">{{ post.title }}</a></h2>
+                <p class="text-justified">"{{ post.excerpt }}"</p>
+
+                <div class="row-container">
+                    {% for tag in post.tags %}
+                        <p class="text-weight-500 white-text dark-background moderate-padding border-radius-5 moderate-margin-right">{{ tag }}</p>{% if not loop.last %} {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}

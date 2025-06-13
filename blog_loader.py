@@ -1,4 +1,3 @@
-# blog_loader.py
 import os
 import yaml
 
