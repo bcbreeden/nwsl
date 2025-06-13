@@ -470,7 +470,16 @@ def blog_post(slug):
     if not post:
         abort(404)
     html_body = markdown.markdown(post["body"])
-    return render_template("blog_post.html", post=post, html_body=html_body)
+    meta = {
+        "title": post["title"],
+        "description": post["excerpt"],
+        "image": url_for('static', filename=post["featured_image"], _external=True),
+        "url": request.url,
+    }
+    return render_template("blog_post.html",
+                           post=post,
+                           html_body=html_body,
+                           meta=meta)
 
 
 def _insert_event_markers(shot_data, home_team_id, away_team_id):
