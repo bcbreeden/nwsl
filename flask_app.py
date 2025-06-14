@@ -13,6 +13,9 @@ from blog_loader import load_blog_posts, get_post_by_slug
 import markdown
 import random
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
