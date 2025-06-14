@@ -7,17 +7,17 @@
             <thead>
                 <tr>
                     <th>Team</th>
-                    <th>MP</th>
-                    <th>Str</th>
-                    <th>Pts</th>
-                    <th>xPts</th>
-                    <th>GF</th>
-                    <th>GA</th>
-                    <th>GD</th>
-                    <th>xGF</th>
-                    <th>xGA</th>
-                    <th>xGD</th>
-                    <th>PSxG</th>
+                    <th title="Matches Played – Total number of games played">MP</th>
+                    <th title="Strength – Model-derived team rating based on performance metrics">Str</th>
+                    <th title="Points – Actual points earned from wins and draws">Pts</th>
+                    <th title="Expected Points – Projected points based on xG and game performance">xPts</th>
+                    <th title="Goals For – Total goals scored by the team">GF</th>
+                    <th title="Goals Against – Total goals conceded by the team">GA</th>
+                    <th title="Goal Difference – GF minus GA">GD</th>
+                    <th title="Expected Goals For – Quality of chances created">xGF</th>
+                    <th title="Expected Goals Against – Quality of chances allowed">xGA</th>
+                    <th title="Expected Goal Difference – xGF minus xGA">xGD</th>
+                    <th title="Post-Shot xG – xG adjusted for shot placement and goalkeeping">PSxG</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,7 +45,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        {% include "abbr_legend.html" %}
     </div>
 
 

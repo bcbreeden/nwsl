@@ -8,17 +8,17 @@
                 <tr>
                     <th></th>
                     <th>Player Name</th>
-                    <th>Position</th>
-                    <th>Str</th>
-                    <th>xG/xA/90</th>
-                    <th>xA</th>
-                    <th>S</th>
-                    <th>SoT</th>
-                    <th>G</th>
-                    <th>xG</th>
-                    <th>A</th>
-                    <th>PA</th>
-                    <th>MP</th>
+                    <th title="Player's primary role on the field">Pos</th>
+                    <th title="Strength – Model-derived rating combining performance metrics">Str</th>
+                    <th title="Expected Goals + Assists per 90 minutes">xG/xA/90</th>
+                    <th title="Expected Assists – Quality of chances created for teammates">xA</th>
+                    <th title="Shots – Total number of shots taken">S</th>
+                    <th title="Shots on Target – Shots that required a save or scored">SoT</th>
+                    <th title="Goals – Total goals scored (excluding own goals)">G</th>
+                    <th title="Expected Goals – Quality of shots taken">xG</th>
+                    <th title="Primary Assists – Direct assists leading to goals">A</th>
+                    <th title="Points Added – Total value added from passing, shooting, and more">PA</th>
+                    <th title="Minutes Played – Total minutes on the field">MP</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,7 +51,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        {% include "abbr_legend.html" %}
     </div>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
     <script>

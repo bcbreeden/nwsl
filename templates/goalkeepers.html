@@ -8,14 +8,14 @@
                 <tr>
                     <th></th>
                     <th>Player Name</th>
-                    <th>Str</th>
-                    <th>MP</th>
-                    <th>SF</th>
-                    <th>GC</th>
-                    <th>S</th>
-                    <th>xGF</th>
-                    <th style="white-space: nowrap;">G-xGF</th>
-                    <th style="white-space: nowrap;">G/xGF</th>
+                    <th title="Strength – Model-derived rating based on shot-stopping performance">Str</th>
+                    <th title="Minutes Played - The number of minutes the goalkeeper has played">MP</th>
+                    <th title="Shots Faced – Total number of shots on target faced">SF</th>
+                    <th title="Goals Conceded – Goals allowed while in net">GC</th>
+                    <th title="Saves – Total saves made">S</th>
+                    <th title="Post-Shot xG Faced – Quality of shots faced, adjusted for placement">xGF</th>
+                    <th title="Goals Conceded minus PSxG – Negative values suggest above-average shot stopping">G-xGF</th>
+                    <th title="Goals Conceded per PSxG – Ratio of goals allowed to shot quality faced">G/xGF</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,7 +45,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        {% include "abbr_legend.html" %}
     </div>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
     <script>
