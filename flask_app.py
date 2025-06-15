@@ -98,6 +98,9 @@ def team():
         team_xpass_boundary_data = db_team_xpass_boundaries.get_team_xpass_boundaries_by_season(selected_season)
         team_goals_added_boundaries = db_team_goals_added_boundaries.get_team_goals_add_boundaries_by_season(selected_season)
 
+        team_goalkeepers = db_goalkeeper_xgoals.get_goalkeepers_for_team(team_id, selected_season, limit=3)
+        team_players = db_player_xgoals.get_all_player_xgoal_by_team(team_id, selected_season)
+
         team_strength = team_xgoals_data['team_strength']
         strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
 
@@ -155,7 +158,9 @@ def team():
                                 team_goals_added_data = team_goals_added_data,
                                 team_xgoal_boundary_data = team_xgoal_boundary_data,
                                 team_xpass_boundary_data = team_xpass_boundary_data,
-                                team_goals_added_boundaries = team_goals_added_boundaries)
+                                team_goals_added_boundaries = team_goals_added_boundaries,
+                                team_goalkeepers = team_goalkeepers,
+                                team_players=team_players)
     if request.method == 'GET':
         redirect(url_for('teams'))
 

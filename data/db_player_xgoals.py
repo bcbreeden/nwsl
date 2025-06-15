@@ -2,6 +2,57 @@ from api import make_asa_api_call
 from .data_util import aggregate_position_data, generate_player_season_id, MINIMUM_MINUTES, get_db_path
 import sqlite3
 
+def get_all_player_xgoal_by_team(team_id: str, season: int):
+    """
+    Fetches and returns xGoals data for all players on a given team for a specific season.
+
+    Args:
+        team_id (str): The unique identifier of the team.
+        season (int): The season year.
+
+    Returns:
+        list[sqlite3.Row]: A list of Row objects, each containing xGoals data for a player,
+                           including related player information and team details.
+
+    Raises:
+        ValueError: If no data is found for the given team and season.
+    """
+    print(f'Fetching all player xGoals for team_id={team_id}, season={season}')
+    db_path = get_db_path()
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    query = '''
+        SELECT 
+            px.*,
+            pi.*,
+            ti.team_name,
+            ti.team_abbreviation
+        FROM 
+            player_xgoals AS px
+        JOIN 
+            player_info AS pi
+            ON px.player_id = pi.player_id
+        JOIN
+            team_info AS ti
+            ON px.team_id = ti.team_id   
+        WHERE
+            px.team_id = ? AND px.season = ?
+        ORDER BY 
+            px.player_strength DESC;
+    '''
+
+    cursor.execute(query, (team_id, season))
+    rows = cursor.fetchall()
+    conn.close()
+
+    if not rows:
+        raise ValueError(f"No player xGoal data found for team_id={team_id} and season={season}")
+
+    print(f'Returned {len(rows)} player xGoal entries.')
+    return rows
+
 def get_player_xgoal_data_all_seasons(player_id: str):
     """
     Fetches and returns player xGoals data for all seasons.

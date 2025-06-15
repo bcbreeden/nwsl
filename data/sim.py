@@ -1,7 +1,7 @@
 import random
 from collections import Counter, defaultdict
 from data.db_game_shots import get_shots_for_team, get_avg_shots_for_team
-from data.db_goalkeeper_xgoals import get_goalkeeper_for_team
+from data.db_goalkeeper_xgoals import get_goalkeepers_for_team
 from data.db_player_info import get_player_name_map
 from data.db_team_info import get_team_name_map, get_team_abbreviation_map
 from data.db_team_xgoals import (
@@ -105,7 +105,7 @@ class MatchSimulator:
             # Cache average shots per game
             self.cached_avg_shots[team_id] = get_avg_shots_for_team(team_id, self.season)
             # Cache goalkeeper stats
-            self.cached_goalkeepers[team_id] = get_goalkeeper_for_team(team_id, self.season)
+            self.cached_goalkeepers[team_id] = get_goalkeepers_for_team(team_id, self.season)
             # Cache filtered shots (exclude players)
             self.filtered_team_shots[team_id] = [
                 s for s in all_shots

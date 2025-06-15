@@ -222,16 +222,20 @@ def insert_keeper_data(conn, keepers_data, position_data, stats_to_track, season
         
     conn.commit()
 
-def get_goalkeeper_for_team(team_id, season):
+def get_goalkeepers_for_team(team_id, season, limit = 1):
     """
-    Retrieves the goalkeeper with the most minutes played for a given team and season.
+    Retrieves the goalkeeper(s) with the most minutes played for a given team and season.
 
     Args:
         team_id (str): The unique identifier for the team.
         season (int): The season to filter on.
+        limit (int, optional): The number of top goalkeepers to retrieve, ordered by minutes played. Defaults to 1.
 
     Returns:
-        sqlite3.Row or None: The goalkeeper record with the most minutes, or None if no data exists.
+        sqlite3.Row or list[sqlite3.Row] or None: 
+            - A single goalkeeper record if limit == 1.
+            - A list of goalkeeper records if limit > 1.
+            - None if no data exists for the given team and season.
     """
     validate_id(team_id)
     print(f'Fetching primary goalkeeper for team {team_id} in season {season}...')
@@ -241,19 +245,27 @@ def get_goalkeeper_for_team(team_id, season):
     cursor = conn.cursor()
 
     cursor.execute('''
-        SELECT * FROM goalkeeper_xgoals
-        WHERE team_id = ?
-          AND season = ?
-        ORDER BY minutes_played DESC
-        LIMIT 1
-    ''', (team_id, season))
+        SELECT
+            gk.*,
+            pi.*
+        FROM 
+            goalkeeper_xgoals AS gk
+        JOIN 
+            player_info AS pi
+            ON gk.player_id = pi.player_id
+        WHERE 
+            gk.team_id = ?
+            AND gk.season = ?
+        ORDER BY 
+            gk.minutes_played DESC
+        LIMIT ?
+    ''', (team_id, season, limit))
 
-    row = cursor.fetchone()
-    conn.close()
-
-    if row:
-        print(f'Goalkeeper {row["player_id"]} selected with {row["minutes_played"]} minutes.')
+    if limit <= 1:
+        row = cursor.fetchone()
+        conn.close()
+        return row
     else:
-        print(f'No goalkeeper data found for team {team_id} in season {season}.')
-
-    return row
+        rows = cursor.fetchall()
+        conn.close()
+        return rows

@@ -27,6 +27,7 @@
                 <button class="grid_button tab-button moderate-margin" onclick="openTab('xp')">xPass</button>
                 <button class="grid_button tab-button moderate-margin" onclick="openTab('goals-added')">Goals Added</button>
                 <button class="grid_button tab-button moderate-margin" onclick="openTab('match-history')">Match History</button>
+                <button class="grid_button tab-button moderate-margin" onclick="openTab('roster')">Roster</button>
             </div>
             
             <div id="team_strength" class="tab-content active">
@@ -269,6 +270,66 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div id="roster" class="tab-content">
+                <!-- Players -->
+                <table class="roster-table">
+                    <colgroup>
+                        <col style="width: 40%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Player Name</th>
+                            <th title="Player's primary role on the field">Pos</th>
+                            <th title="Strength – Model-derived rating combining performance metrics">Str</th>
+                            <th title="Minutes Played – Total minutes on the field">MP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in team_players %}
+                        <tr>
+                            <td>{{ player['player_name'] }}</td>
+                            <td>{{ player['general_position'] }}</td>
+                            <td>{{ player['player_strength'] }}</td>
+                            <td>{{ player['minutes_played'] }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+                <!-- Goalkeepers -->
+                <table class="roster-table">
+                    <colgroup>
+                        <col style="width: 40%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Player Name</th>
+                            <th title="Player's primary role on the field">Pos</th>
+                            <th title="Strength – Model-derived rating combining performance metrics">Str</th>
+                            <th title="Minutes Played – Total minutes on the field">MP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gk in team_goalkeepers %}
+                        <tr>
+                            <td>{{ gk['player_name'] }}</td>
+                            <td>GK</td>
+                            <td>{{ gk['player_strength'] }}</td>
+                            <td>{{ gk['minutes_played'] }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
             </div>
 
         </div>

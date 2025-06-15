@@ -150,6 +150,10 @@ ul {
     max-width: 100px;
 }
 
+.width-50p {
+    width: 50%;
+}
+
 .width-80p {
     width: 80%;
 }
@@ -568,6 +572,10 @@ input[type="range"]::-ms-thumb {
 /* ======================
    Classes
 ====================== */
+
+.roster-table {
+    width: 100%;
+}
 
 .halftime-banner {
     background-color: #222222;      /* Neutral dark gray */
