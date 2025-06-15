@@ -272,64 +272,70 @@
                 </div>
             </div>
 
-            <div id="roster" class="tab-content">
+            <div id="roster" class="tab-content column-container">
                 <!-- Players -->
-                <table class="roster-table">
-                    <colgroup>
-                        <col style="width: 40%;">
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>Player Name</th>
-                            <th title="Player's primary role on the field">Pos</th>
-                            <th title="Strength – Model-derived rating combining performance metrics">Str</th>
-                            <th title="Minutes Played – Total minutes on the field">MP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for player in team_players %}
-                        <tr>
-                            <td>{{ player['player_name'] }}</td>
-                            <td>{{ player['general_position'] }}</td>
-                            <td>{{ player['player_strength'] }}</td>
-                            <td>{{ player['minutes_played'] }}</td>
-                        </tr>
-                        {% endfor %}
+                <div class="column-container moderate-margin-top-bottom">
+                    <h2>Position Players</h2>
+                    <table class="roster-table">
+                        <colgroup>
+                            <col style="width: 40%;">
+                            <col style="width: 20%;">
+                            <col style="width: 20%;">
+                            <col style="width: 20%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Player Name</th>
+                                <th title="Player's primary role on the field">Pos</th>
+                                <th title="Strength – Model-derived rating combining performance metrics">Str</th>
+                                <th title="Minutes Played – Total minutes on the field">MP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in team_players %}
+                            <tr>
+                                <td>{{ player['player_name'] }}</td>
+                                <td>{{ player['general_position'] }}</td>
+                                <td>{{ player['player_strength'] }}</td>
+                                <td>{{ player['minutes_played'] }}</td>
+                            </tr>
+                            {% endfor %}
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Goalkeepers -->
-                <table class="roster-table">
-                    <colgroup>
-                        <col style="width: 40%;">
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                        <col style="width: 20%;">
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>Player Name</th>
-                            <th title="Player's primary role on the field">Pos</th>
-                            <th title="Strength – Model-derived rating combining performance metrics">Str</th>
-                            <th title="Minutes Played – Total minutes on the field">MP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for gk in team_goalkeepers %}
-                        <tr>
-                            <td>{{ gk['player_name'] }}</td>
-                            <td>GK</td>
-                            <td>{{ gk['player_strength'] }}</td>
-                            <td>{{ gk['minutes_played'] }}</td>
-                        </tr>
-                        {% endfor %}
+                <div class="column-container moderate-margin-top-bottom">
+                    <h2>Goalkeepers</h2>
+                    <table class="roster-table">
+                        <colgroup>
+                            <col style="width: 40%;">
+                            <col style="width: 20%;">
+                            <col style="width: 20%;">
+                            <col style="width: 20%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Player Name</th>
+                                <th title="Player's primary role on the field">Pos</th>
+                                <th title="Strength – Model-derived rating combining performance metrics">Str</th>
+                                <th title="Minutes Played – Total minutes on the field">MP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gk in team_goalkeepers %}
+                            <tr>
+                                <td>{{ gk['player_name'] }}</td>
+                                <td>GK</td>
+                                <td>{{ gk['player_strength'] }}</td>
+                                <td>{{ gk['minutes_played'] }}</td>
+                            </tr>
+                            {% endfor %}
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>

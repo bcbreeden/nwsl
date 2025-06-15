@@ -574,7 +574,12 @@ input[type="range"]::-ms-thumb {
 ====================== */
 
 .roster-table {
-    width: 100%;
+    min-width: 600px;
+}
+
+.roster-table th, td {
+    margin: 0;
+    padding: 0;
 }
 
 .halftime-banner {
