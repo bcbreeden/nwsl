@@ -376,3 +376,35 @@ def get_avg_shots_for_team(team_id, season):
     avg_shots = total_shots / total_games if total_games > 0 else 0.0
     print(f'Team {team_id} averaged {avg_shots:.2f} shots per game over {total_games} games.')
     return avg_shots
+
+def get_penalty_kicks_for_team(team_id, season):
+    """
+    Retrieves all penalty kick shot records for a specific team in a given season.
+
+    Args:
+        team_id (str): The unique identifier for the team.
+        season (int): The season to fetch penalty kick data for.
+
+    Returns:
+        list[sqlite3.Row]: A list of penalty kick shot records ordered by game and shot sequence.
+    """
+    validate_id(team_id)
+    print(f'Fetching all penalty kicks for team {team_id} in season {season}...')
+    
+    conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT * FROM game_shots
+        WHERE team_id = ?
+          AND season = ?
+          AND pattern_of_play = 'Penalty'
+        ORDER BY game_id ASC, shot_order ASC
+    ''', (team_id, season))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    print(f'{len(rows)} penalty kicks retrieved for team {team_id} in season {season}.')
+    return rows

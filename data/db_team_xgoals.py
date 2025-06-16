@@ -4,24 +4,29 @@ import sqlite3
 from sklearn.preprocessing import MinMaxScaler
 from .data_util import get_db_path
 from .db_team_strength import insert_team_strength
-from .db_game_shots import get_total_psxg_by_team_and_season
+from .db_game_shots import get_total_psxg_by_team_and_season, get_penalty_kicks_for_team
+import copy
 
 def insert_teams_xgoals_by_season(season):
     print('Inserting teams data (xgoals) for season:', season)
     api_string = f'nwsl/teams/xgoals?season_name={season}&stage_name=Regular Season'
     teams_data = make_asa_api_call(api_string)[1]
 
+    # Step 1: Compute derived stats and create penalty-adjusted versions
+    adjusted_teams = []
     for team in teams_data:
+        team_id = team.get('team_id', 'Unknown Team ID')
         goals_for = team.get('goals_for', 0)
         xgoals_for = team.get('xgoals_for', 0)
         goals_against = team.get('goals_against', 0)
         points = team.get('points', 0)
         count_games = team.get('count_games', 0)
+
         predicted_points = round(_calc_predicted_points(count_games, goals_for, goals_against), 3)
         point_diff = round(predicted_points - points, 3)
         goalfor_xgoalfor_diff = round(goals_for - xgoals_for, 3)
-        psxg = round(get_total_psxg_by_team_and_season(team.get('team_id', 'Unknown Team ID'), season), 1)
-        psxg_xg_diff = round((psxg - xgoals_for), 1)
+        psxg = round(get_total_psxg_by_team_and_season(team_id, season), 1)
+        psxg_xg_diff = round(psxg - xgoals_for, 1)
 
         team['predicted_points'] = predicted_points
         team['point_diff'] = point_diff
@@ -29,52 +34,71 @@ def insert_teams_xgoals_by_season(season):
         team['psxg'] = psxg
         team['psxg_xg_diff'] = psxg_xg_diff
 
-    # Calculate min/max for normalization
-    feature_mins, feature_maxs = calculate_feature_min_max(teams_data)
+        # Create adjusted version for strength calculation
+        adjusted = copy.deepcopy(team)
+        penalty_shots = get_penalty_kicks_for_team(team_id, season)
+        penalty_xg = sum(s['shot_xg'] for s in penalty_shots)
+        penalty_psxg = sum(s['shot_psxg'] for s in penalty_shots)
+        print(team_id)
+        print("penalty_xg", penalty_xg)
+        print("penalty_psxg", penalty_psxg)
+        penalty_goals = sum(1 for s in penalty_shots if s['goal'] == 1)
 
+        adjusted['xgoal_difference'] -= penalty_xg
+        adjusted['psxg_xg_diff'] -= (penalty_psxg - penalty_xg)
+        adjusted['goalfor_xgoalfor_diff'] -= (penalty_goals - penalty_xg)
+        adjusted['goal_difference_minus_xgoal_difference'] = adjusted['goal_difference'] - adjusted['xgoal_difference']
+
+        adjusted_teams.append(adjusted)
+
+    # Step 2: Normalize based on adjusted data
+    feature_mins, feature_maxs = calculate_feature_min_max(adjusted_teams)
+
+    # Step 3: Insert data into database
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
 
-    for team in teams_data:
+    for team, adjusted in zip(teams_data, adjusted_teams):
         team_id = team.get('team_id', 'Unknown Team ID')
         obj_id = team_id + str(season)
-        count_games = team.get('count_games', 0)
-        shots_for = team.get('shots_for', 0)
-        shots_against = team.get('shots_against', 0)
-        goals_for = team.get('goals_for', 0)
-        goals_against = team.get('goals_against', 0)
-        goal_difference = team.get('goal_difference', 0)
-        xgoals_for = round(team.get('xgoals_for', 0), 1)
-        xgoals_against = round(team.get('xgoals_against', 0), 1)
-        xgoal_difference = round(team.get('xgoal_difference', 0), 1)
-        goal_difference_minus_xgoal_difference = round(team.get('goal_difference_minus_xgoal_difference', 0), 1)
-        points = team.get('points', 0)
-        xpoints = round(team.get('xpoints', 0), 1)
-        predicted_points = team['predicted_points']
-        point_diff = team['point_diff']
-        goalfor_xgoalfor_diff = team['goalfor_xgoalfor_diff']
-        psxg = team['psxg']
-        psxg_xg_diff = team['psxg_xg_diff']
 
-        # Calculate power score
-        team_strength = calculate_team_strength(team, feature_mins, feature_maxs, season)
+        team_strength = calculate_team_strength(adjusted, feature_mins, feature_maxs, season)
 
         cursor.execute('''
             INSERT OR REPLACE INTO team_xgoals (
                 id, team_id, count_games, shots_for, shots_against, goals_for, 
                 goals_against, goal_difference, xgoals_for, xgoals_against, 
                 xgoal_difference, goal_difference_minus_xgoal_difference, 
-                points, xpoints, season, predicted_points, point_diff, goalfor_xgoalfor_diff, psxg, psxg_xg_diff, team_strength
+                points, xpoints, season, predicted_points, point_diff, 
+                goalfor_xgoalfor_diff, psxg, psxg_xg_diff, team_strength
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            obj_id, team_id, count_games, shots_for, shots_against, goals_for,
-            goals_against, goal_difference, xgoals_for, xgoals_against,
-            xgoal_difference, goal_difference_minus_xgoal_difference,
-            points, xpoints, int(season), predicted_points, point_diff, round(goalfor_xgoalfor_diff, 1), psxg, psxg_xg_diff, team_strength
+            obj_id,
+            team_id,
+            team.get('count_games', 0),
+            team.get('shots_for', 0),
+            team.get('shots_against', 0),
+            team.get('goals_for', 0),
+            team.get('goals_against', 0),
+            team.get('goal_difference', 0),
+            round(team.get('xgoals_for', 0), 1),
+            round(team.get('xgoals_against', 0), 1),
+            round(team.get('xgoal_difference', 0), 1),
+            round(team.get('goal_difference_minus_xgoal_difference', 0), 1),
+            team.get('points', 0),
+            round(team.get('xpoints', 0), 1),
+            int(season),
+            team['predicted_points'],
+            team['point_diff'],
+            round(team['goalfor_xgoalfor_diff'], 1),
+            team['psxg'],
+            team['psxg_xg_diff'],
+            team_strength
         ))
 
         conn.commit()
     conn.close()
+
 
 '''
 ======================
@@ -438,8 +462,6 @@ def get_league_avg_shots_against_per_game(season):
     if row and row['total_games'] > 0:
         return row['total_sa'] / row['total_games']
     return None
-
-
 
 '''
 ======================
