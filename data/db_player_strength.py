@@ -268,7 +268,7 @@ def update_midfielder_strength(season):
             'passing_ga': ga_data['passing_goals_added_raw'],
             'receiving_ga': ga_data['receiving_goals_added_raw'],
             'interrupting_ga': ga_data['interrupting_goals_added_raw'],
-            'player_name': xg_data.get('player_name', 'Unknown')
+            'player_name': xg_data.get('player_name', 'Unknown',),
         }
         midfielders.append(combined)
 
@@ -303,13 +303,13 @@ def update_midfielder_strength(season):
         iga = normalize(p['interrupting_ga'], min_iga, max_iga)
 
         strength = (
-            0.20 * exp +
-            0.15 * touch +
-            0.15 * xa +
-            0.15 * pts +
-            0.15 * pga +
-            0.10 * rga +
-            0.10 * iga
+            0.20 * exp +          # Distribution skill
+            0.15 * touch +        # Involvement
+            0.15 * xa +           # Creative quality
+            0.15 * pts +          # Total attacking contribution
+            0.15 * pga +          # Passing impact
+            0.10 * rga +          # Receiving quality
+            0.10 * iga            # Disruption
         )
 
         score = round(strength * 100, 1)
