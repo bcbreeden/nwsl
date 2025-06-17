@@ -5,6 +5,7 @@ from .db_player_goals_added import get_all_players_goals_added_by_season
 from .db_goalkeeper_goals_added import get_all_goalkeeper_goals_added_by_season
 from .db_goalkeeper_xgoals import get_all_goalkeepers_xgoals_by_season
 from .db_game_shots import get_shots_by_type
+from .data_util import get_range
 import sqlite3
 
 def normalize(val, min_val, max_val):
@@ -107,121 +108,6 @@ def update_goalkeeper_strength(season):
     conn.commit()
     conn.close()
     print(f"Updated strength for {len(qualified)} goalkeepers, reset {len(unqualified)} others.")
-
-def update_defender_strength(season):
-    players_xgoals = get_top_player_xgoals_stat(season)
-    players_xpass = get_all_player_xpass(season)
-    player_goals_added = get_all_players_goals_added_by_season(season)
-    penalty_shots = get_shots_by_type('penalty', season)
-
-    # Create lookup dictionaries
-    xgoals_dict = {p['player_id']: dict(p) for p in players_xgoals}
-    xpass_dict = {p['player_id']: dict(p) for p in players_xpass}
-    goals_added_dict = {p['player_id']: dict(p) for p in player_goals_added}
-
-    # Sum penalty xG per player
-    penalty_xg_by_player = {}
-    for shot in penalty_shots:
-        pid = shot['shooter_player_id']
-        penalty_xg_by_player[pid] = penalty_xg_by_player.get(pid, 0) + shot['shot_xg']
-
-    defenders = []
-    for player_id, p_xpass in xpass_dict.items():
-        if p_xpass['general_position'] not in ('CB', 'FB'):
-            continue
-        if player_id not in xgoals_dict or player_id not in goals_added_dict:
-            continue
-
-        xg_data = xgoals_dict[player_id]
-        ga_data = goals_added_dict[player_id]
-
-        # Deduct penalty xG
-        original_xg = xg_data['xgoals']
-        pk_xg = penalty_xg_by_player.get(player_id, 0)
-        adjusted_xg = max(0, original_xg - pk_xg)
-
-        combined = {
-            'player_id': player_id,
-            'season': p_xpass['season'],
-            'xgoals': adjusted_xg,
-            'points_added': xg_data['points_added'],
-            'passes_completed_over_expected': p_xpass['passes_completed_over_expected'],
-            'pass_completion_percentage': p_xpass['pass_completion_percentage'],
-            'share_team_touches': p_xpass['share_team_touches'],
-            'minutes_played': p_xpass['minutes_played'],
-            'interrupting_ga': ga_data['interrupting_goals_added_raw'],
-            'receiving_ga': ga_data['receiving_goals_added_raw'],
-            'passing_ga': ga_data['passing_goals_added_raw']
-        }
-        defenders.append(combined)
-
-    # Filter for minutes
-    qualified = [p for p in defenders if p['minutes_played'] >= MINIMUM_MINUTES]
-    unqualified = [p for p in defenders if p['minutes_played'] < MINIMUM_MINUTES]
-
-    if not qualified:
-        print("No qualified defenders found.")
-        return
-
-    # Normalize
-    min_exp, max_exp = get_range(qualified, 'passes_completed_over_expected')
-    min_pct, max_pct = get_range(qualified, 'pass_completion_percentage')
-    min_touch, max_touch = get_range(qualified, 'share_team_touches')
-    min_xg, max_xg = get_range(qualified, 'xgoals')
-    min_pts, max_pts = get_range(qualified, 'points_added')
-    min_iga, max_iga = get_range(qualified, 'interrupting_ga')
-    min_rga, max_rga = get_range(qualified, 'receiving_ga')
-    min_pga, max_pga = get_range(qualified, 'passing_ga')
-
-    # DB connection
-    conn = sqlite3.connect(get_db_path())
-    cursor = conn.cursor()
-
-    for p in qualified:
-        exp = normalize(p['passes_completed_over_expected'], min_exp, max_exp)
-        pct = normalize(p['pass_completion_percentage'], min_pct, max_pct)
-        touch = normalize(p['share_team_touches'], min_touch, max_touch)
-        xg = normalize(p['xgoals'], min_xg, max_xg)
-        pts = normalize(p['points_added'], min_pts, max_pts)
-        iga = normalize(p['interrupting_ga'], min_iga, max_iga)
-        rga = normalize(p['receiving_ga'], min_rga, max_rga)
-        pga = normalize(p['passing_ga'], min_pga, max_pga)
-
-        strength = (
-            0.15 * exp +
-            0.10 * pct +
-            0.10 * touch +
-            0.10 * xg +
-            0.15 * pts +
-            0.20 * iga +
-            0.10 * rga +
-            0.10 * pga
-        )
-        score = round(strength * 100, 1)
-
-        cursor.execute(
-            '''
-            UPDATE player_xgoals
-            SET player_strength = ?
-            WHERE player_id = ? AND season = ?
-            ''',
-            (score, p['player_id'], p['season'])
-        )
-
-    # Set unqualified to 0
-    for p in unqualified:
-        cursor.execute(
-            '''
-            UPDATE player_xgoals
-            SET player_strength = 0
-            WHERE player_id = ? AND season = ?
-            ''',
-            (p['player_id'], p['season'])
-        )
-
-    conn.commit()
-    conn.close()
-    print(f"Updated strength for {len(qualified)} defenders, reset {len(unqualified)} others.")
 
 def update_midfielder_strength(season):
     players_xgoals = get_top_player_xgoals_stat(season)
