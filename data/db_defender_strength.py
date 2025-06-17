@@ -73,18 +73,17 @@ def update_defender_strength(season):
         pga = normalize(p['passing_ga'], min_pga, max_pga)
 
         # Composite strength score with custom weights
-        strength = (
-            0.15 * exp +   # Passing difficulty
-            0.10 * pct +   # Passing accuracy
-            0.10 * touch + # Overall involvement
-            0.10 * xg +    # Chance creation
-            0.15 * pts +   # Value to outcomes
-            0.20 * iga +   # Defensive disruption
-            0.10 * rga +   # Receiving skill
-            0.10 * pga     # Passing contribution
-        )
-
-        score = round(strength * 100, 1)
+        features = {
+            "exp": exp,
+            "pct": pct,
+            "touch": touch,
+            "xg": xg,
+            "pts": pts,
+            "iga": iga,
+            "rga": rga,
+            "pga": pga
+        }
+        score = compute_defender_strength(features)
 
         cursor.execute(
             '''
@@ -208,3 +207,33 @@ def build_defender_profiles(xpass_dict, xgoals_dict, goals_added_dict, penalty_x
         defenders.append(combined)
 
     return defenders
+
+def compute_defender_strength(features):
+    """
+    Computes a defender's strength score based on weighted normalized features.
+
+    Args:
+        features (dict): Dictionary containing normalized features such as:
+            - exp (passes_completed_over_expected)
+            - pct (pass_completion_percentage)
+            - touch (share_team_touches)
+            - xg (xgoals)
+            - pts (points_added)
+            - iga (interrupting_goals_added)
+            - rga (receiving_goals_added)
+            - pga (passing_goals_added)
+
+    Returns:
+        float: Defender strength score scaled to 0–100.
+    """
+    strength = (
+        0.15 * features["exp"] +
+        0.10 * features["pct"] +
+        0.10 * features["touch"] +
+        0.10 * features["xg"] +
+        0.15 * features["pts"] +
+        0.20 * features["iga"] +
+        0.10 * features["rga"] +
+        0.10 * features["pga"]
+    )
+    return round(strength * 100, 1)
