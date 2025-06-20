@@ -94,7 +94,7 @@ def update_defender_strength(season):
             (score, p['player_id'], p['season'])
         )
 
-    # Step 9: Reset strength for unqualified players
+    # Step 9: Reset strength for unqualified players to 0
     for p in unqualified:
         cursor.execute(
             '''

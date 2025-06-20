@@ -5,15 +5,8 @@ from .db_player_goals_added import get_all_players_goals_added_by_season
 from .db_goalkeeper_goals_added import get_all_goalkeeper_goals_added_by_season
 from .db_goalkeeper_xgoals import get_all_goalkeepers_xgoals_by_season
 from .db_game_shots import get_shots_by_type
-from .data_util import get_range
+from .data_util import get_range, normalize, get_range
 import sqlite3
-
-def normalize(val, min_val, max_val):
-    return (val - min_val) / (max_val - min_val) if max_val != min_val else 0.5
-
-def get_range(rows, key):
-    values = [row[key] for row in rows]
-    return min(values), max(values)
 
 def update_goalkeeper_strength(season):
     players_goals_added = get_all_goalkeeper_goals_added_by_season(season)
