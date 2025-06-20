@@ -80,25 +80,16 @@ def update_defender_strength(season):
 
     # Step 8: Calculate normalized strength and update each qualified defender
     for p in qualified:
-        exp = normalize(p['passes_completed_over_expected'], min_exp, max_exp)
-        pct = normalize(p['pass_completion_percentage'], min_pct, max_pct)
-        touch = normalize(p['share_team_touches'], min_touch, max_touch)
-        xg = normalize(p['xgoals'], min_xg, max_xg)
-        pts = normalize(p['points_added'], min_pts, max_pts)
-        iga = normalize(p['interrupting_ga'], min_iga, max_iga)
-        rga = normalize(p['receiving_ga'], min_rga, max_rga)
-        pga = normalize(p['passing_ga'], min_pga, max_pga)
-
         # Composite strength score with custom weights
         features = {
-            "exp": exp,
-            "pct": pct,
-            "touch": touch,
-            "xg": xg,
-            "pts": pts,
-            "iga": iga,
-            "rga": rga,
-            "pga": pga
+            "exp": normalize(p['passes_completed_over_expected'], min_exp, max_exp),
+            "pct": normalize(p['pass_completion_percentage'], min_pct, max_pct),
+            "touch": normalize(p['share_team_touches'], min_touch, max_touch),
+            "xg": normalize(p['xgoals'], min_xg, max_xg),
+            "pts": normalize(p['points_added'], min_pts, max_pts),
+            "iga": normalize(p['interrupting_ga'], min_iga, max_iga),
+            "rga": normalize(p['receiving_ga'], min_rga, max_rga),
+            "pga": normalize(p['passing_ga'], min_pga, max_pga)
         }
         score = calculate_defender_strength(features)
 
