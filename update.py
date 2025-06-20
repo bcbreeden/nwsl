@@ -1,9 +1,9 @@
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
-                db_setup, db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
+                db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
                 db_manager_info, db_referee_info, db_stadium_info, db_player_strength, db_game_shots,
                 db_team_xgoals_boundaries, db_team_xpass_boundaries, db_team_goals_added_boundaries,
-                db_game_goals, db_defender_strength)
+                db_game_goals, db_defender_strength, db_goalkeeper_strength)
 from datetime import datetime
 import time
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         db_player_strength.update_attacker_strength(season)
         db_player_strength.update_midfielder_strength(season)
         db_defender_strength.update_defender_strength(season)
-        db_player_strength.update_goalkeeper_strength(season)
+        db_goalkeeper_strength.update_goalkeeper_strength(season)
 
         db_player_xpass.insert_player_xpass_by_season(season)
 

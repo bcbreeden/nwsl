@@ -3,19 +3,36 @@ from .db_player_xgoals import get_top_player_xgoals_stat
 from .db_player_xpass import get_all_player_xpass
 from .db_player_goals_added import get_all_players_goals_added_by_season
 from .db_game_shots import get_shots_by_type
-from .data_util import get_range, normalize
+from .data_util import get_range, normalize, verify_minimum_minutes
 import sqlite3
 
 def update_defender_strength(season):
     """
     Calculates and updates player_strength values for defenders in a given season.
 
-    This function pulls expected goals (xG), passing data, and goals added metrics for all players,
-    filters for defenders (CB, FB), deducts penalty xG, normalizes key statistics,
-    and writes a composite strength score to the database for each qualified defender.
+    This function evaluates the performance of defenders (center backs and full backs) 
+    using a combination of expected goals, passing metrics, and goals added data. 
+    It adjusts expected goals to exclude penalty xG, normalizes each key metric 
+    across qualified players, and calculates a weighted strength score that reflects 
+    both defensive and passing contributions. Results are written to the `player_xgoals` table.
 
     Args:
-        season (int): The season year to process.
+        season (int): The season year for which defender strength scores will be calculated.
+
+    Process Overview:
+        - Retrieves defender data from xGoals, xPass, and goals added sources.
+        - Builds a profile for each defender, excluding those missing key data.
+        - Deducts penalty xG to prevent inflation of attacking metrics.
+        - Filters out players with insufficient minutes.
+        - Normalizes statistics such as passing over expected, xG, and goals added.
+        - Computes strength scores using defined weightings for each attribute.
+        - Updates the database with strength scores for qualified players.
+        - Sets player_strength to 0 for unqualified players.
+
+    Notes:
+        The final strength score is scaled between 0 and 100. It emphasizes defensive disruption 
+        (interrupting GA), passing quality, and involvement, while still acknowledging limited 
+        offensive contributions like xG.
     """
 
     # Step 1: Fetch raw player data from database/API
@@ -83,7 +100,7 @@ def update_defender_strength(season):
             "rga": rga,
             "pga": pga
         }
-        score = compute_defender_strength(features)
+        score = calculate_defender_strength(features)
 
         cursor.execute(
             '''
@@ -126,25 +143,25 @@ def deduct_penalty_from_xgoal(xgoal_value, penalty_xgoal_value):
     return max(0, xgoal_value - penalty_xgoal_value)
 
 
-def verify_minimum_minutes(players, minimum_minutes):
-    """
-    Splits players into qualified and unqualified based on minimum minutes played.
+# def verify_minimum_minutes(players, minimum_minutes):
+#     """
+#     Splits players into qualified and unqualified based on minimum minutes played.
 
-    Args:
-        players (list of dict): List of player data dictionaries.
-        minimum_minutes (int): Threshold for qualification.
+#     Args:
+#         players (list of dict): List of player data dictionaries.
+#         minimum_minutes (int): Threshold for qualification.
 
-    Returns:
-        tuple: (qualified_players, unqualified_players)
-    """
-    qualified = []
-    unqualified = []
-    for p in players:
-        if p['minutes_played'] >= minimum_minutes:
-            qualified.append(p)
-        else:
-            unqualified.append(p)
-    return qualified, unqualified
+#     Returns:
+#         tuple: (qualified_players, unqualified_players)
+#     """
+#     qualified = []
+#     unqualified = []
+#     for p in players:
+#         if p['minutes_played'] >= minimum_minutes:
+#             qualified.append(p)
+#         else:
+#             unqualified.append(p)
+#     return qualified, unqualified
 
 def get_penalty_xg_by_player(penalty_shots):
     """
@@ -208,9 +225,9 @@ def build_defender_profiles(xpass_dict, xgoals_dict, goals_added_dict, penalty_x
 
     return defenders
 
-def compute_defender_strength(features):
+def calculate_defender_strength(features):
     """
-    Computes a defender's strength score based on weighted normalized features.
+    Calculate a defender's strength score based on weighted normalized features.
 
     Args:
         features (dict): Dictionary containing normalized features such as:
