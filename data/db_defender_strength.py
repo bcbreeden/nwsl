@@ -142,27 +142,6 @@ def deduct_penalty_from_xgoal(xgoal_value, penalty_xgoal_value):
     """
     return max(0, xgoal_value - penalty_xgoal_value)
 
-
-# def verify_minimum_minutes(players, minimum_minutes):
-#     """
-#     Splits players into qualified and unqualified based on minimum minutes played.
-
-#     Args:
-#         players (list of dict): List of player data dictionaries.
-#         minimum_minutes (int): Threshold for qualification.
-
-#     Returns:
-#         tuple: (qualified_players, unqualified_players)
-#     """
-#     qualified = []
-#     unqualified = []
-#     for p in players:
-#         if p['minutes_played'] >= minimum_minutes:
-#             qualified.append(p)
-#         else:
-#             unqualified.append(p)
-#     return qualified, unqualified
-
 def get_penalty_xg_by_player(penalty_shots):
     """
     Aggregates penalty xG totals for each player.

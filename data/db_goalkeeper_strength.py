@@ -146,26 +146,6 @@ def build_goalkeeper_profiles(xg_dict, ga_dict):
         })
     return profiles
 
-# def verify_minimum_minutes(players, minimum_minutes):
-#     """
-#     Splits players into qualified and unqualified based on minimum minutes played.
-
-#     Args:
-#         players (list of dict): List of player data dictionaries.
-#         minimum_minutes (int): Threshold for qualification.
-
-#     Returns:
-#         tuple: (qualified_players, unqualified_players)
-#     """
-#     qualified = []
-#     unqualified = []
-#     for p in players:
-#         if p['minutes_played'] >= minimum_minutes:
-#             qualified.append(p)
-#         else:
-#             unqualified.append(p)
-#     return qualified, unqualified
-
 def calculate_goalkeeper_strength(features):
     """
     Calculate a goalkeeper's strength score based on weighted normalized features.
