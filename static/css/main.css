@@ -393,6 +393,10 @@ ul {
     text-align: justify;
 }
 
+.text-right {
+    text-align: right;
+}
+
 .white-text {
     color: var(--block-bg) !important;
 }

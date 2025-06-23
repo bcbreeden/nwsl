@@ -277,27 +277,27 @@
                 <div class="column-container moderate-margin-top-bottom">
                     <h2>Position Players</h2>
                     <table class="roster-table">
-                        <colgroup>
-                            <col style="width: 40%;">
-                            <col style="width: 20%;">
-                            <col style="width: 20%;">
-                            <col style="width: 20%;">
-                        </colgroup>
                         <thead>
                             <tr>
                                 <th>Player Name</th>
-                                <th title="Player's primary role on the field">Pos</th>
-                                <th title="Strength – Model-derived rating combining performance metrics">Str</th>
-                                <th title="Minutes Played – Total minutes on the field">MP</th>
+                                <th class="text-right" title="Player's primary role on the field">Pos</th>
+                                <th class="text-right" title="Strength – Model-derived rating combining performance metrics">Str</th>
+                                <th class="text-right" title="Goals – Total goals scored (excluding own goals)">G</th>
+                                <th class="text-right" title="Primary Assists – Direct assists leading to goals">A</th>
+                                <th class="text-right" title="Shots – Total number of shots taken">S</th>
+                                <th class="text-right" title="Minutes Played – Total minutes on the field">MP</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for player in team_players %}
                             <tr>
                                 <td>{{ player['player_name'] }}</td>
-                                <td>{{ player['general_position'] }}</td>
-                                <td>{{ player['player_strength'] }}</td>
-                                <td>{{ player['minutes_played'] }}</td>
+                                <td class="text-right">{{ player['general_position'] }}</td>
+                                <td class="text-right">{{ player['player_strength'] }}</td>
+                                <td class="text-right">{{ player['goals'] }}</td>
+                                <td class="text-right">{{ player['primary_assists'] }}</td>
+                                <td class="text-right">{{ player['shots'] }}</td>
+                                <td class="text-right">{{ player['minutes_played'] }}</td>
                             </tr>
                             {% endfor %}
 
@@ -309,27 +309,25 @@
                 <div class="column-container moderate-margin-top-bottom">
                     <h2>Goalkeepers</h2>
                     <table class="roster-table">
-                        <colgroup>
-                            <col style="width: 40%;">
-                            <col style="width: 20%;">
-                            <col style="width: 20%;">
-                            <col style="width: 20%;">
-                        </colgroup>
                         <thead>
                             <tr>
                                 <th>Player Name</th>
-                                <th title="Player's primary role on the field">Pos</th>
-                                <th title="Strength – Model-derived rating combining performance metrics">Str</th>
-                                <th title="Minutes Played – Total minutes on the field">MP</th>
+                                <th class="text-right" title="Strength – Model-derived rating combining performance metrics">Str</th>
+                                <th class="text-right" title="Goals Conceded minus PSxG – Negative values suggest above-average shot stopping">G-xGF</th>
+                                <th class="text-right" title="Shots Faced – Total number of shots on target faced">SF</th>
+                                <th class="text-right" title="Save Percentage – Percentage of shots saved.">S%</th>
+                                <th class="text-right" title="Minutes Played – Total minutes on the field">MP</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for gk in team_goalkeepers %}
                             <tr>
                                 <td>{{ gk['player_name'] }}</td>
-                                <td>GK</td>
-                                <td>{{ gk['player_strength'] }}</td>
-                                <td>{{ gk['minutes_played'] }}</td>
+                                <td class="text-right">{{ gk['player_strength'] }}</td>
+                                <td class="text-right">{{ gk['goals_minus_xgoals_gk'] }}</td>
+                                <td class="text-right">{{ gk['shots_faced'] }}</td>
+                                <td class="text-right">{{ gk['save_perc'] }}</td>
+                                <td class="text-right">{{ gk['minutes_played'] }}</td>
                             </tr>
                             {% endfor %}
 
