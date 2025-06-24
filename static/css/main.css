@@ -130,6 +130,14 @@ ul {
     flex-direction: column;
 }
 
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 /* ======================
    Generic
 ====================== */
@@ -687,7 +695,7 @@ input[type="range"]::-ms-thumb {
     margin: 20px;
 }
 
-#nav_form_container {
+#nav-form-container {
     display: flex;
     justify-content: center;
     margin-top: 30px;
@@ -1069,5 +1077,59 @@ input[type="range"]::-ms-thumb {
     align-items: center;
 }
 
+/* ======================
+   Responsive - Nav Menu
+====================== */
+#menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+}
 
+@media (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        background-color: var(--dark-bg);
+        padding: 1rem;
+    }
+
+    nav ul.show {
+        display: flex;
+    }
+
+    #menu-toggle {
+        display: block;
+    }
+
+    #nav-form-container {
+        display: none !important;
+    }
+
+    #nav-logo {
+        display: none;
+    }
+
+    #all-content {
+        display: flex;
+        flex-direction: column !important;
+    }
+
+    .header-top {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-header {
+        font-size: 20px;
+        padding-left: 10px;
+    }
+}
 

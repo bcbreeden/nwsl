@@ -42,12 +42,19 @@
 <body>
     <section id="all-content">
         <header>
-            <img class="max-width-100" src="{{ url_for('static', filename='img/logo.png') }}" alt="Website Logo">
-            <h1>xGoal</h1>
-            <h1>Theory</h1>
-            <h1>{{ season }}</h1>
-            <nav>
-                <ul>
+            <div class="header-top">
+                <img id="nav-logo" class="max-width-100" src="{{ url_for('static', filename='img/logo.png') }}" alt="Website Logo">
+                <button id="menu-toggle" aria-label="Toggle Menu">&#9776;</button>
+                <h1 class="nav-header">xGoal</h1>
+                <h1 class="nav-header">Theory</h1>
+                <h1 class="nav-header">{{ season }}</h1>
+
+
+                
+            </div>
+
+            <nav id="navbar">
+                <ul id="nav-links">
                     <li><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
                     <li><a class="nav-link" href="{{ url_for('league') }}">League</a></li>
                     <li><a class="nav-link" href="{{ url_for('players') }}">Players</a></li>
@@ -59,7 +66,7 @@
                     <li><a class="nav-link" href="{{ url_for('blog') }}">Blog</a></li>
                 </ul>
             </nav>
-            <section id="nav_form_container">
+            <section id="nav-form-container">
                 <form id="season_select_form" action="/" method="POST">
                     <label class="label_small" for="season_year">The data can be adjusted for a specific season below.</label>
                     <select id="season_year" name="season_year">
@@ -82,5 +89,9 @@
     <footer>
     </footer>
 </body>
-
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function () {
+        document.getElementById('nav-links').classList.toggle('show');
+    });
+</script>
 </html>
