@@ -3,7 +3,7 @@
 {% block content %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <section class="report_outer_container">
-    <section class="report">
+    <section class="player-report">
         <section class="report_header">
             <div class="report_team_container">
                 <img class="team_logo" src="{{ url_for('static', filename='img/' + team_xgoals_data['team_abbreviation'] + '.png') }}">
@@ -276,7 +276,7 @@
                 <!-- Players -->
                 <div class="column-container moderate-margin-top-bottom">
                     <h2>Position Players</h2>
-                    <table class="roster-table">
+                    <table class="team-roster-table">
                         <thead>
                             <tr>
                                 <th>Player Name</th>
@@ -308,7 +308,7 @@
                 <!-- Goalkeepers -->
                 <div class="column-container moderate-margin-top-bottom">
                     <h2>Goalkeepers</h2>
-                    <table class="roster-table">
+                    <table class="team-roster-table">
                         <thead>
                             <tr>
                                 <th>Player Name</th>

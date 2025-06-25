@@ -7,7 +7,7 @@
     --font-color: #000000;
     --green: #2ecc71;
     --padding-left: 35px;
-    --report-max-width: 1200px;
+    --player-report-max-width: 1200px;
     --shot-border-width: 35px;
   }
 
@@ -196,8 +196,6 @@ nav ul {
     width: auto;
 }
 
-
-
 /* ======================
    Borders
 ====================== */
@@ -239,14 +237,6 @@ nav ul {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.text-left {
-    text-align: left;
 }
 
 .flex-all-center {
@@ -376,6 +366,10 @@ nav ul {
     padding: 20px;
 }
 
+.large-padding-bottom {
+    padding-bottom: 20px;
+}
+
 /* ======================
    Text
 ====================== */
@@ -445,6 +439,14 @@ nav ul {
 
 .text-montserrat {
     font-family: "Montserrat", serif;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
 }
 
 /* ======================
@@ -615,23 +617,23 @@ input[type="range"]::-ms-thumb {
    Classes
 ====================== */
 
-.roster-table {
+.team-roster-table {
     min-width: 600px;
 }
 
-.roster-table th, td {
+.team-roster-table th, td {
     margin: 0;
     padding: 0;
 }
 
-.report {
-    max-width: var(--report-max-width);
+.player-report {
+    max-width: var(--player-report-max-width);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.shot-container {
+.game-shot-container {
     min-width: 650px;
     border-radius: 10px;
 }
@@ -639,6 +641,10 @@ input[type="range"]::-ms-thumb {
 .static-stat-cell {
     width: 200px;
 }
+
+/* ======================
+   Sub-Menu Navigation Tabs
+====================== */
 
 .tab-button {
 }
@@ -655,6 +661,24 @@ input[type="range"]::-ms-thumb {
 .tab-content.active {
     display: flex;
     flex-direction: column;
+}
+
+.grid_button {
+    background-color: var(--white);
+    border: 0;
+    color: var(--dark-bg);
+    cursor: pointer;
+}
+
+.grid_button_light {
+    background-color: var(--white);
+    border: 0;
+    color: var(--link);
+    cursor: pointer;
+}
+
+.grid_button:hover, .grid_button_light:hover{
+    color: var(--contrast-alt);
 }
 
 /* ======================
@@ -744,48 +768,11 @@ input[type="range"]::-ms-thumb {
     -moz-appearance: none;
 }
 
-.label_small {
-    font-size: 12px;
-    text-align: center;
-}
-
-.footer-text {
-    font-size: small;
-}
-
-.grid_button {
-    background-color: var(--white);
-    border: 0;
-    color: var(--dark-bg);
-    cursor: pointer;
-}
-
-.grid_button_light {
-    background-color: var(--white);
-    border: 0;
-    color: var(--link);
-    cursor: pointer;
-}
-
-.grid_button:hover, .grid_button_light:hover{
-    color: var(--contrast-alt);
-}
-
 .hidden {
     display: none !important;
 }
 
-.index-metric-heading {
-    margin-bottom: 15px;
-    width: 100%;
-    background-color: white;
-    color: var(--dark-bg);
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    text-align: center;
-}
-
-.index-metric {
+.league-metric-container {
     border-radius: 15px;
     border: solid;
     border-width: 3px;
@@ -798,12 +785,6 @@ input[type="range"]::-ms-thumb {
     height: fit-content;
     background-color: var(--block-bg);
     width: 300px;
-}
-
-.notation{
-    text-align: center;
-    font-weight: 300;
-    font-size: small;
 }
 
 .player_first_name {
@@ -821,10 +802,6 @@ input[type="range"]::-ms-thumb {
 
 .right-table, .right-table-standings {
     text-align: right;
-}
-
-.stat {
-    text-align: center !important;
 }
 
 .special-stat {

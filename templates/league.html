@@ -2,8 +2,8 @@
 
 {% block content %}
     <!-- Goals -->
-    <section class="index-metric">
-        <h2 class="index-metric-heading">Goals</h2>
+    <section class="league-metric-container">
+        <h2 class="large-padding-bottom">Goals</h2>
         <table>   
             <tbody>
                 {% for player in top_scorers %}
@@ -25,8 +25,8 @@
     </section>
 
     <!-- Assists -->
-    <section class="index-metric">
-        <h2 class="index-metric-heading">Assists</h2>
+    <section class="league-metric-container">
+        <h2 class="large-padding-bottom">Assists</h2>
         <table>       
             <tbody>
                 {% for player in top_assists %}
@@ -48,8 +48,8 @@
     </section>
 
     <!-- Shots -->
-    <section class="index-metric">
-        <h2 class="index-metric-heading">Shots</h2>
+    <section class="league-metric-container">
+        <h2 class="large-padding-bottom">Shots</h2>
         <table>       
             <tbody>
                 {% for player in total_shots %}
@@ -71,8 +71,8 @@
     </section>
 
     <!-- Minutes Played Non-Defender -->
-    <section class="index-metric">
-        <h2 class="index-metric-heading">Minutes Played</h2>
+    <section class="league-metric-container">
+        <h2 class="large-padding-bottom">Minutes Played</h2>
         <table>       
             <tbody>
                 {% for player in minutes_played_non_df %}
@@ -91,12 +91,12 @@
                 {% endfor %}
             </tbody>
         </table>
-        <h4 class="notation">* Goalkeepers and DF players are excluded. Non-DF players are generally subbed more often.</h4>
+        <h4 class="text-small text-center moderate-margin-top-bottom">* Goalkeepers and DF players are excluded. Non-DF players are generally subbed more often.</h4>
     </section>
 
     <!-- Minutes Played Defender -->
-    <section class="index-metric">
-        <h2 class="index-metric-heading">Minutes Played - DF</h2>
+    <section class="league-metric-container">
+        <h2 class="large-padding-bottom">Minutes Played - DF</h2>
         <table>       
             <tbody>
                 {% for player in minutes_played_df %}
@@ -115,12 +115,12 @@
                 {% endfor %}
             </tbody>
         </table>
-        <h4 class="notation">* Generally, defenders are not subbed on/off as often. That is why they get their own category.</h4>
+        <h4 class="text-small text-center moderate-margin-top-bottom">* Generally, defenders are not subbed on/off as often. That is why they get their own category.</h4>
     </section>
 
     <!-- Shots on Target -->
-    <section class="index-metric">
-        <h2 class="index-metric-heading">Shots on Target</h2>
+    <section class="league-metric-container">
+        <h2 class="large-padding-bottom">Shots on Target</h2>
         <table>
             <tbody>
                 {% for player in shots_on_target %}
@@ -139,6 +139,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        <h4 class="notation">* Highest percentage of shots on target with at least 5 total shots.</h4>
+        <h4 class="text-small text-center moderate-margin-top-bottom">* Highest percentage of shots on target with at least 5 total shots.</h4>
     </section>
 {% endblock %}

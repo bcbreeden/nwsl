@@ -251,13 +251,13 @@
             <!-- OWN GOAL -->
             {% elif shot.type == 'own_goal' %}
             {% set team_abbr = team_info_data[shot['team_id']] %}
-            <div class="column-container shot-container x-large-margin flex-all-center">
+            <div class="column-container game-shot-container x-large-margin flex-all-center">
                 <div class="row-container">
                     <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
                     <p class="text-xxlarge text-audiowide no-padding-no-margin">GOAL</p>
                     <img class="icon-medium moderate-margin-left-right" src="{{ url_for('static', filename='img/siren.png') }}" alt="GOAL">
                 </div>
-                <div class="row-container shot-container {{ team_abbr }}">
+                <div class="row-container game-shot-container {{ team_abbr }}">
                     
                     <div class="row-container">
                         <img class="icon-xlarge x-large-margin"
@@ -284,7 +284,7 @@
 
             <!-- REGULAR SHOTS -->
             {% else %}
-            <div class="column-container shot-container x-large-margin flex-all-center">
+            <div class="column-container game-shot-container x-large-margin flex-all-center">
                 {% if shot['goal'] == 1 %}
                 <div class="column-container flex-all-center no-padding-no-margin">
                     <div class="row-container">
@@ -295,7 +295,7 @@
                 </div>
                 {% endif %}
                 {% set team_abbr = team_info_data[shot['team_id']] %}
-                <div class="row-container shot-container {{ team_abbr }}">
+                <div class="row-container game-shot-container {{ team_abbr }}">
             
                     <div class="row-container">
                         <img class="icon-xlarge x-large-margin"

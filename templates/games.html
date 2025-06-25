@@ -31,13 +31,13 @@
                             <p class="no-padding-no-margin">{{ game['stadium_name'] }}</p>
                         </div>
                     </td>
-                    <td class="stat">
+                    <td class="text-center">
                         <div class="hidden">{{ game['home_team_name'] }}</div>
                         <img class="icon-medium" src="{{ url_for('static', filename='img/' + game['home_team_abbreviation'] + '.png') }}"> <br>
                         <p class="report_name_subheader">{{ game['home_score']}}</p>
                     </td>
 
-                    <td class="stat">
+                    <td class="text-center">
                         <div class="hidden">{{ game['away_team_name'] }}</div>
                         <img class="icon-medium" src="{{ url_for('static', filename='img/' + game['away_team_abbreviation'] + '.png') }}"> <br>
                         <p class="report_name_subheader">{{ game['away_score'] }}</p>
