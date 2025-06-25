@@ -174,6 +174,28 @@ nav ul {
     height: 100%;
 }
 
+.icon-small {
+    height: 15px;
+    width: auto;
+    align-self: center;
+}
+
+.icon-medium {
+    height: 40px;
+    width: auto;
+}
+
+.icon-large {
+    height: 60px;
+    width: auto;
+    margin: 15px;
+}
+
+.icon-xlarge {
+    height: 120px;
+    width: auto;
+}
+
 
 
 /* ======================
@@ -524,6 +546,14 @@ nav ul {
     border-left: var(--shot-border-width) solid #c8102e; /* Secondary: bold red */
 }
 
+.halftime-banner {
+    background-color: #222222;      /* Neutral dark gray */
+    color: #f2f2f2;                 /* Soft off-white text */
+    border-left: var(--shot-border-width) solid #cccccc; /* Subtle silver accent */
+    border-radius: 10px;
+    min-width: 900px;
+  }
+
 /* ======================
    Slider
 ====================== */
@@ -540,7 +570,7 @@ input[type="range"] {
 /* Track */
 input[type="range"]::-webkit-slider-runnable-track {
   height: 6px;
-  background: var(--contrast-alt); /* Your desired track color */
+  background: var(--contrast-alt);
   border-radius: 5px;
 }
 input[type="range"]::-moz-range-track {
@@ -562,7 +592,7 @@ input[type="range"]::-webkit-slider-thumb {
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  background: var(--contrast-alt); /* Your desired thumb color */
+  background: var(--contrast-alt);
   margin-top: -5px;
   cursor: pointer;
 }
@@ -592,36 +622,6 @@ input[type="range"]::-ms-thumb {
 .roster-table th, td {
     margin: 0;
     padding: 0;
-}
-
-.halftime-banner {
-    background-color: #222222;      /* Neutral dark gray */
-    color: #f2f2f2;                 /* Soft off-white text */
-    border-left: var(--shot-border-width) solid #cccccc; /* Subtle silver accent */
-    border-radius: 10px;
-    min-width: 900px;
-  }
-
-.icon-small {
-    height: 15px;
-    width: auto;
-    align-self: center;
-}
-
-.icon-medium {
-    height: 40px;
-    width: auto;
-}
-
-.icon-large {
-    height: 60px;
-    width: auto;
-    margin: 15px;
-}
-
-.icon-xlarge {
-    height: 120px;
-    width: auto;
 }
 
 .report {
@@ -665,8 +665,6 @@ input[type="range"]::-ms-thumb {
     width: 800px;
     height: 400px;
 }
-
-
 
 #all-content {
     display: flex;
