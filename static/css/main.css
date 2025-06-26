@@ -616,7 +616,6 @@ input[type="range"]::-ms-thumb {
 /* ======================
    Classes
 ====================== */
-
 .team-roster-table {
     min-width: 600px;
 }
@@ -636,10 +635,6 @@ input[type="range"]::-ms-thumb {
 .game-shot-container {
     min-width: 650px;
     border-radius: 10px;
-}
-
-.static-stat-cell {
-    width: 200px;
 }
 
 /* ======================
@@ -684,7 +679,6 @@ input[type="range"]::-ms-thumb {
 /* ======================
    IDs
 ====================== */
-
 #game_flow_plot {
     width: 800px;
     height: 400px;
@@ -836,12 +830,6 @@ input[type="range"]::-ms-thumb {
     width: auto;
 }
 
-
-
-#team_logo_contianer {
-    text-align: center;
-}
-
 /* DATA TABLE STLYING */
 /* .dt-length, .dt-layout-cell {
     color: var(--accent) !important;
@@ -933,10 +921,6 @@ input[type="range"]::-ms-thumb {
     align-items: center;
 }
 
-.player_scouting_report {
-    margin-top: 40px;
-}
-
 .stat_block {
     padding: 0px;
     display: flex;
@@ -998,7 +982,9 @@ input[type="range"]::-ms-thumb {
     font-weight: bolder;
 }
 
-/* Teams Styling */
+/* ======================
+   Team Styling
+====================== */
 .form_button {
     background-color: var(--white);
     border: 3px solid var(--dark-bg);
@@ -1006,7 +992,6 @@ input[type="range"]::-ms-thumb {
     color: var(--dark-bg);
     cursor: pointer;
     padding: 6px;
-
 }
 
 .form_button:hover {
@@ -1050,6 +1035,10 @@ input[type="range"]::-ms-thumb {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#team_logo_contianer {
+    text-align: center;
 }
 
 /* ======================
