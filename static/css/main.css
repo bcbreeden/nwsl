@@ -346,6 +346,10 @@ nav ul {
     margin-bottom: 20px;
 }
 
+.large-margin-bottom {
+    margin-bottom: 20px;
+}
+
 .x-large-margin {
     margin: 40px;
 }
@@ -1094,6 +1098,14 @@ input[type="range"]::-ms-thumb {
     .nav-header {
         font-size: 20px;
         padding-left: 10px;
+    }
+    /* ======================
+    Responsive - Containers
+    ====================== */
+    #index_container {
+        margin-top: 20px;
+        width: 100%;
+        text-align: center;
     }
 }
 
