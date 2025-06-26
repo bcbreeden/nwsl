@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <section class="column-container max-width-800 flex-vert-top-hori-center large-margin-top-bottom">
+    <section class="column-container max-width-800 flex-vert-top-hori-center large-margin-top-bottom" id="blog-container">
         <a class="grid_button align-self-left" href="/blog">← Back to blog</a>
-        <img class="large-margin-top-bottom max-width-800" src="{{ url_for('static', filename=post.featured_image) }}" alt="Featured Image">
+        <img class="large-margin-top-bottom max-width-800" id="blog-featured-img" src="{{ url_for('static', filename=post.featured_image) }}" alt="Featured Image">
         <section class="column-container width-100 flex-vert-top-hori-left">
             <h1 class="black-text">{{ post.title }}</h1>
             <h2 class="text-weight-300 black-text text-large">{{ post.publish_date }}</h2>
