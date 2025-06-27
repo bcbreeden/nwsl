@@ -611,6 +611,9 @@ def _insert_event_markers(shot_data, home_team_id, away_team_id):
 def get_selected_season():
     return session.get('season', datetime.now().year)
 
+@app.route('/debug_session')
+def debug_session():
+    return f"Session season = {session.get('season')}"
 
 if __name__ == '__main__':
     app.run(debug=True)
