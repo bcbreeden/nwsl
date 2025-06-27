@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, abort, session
+from flask import Flask, render_template, request, redirect, url_for, abort, session, make_response
 from data import (db_games_xgoals, db_games, db_goalkeeper_goals_added,db_goalkeeper_xgoals,
                 db_player_goals_added, db_player_info, db_player_xgoals, db_player_xpass,
                 db_team_goals_added, db_team_info, db_team_xgoals, db_team_xpass, db_game_flow,
@@ -25,10 +25,23 @@ app.secret_key = os.environ.get('KEY')
 
 SEASONS = data_util.ALL_SEASONS
 
+def nocache(view):
+    """Decorator to set headers that disable caching."""
+    def no_cache(*args, **kwargs):
+        response = make_response(view(*args, **kwargs))
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+    # Maintain Flask route metadata
+    no_cache.__name__ = view.__name__
+    return no_cache
+
 '''
 Renders the index template.
 '''
 @app.route('/', methods=['GET', 'POST'])
+@nocache
 def index():
     if request.method == 'POST':
         new_season = request.form.get('season_year')
@@ -55,6 +68,7 @@ def index():
                            seasons = SEASONS)
 
 @app.route('/league')
+@nocache
 def league():
     selected_season = get_selected_season()
     top_5_goalscorers = db_player_xgoals.get_top_player_xgoals_stat(selected_season, 'goals', 5)
@@ -74,6 +88,7 @@ def league():
                             seasons = SEASONS)
 
 @app.route('/teams')
+@nocache
 def teams():
     selected_season = get_selected_season()
     team_data = db_team_xgoals.get_top_team_xgoals_stat(selected_season, 'team_strength')
@@ -85,6 +100,7 @@ def teams():
                            seasons = SEASONS)
 
 @app.route('/team', methods=['GET', 'POST'])
+@nocache
 def team():
     selected_season = get_selected_season()
     if request.method == 'POST':
@@ -166,6 +182,7 @@ def team():
 
 
 @app.route('/team_comparison', methods=['GET', 'POST'])
+@nocache
 def team_comparison():
     selected_season = get_selected_season()
     team_data = db_team_xgoals.get_top_team_xgoals_stat(selected_season, 'points')
@@ -201,6 +218,7 @@ def team_comparison():
                             seasons = SEASONS)
 
 @app.route('/games')
+@nocache
 def games():
     selected_season = get_selected_season()
     games_data = db_games.get_all_games_by_season(selected_season)
@@ -212,6 +230,7 @@ def games():
                            seasons = SEASONS)
 
 @app.route('/game', methods=['GET', 'POST'])
+@nocache
 def game():
     selected_season = get_selected_season()
     if request.method == 'POST':
@@ -272,6 +291,7 @@ def game():
         return redirect(url_for('games'))
 
 @app.route('/players')
+@nocache
 def players():
     selected_season = get_selected_season()
     players_xgoals_data = db_player_xgoals.get_top_player_xgoals_stat(selected_season)
@@ -284,6 +304,7 @@ def players():
                            seasons = SEASONS)
 
 @app.route('/player', methods=['GET', 'POST'])
+@nocache
 def player():
     selected_season = get_selected_season()
     if request.method == 'POST':
@@ -335,6 +356,7 @@ def player():
     return redirect(url_for('players'))
 
 @app.route('/goalkeepers', methods=['GET', 'POST'])
+@nocache
 def goalkeepers():
     selected_season = get_selected_season()
     goalkeeper_data = db_goalkeeper_xgoals.get_all_goalkeepers_xgoals_by_season(selected_season)
@@ -344,6 +366,7 @@ def goalkeepers():
                            seasons = SEASONS)
 
 @app.route('/goalkeeper', methods=['GET', 'POST'])
+@nocache
 def goalkeeper():
     selected_season = get_selected_season()
     if request.method == 'POST':
@@ -407,6 +430,7 @@ def goalkeeper():
                            seasons = SEASONS)
 
 @app.route('/simulations')
+@nocache
 def simulations():
     selected_season = get_selected_season()
     team_data = db_team_xgoals.get_top_team_xgoals_stat(selected_season, 'points')
@@ -426,6 +450,7 @@ def simulations():
 
 
 @app.route('/simulation_results', methods=['GET', 'POST'])
+@nocache
 def simulation_results():
     selected_season = get_selected_season()
     home_team_id = request.form.get("home_team")
@@ -464,6 +489,7 @@ def simulation_results():
                             seasons = SEASONS)
 
 @app.route("/blog")
+@nocache
 def blog():
     selected_season = get_selected_season()
     posts = load_blog_posts()
@@ -485,6 +511,7 @@ def blog():
                            seasons = SEASONS)
 
 @app.route("/blog/<slug>")
+@nocache
 def blog_post(slug):
     selected_season = get_selected_season()
     post = get_post_by_slug(slug)
