@@ -306,6 +306,10 @@ nav ul {
     color: var(--contrast-alt);
 }
 
+.dark-text {
+    color: var(--dark-bg)
+}
+
 /* ======================
    Padding/Margin
 ====================== */
@@ -796,6 +800,7 @@ input[type="range"]::-ms-thumb {
 .name-table{
     padding-left: 20px;
     padding-right: 20px;
+    text-align: left;
 }
 
 .right-table, .right-table-standings {
