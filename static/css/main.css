@@ -1070,6 +1070,10 @@ input[type="range"]::-ms-thumb {
         background-color: var(--dark-bg);
         padding: 1rem;
     }
+
+    #navbar {
+        display: none;
+    }
     /* ======================
     Responsive - Nav Menu
     ====================== */
@@ -1079,7 +1083,8 @@ input[type="range"]::-ms-thumb {
     }
 
     #menu-toggle {
-        display: block;
+        /* display: block; put back when pages are ready*/
+        display: none;
     }
 
     #nav-form-container {
