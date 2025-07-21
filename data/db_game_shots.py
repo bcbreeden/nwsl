@@ -408,3 +408,23 @@ def get_penalty_kicks_for_team(team_id, season):
 
     print(f'{len(rows)} penalty kicks retrieved for team {team_id} in season {season}.')
     return rows
+
+def delete_all_game_shots_for_season(season):  # pragma: no cover
+    """
+    Currently, there is a data problem where shots do not have a unique id. When a shot data point is updated, it is very difficult to avoid duplicates.
+    This function deletes all shot-level data from the game_shots table for a specific season so that new data can be populated.
+
+    Args:
+        season (int): The season to delete shot data for.
+
+    Returns:
+        None
+    """
+    print(f"Removing old shot data for season {season}...")
+    validate_season(season)
+    conn = sqlite3.connect(get_db_path())
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM game_shots WHERE season = ?", (season,))
+    conn.commit()
+    conn.close()
+    print(f"All shot data for season {season} deleted from game_shots table.")
