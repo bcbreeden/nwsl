@@ -3,7 +3,7 @@ title: I want to talk about Sam Coffey
 excerpt: The heartbeat of Portland’s midfield does not need a spotlight to shine. Sam Coffey anchors the Thorns with poise, precision, and a quiet confidence that sets the rhythm for everything around her. She leads all defensive midfielders in expected assists and ranks near the top in pass completion, key passes, and touches. She is the connector, the stabilizer, the one making sure the chaos never overwhelms the plan. You might not always see her on the highlight reel. But when Portland clicks, Coffey is at the center of it.
 tags: [Player Analysis, NWSL]
 publish_date: 2025-06-02
-draft: false
+draft: true
 featured_image: img/blog/sam-coffey.jpg
 ---
 <p class="text-small">Image Credit: Getty Images</p>

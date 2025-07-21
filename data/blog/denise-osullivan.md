@@ -3,7 +3,7 @@ title: I want to talk about Denise O'Sullivan
 excerpt: Denise O’Sullivan is not flashy, but she is everywhere. She leads all midfielders in touches, pass efficiency, and defensive interruptions. She does not need the spotlight to dominate a game, she just does the work that holds it all together. If the Courage have an identity, it starts with her.
 tags: [Player Analysis, NWSL]
 publish_date: 2025-06-14
-draft: false
+draft: true
 featured_image: img/blog/sully.jpg
 ---
 <p class="text-small">Image Credit: Getty Images</p>
