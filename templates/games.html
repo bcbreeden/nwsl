@@ -20,10 +20,9 @@
                         <div class="column-container">
                             <p class="no-padding-no-margin text-weight-bolder">{{ game['date_time_est'] }}</p>
                             <p class="no-padding-no-margin">Matchday {{ game['matchday'] }}</p>
-                            <form action="/game" method="POST">
-                                <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
-                                <input type="submit" class="grid_button moderate-margin-top-bottom" value="Game Details">
-                            </form>
+                            <a class="btn-link" class="grid_button moderate-margin-top-bottom" href="{{ url_for('game', game_id=game.game_id) }}">
+                                Game Details
+                            </a>
                         </div>
                     </td>
                     <td class="column-container">
