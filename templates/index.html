@@ -5,11 +5,13 @@
  <section id="index_container">
     <section id="team_logo_contianer">
         {% for team in teams_data %}
-            <form action="/team" method="POST" style="display:inline;">
+            <!-- <form action="/team" method="POST" style="display:inline;">
                 <input type="hidden" name="team_id" value="{{ team['team_id'] }}">
-                <button type="submit" class="grid_button" style="border: none; background: none; padding: 0;">
+                <button type="submit" class="grid_button" style="border: none; background: none; padding: 0;"> -->
+                <a href="{{ url_for('team', team_id=team.team_id) }}">
                     <img class="icon-large" src="{{ url_for('static', filename='img/' + team['team_abbreviation'] + '.png') }}" alt="{{ team['team_name'] }}">
-                </button>
+                </a>
+                <!-- </button> -->
                 <p class="hidden">{{ team['team_name'] }}</p>
             </form>
             

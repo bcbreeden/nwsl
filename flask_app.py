@@ -99,86 +99,78 @@ def teams():
                            season = selected_season,
                            seasons = SEASONS)
 
-@app.route('/team', methods=['GET', 'POST'])
+@app.route('/team/<team_id>')
 @nocache
-def team():
+def team(team_id):
     selected_season = get_selected_season()
-    if request.method == 'POST':
-        team_id = request.form.get('team_id')
-        obj_id = request.form.get('obj_id')
-        team_xgoals_data = db_team_xgoals.get_team_xgoals_by_season(team_id, selected_season)
-        team_xpass_data = db_team_xpass.get_team_xpass_by_season(team_id, selected_season)
-        team_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team_id, selected_season)
-        team_strength_data = db_team_strength.get_team_strength(team_id, selected_season)
-        team_xgoal_boundary_data = db_team_xgoals_boundaries.get_team_xgoal_boundaries_by_season(selected_season)
-        team_xpass_boundary_data = db_team_xpass_boundaries.get_team_xpass_boundaries_by_season(selected_season)
-        team_goals_added_boundaries = db_team_goals_added_boundaries.get_team_goals_add_boundaries_by_season(selected_season)
 
-        team_goalkeepers = db_goalkeeper_xgoals.get_goalkeepers_for_team(team_id, selected_season, limit=3)
-        team_players = db_player_xgoals.get_all_player_xgoal_by_team(team_id, selected_season)
+    team_xgoals_data = db_team_xgoals.get_team_xgoals_by_season(team_id, selected_season)
+    team_xpass_data = db_team_xpass.get_team_xpass_by_season(team_id, selected_season)
+    team_goals_added_data = db_team_goals_added.get_team_goals_added_by_season(team_id, selected_season)
+    team_strength_data = db_team_strength.get_team_strength(team_id, selected_season)
+    team_xgoal_boundary_data = db_team_xgoals_boundaries.get_team_xgoal_boundaries_by_season(selected_season)
+    team_xpass_boundary_data = db_team_xpass_boundaries.get_team_xpass_boundaries_by_season(selected_season)
+    team_goals_added_boundaries = db_team_goals_added_boundaries.get_team_goals_add_boundaries_by_season(selected_season)
 
-        team_strength = team_xgoals_data['team_strength']
-        strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
+    team_goalkeepers = db_goalkeeper_xgoals.get_goalkeepers_for_team(team_id, selected_season, limit=3)
+    team_players = db_player_xgoals.get_all_player_xgoal_by_team(team_id, selected_season)
 
-        team_record = db_games.get_team_record_by_season(team_id, selected_season)
-        game_results = db_games.get_team_game_results(team_id, selected_season)
-        for row in game_results:
-            print(dict(row))
+    team_strength = team_xgoals_data['team_strength']
+    strength_fig_json, strength_config = plot_team_strength_donut(team_strength)
 
+    team_record = db_games.get_team_record_by_season(team_id, selected_season)
+    game_results = db_games.get_team_game_results(team_id, selected_season)
+    five_recent_games = game_results[:5][::-1]
 
-        five_recent_games = game_results[:5][::-1]
+    stadium = db_stadium_info.get_stadium_by_id(
+        db_games.get_most_recent_home_stadium_id(team_id, selected_season)
+    )
 
-        stadium = db_stadium_info.get_stadium_by_id(db_games.get_most_recent_home_stadium_id(team_id, selected_season))
+    strength_stats_to_plot = [
+        "xgoal_difference",
+        "goal_difference",
+        "xpoints",
+        "points",
+        "goal_diff_minus_xgoal_diff",
+        "goalfor_xgoalfor_diff",
+        "psxg_xg_diff"
+    ]
+    strength_bar_json, strength_bar_config = plot_bar_chart(strength_stats_to_plot, team_strength_data)
 
-        strength_stats_to_plot = [
-                                "xgoal_difference",
-                                "goal_difference",
-                                "xpoints",
-                                "points",
-                                "goal_diff_minus_xgoal_diff",
-                                "goalfor_xgoalfor_diff",
-                                "psxg_xg_diff"
-                            ]
-        strength_bar_json, strength_bar_config = plot_bar_chart(strength_stats_to_plot, team_strength_data)
+    results_fig_json, results_config = get_donut_plot_for_team_results(
+        team_record['wins'], team_record['losses'], team_record['draws'], team_xgoals_data['points']
+    )
+    goals_fig_json, goals_config = get_donut_plot_for_goals(team_xgoals_data['goals_for'], team_xgoals_data['goals_against'])
+    pass_fig_json, pass_config = get_donut_plot_for_pass_completion(team_xpass_data['pass_completion_percentage_for'])
 
-        results_fig_json, results_config = get_donut_plot_for_team_results(
-                                                                        team_record['wins'],
-                                                                        team_record['losses'],
-                                                                        team_record['draws'],
-                                                                        team_xgoals_data['points']
-                                                                        )
-        goals_fig_json, goals_config = get_donut_plot_for_goals(team_xgoals_data['goals_for'], team_xgoals_data['goals_against'])
-        pass_fig_json, pass_config = get_donut_plot_for_pass_completion(team_xpass_data['pass_completion_percentage_for'])
+    return render_template(
+        'team.html',
+        team_xgoals_data=team_xgoals_data,
+        season=selected_season,
+        seasons=SEASONS,
+        strength_fig_json=strength_fig_json,
+        strength_config=strength_config,
+        team_record=team_record,
+        game_results=game_results,
+        five_recent_games=five_recent_games,
+        stadium=stadium,
+        results_fig_json=results_fig_json,
+        results_config=results_config,
+        goals_fig_json=goals_fig_json,
+        goals_config=goals_config,
+        pass_fig_json=pass_fig_json,
+        pass_config=pass_config,
+        strength_bar_json=strength_bar_json,
+        strength_bar_config=strength_bar_config,
+        team_xpass_data=team_xpass_data,
+        team_goals_added_data=team_goals_added_data,
+        team_xgoal_boundary_data=team_xgoal_boundary_data,
+        team_xpass_boundary_data=team_xpass_boundary_data,
+        team_goals_added_boundaries=team_goals_added_boundaries,
+        team_goalkeepers=team_goalkeepers,
+        team_players=team_players
+    )
 
-
-
-        return render_template('team.html',
-                                team_xgoals_data = team_xgoals_data,
-                                season = selected_season,
-                                seasons = SEASONS,
-                                strength_fig_json = strength_fig_json, 
-                                strength_config = strength_config,
-                                team_record = team_record,
-                                game_results = game_results,
-                                five_recent_games = five_recent_games,
-                                stadium = stadium,
-                                results_fig_json = results_fig_json,
-                                results_config = results_config,
-                                goals_fig_json = goals_fig_json,
-                                goals_config = goals_config,
-                                pass_fig_json = pass_fig_json,
-                                pass_config = pass_config,
-                                strength_bar_json = strength_bar_json,
-                                strength_bar_config = strength_bar_config,
-                                team_xpass_data = team_xpass_data,
-                                team_goals_added_data = team_goals_added_data,
-                                team_xgoal_boundary_data = team_xgoal_boundary_data,
-                                team_xpass_boundary_data = team_xpass_boundary_data,
-                                team_goals_added_boundaries = team_goals_added_boundaries,
-                                team_goalkeepers = team_goalkeepers,
-                                team_players=team_players)
-    if request.method == 'GET':
-        redirect(url_for('teams'))
 
 
 @app.route('/team_comparison', methods=['GET', 'POST'])

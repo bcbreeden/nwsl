@@ -24,11 +24,7 @@
                 {% for team in teams %}
                 <tr>
                     <td>
-                        <form action="/team" method="POST">
-                            <input type="hidden" id="team_id" name="team_id" value="{{ team['team_id'] }}">
-                            <input type="submit" class="grid_button" value="{{ team['team_name'] }}">
-                            <p class="hidden">{{ team['team_name'] }}</p>
-                        </form> 
+                        <a class="grid_button" href="{{ url_for('team', team_id=team.team_id) }}">{{ team['team_name'] }}</a>
                     </td>
                     <td>{{ team['count_games'] }}</td>
                     <td>{{ team['team_strength'] }}</td>
