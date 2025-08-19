@@ -1,20 +1,20 @@
-from data import normalize
+from data.normalize import normalize, normalize_player_stats
 import unittest
 
 class TestNormalizeFunctions(unittest.TestCase):
     def test_normalize_standard_case(self):
         """Test normalize function with a valid stat, min, and max."""
-        result = normalize.normalize(50, 0, 100)
+        result = normalize(50, 0, 100)
         self.assertAlmostEqual(result, 0.5)
 
     def test_normalize_zero_range(self):
         """Test normalize function when min_val == max_val (should return 0)."""
-        result = normalize.normalize(10, 10, 10)
+        result = normalize(10, 10, 10)
         self.assertEqual(result, 0)
 
     def test_normalize_negative_range(self):
         """Test normalize function with negative range values."""
-        result = normalize.normalize(-25, -100, 0)
+        result = normalize(-25, -100, 0)
         self.assertAlmostEqual(result, 0.75)
 
     def test_normalize_player_stats_standard(self):
@@ -29,7 +29,7 @@ class TestNormalizeFunctions(unittest.TestCase):
             'goals': (0, 10),
             'minutes_played': (0, 1800)
         }
-        result = normalize.normalize_player_stats(player_stats, stat_ranges)
+        result = normalize_player_stats(player_stats, stat_ranges)
         self.assertIn('shots', result)
         self.assertIn('goals', result)
         self.assertIn('minutes_played', result)
@@ -47,7 +47,7 @@ class TestNormalizeFunctions(unittest.TestCase):
         stat_ranges = {
             'minutes_played': (0, 1000)
         }
-        result = normalize.normalize_player_stats(player_stats, stat_ranges)
+        result = normalize_player_stats(player_stats, stat_ranges)
         self.assertEqual(result['assists'], 7)  # should be preserved unnormalized
         self.assertEqual(result['minutes_played'], 700)
 
@@ -63,7 +63,7 @@ class TestNormalizeFunctions(unittest.TestCase):
             'goals': (0, 10),
             'minutes_played': (0, 1000)
         }
-        result = normalize.normalize_player_stats(player_stats, stat_ranges)
+        result = normalize_player_stats(player_stats, stat_ranges)
         self.assertIn('goals', result)
         self.assertIn('minutes_played', result)
         self.assertNotIn('player_name', result)
@@ -75,17 +75,17 @@ class TestNormalizeFunctions(unittest.TestCase):
         """Test that stats with identical min/max in stat_ranges return 0."""
         player_stats = {'xg': 1.5}
         stat_ranges = {'xg': (1.5, 1.5)}
-        result = normalize.normalize_player_stats(player_stats, stat_ranges)
+        result = normalize_player_stats(player_stats, stat_ranges)
         self.assertEqual(result['xg'], 0)
 
     def test_normalize_player_stats_empty_inputs(self):
         """Test normalize_player_stats with empty dicts."""
-        result = normalize.normalize_player_stats({}, {})
+        result = normalize_player_stats({}, {})
         self.assertEqual(result, {})
 
         player_stats = {'goals': 2}
-        result = normalize.normalize_player_stats(player_stats, {})
+        result = normalize_player_stats(player_stats, {})
         self.assertEqual(result['goals'], 2)
 
-        result = normalize.normalize_player_stats({}, {'goals': (0, 10)})
+        result = normalize_player_stats({}, {'goals': (0, 10)})
         self.assertEqual(result, {})
