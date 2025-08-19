@@ -451,8 +451,6 @@ def simulation_results():
     home_team_id = request.form.get("home_team")
     away_team_id = request.form.get("away_team")           
     n_simulations = int(request.form.get("num_sims", 0))
-    use_psxg = "psxg" in request.form
-    include_penalties = "pks" in request.form
     home_advantage = float(request.form.get("home_advantage", 1.05))
     away_advantage = float(request.form.get("away_advantage", 0.95))
     excluded_player_ids = set(request.form.getlist("exclude_players"))
@@ -460,8 +458,6 @@ def simulation_results():
     simulator = sim.MatchSimulator(home_team_id=home_team_id,
                                    away_team_id=away_team_id,
                                    season=selected_season,
-                                   exclude_penalties=include_penalties,
-                                   use_psxg=use_psxg,
                                    home_advantage=home_advantage,
                                    away_advantage=away_advantage,
                                    excluded_player_ids=excluded_player_ids)
@@ -478,8 +474,6 @@ def simulation_results():
                             home_scorers=home_scorers,
                             away_scorers=away_scorers,
                             n_simulations=n_simulations,
-                            use_psxg=use_psxg,
-                            exclude_penalties=include_penalties,
                             season=selected_season,
                             seasons = SEASONS)
 

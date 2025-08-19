@@ -12,7 +12,7 @@ from data.db_team_xgoals import (
 )
 
 class MatchSimulator:
-    def __init__(self, home_team_id, away_team_id, season, home_advantage, away_advantage, mode="shot", exclude_penalties=True, use_psxg=False, excluded_player_ids=None):
+    def __init__(self, home_team_id, away_team_id, season, home_advantage, away_advantage, excluded_player_ids=None):
         """
         Initializes the MatchSimulator with preloaded shot-level data, modifiers, and
         team-specific filters for use in Monte Carlo match simulations.
@@ -23,9 +23,6 @@ class MatchSimulator:
             season (int): Season year to pull data from.
             home_advantage (float): Modifier applied to the home team's shot volume (e.g., 1.05 = +5%).
             away_advantage (float): Modifier applied to the away team's shot volume.
-            mode (str, optional): Reserved for future extensions of simulation behavior. Defaults to "shot".
-            exclude_penalties (bool, optional): Whether to exclude penalty shots from simulation. Defaults to True.
-            use_psxg (bool, optional): Whether to use post-shot xG (PSxG) instead of regular xG. Defaults to False.
             excluded_player_ids (list[str], optional): List of player IDs to exclude from all simulations. Defaults to None.
 
         Attributes:
@@ -51,17 +48,14 @@ class MatchSimulator:
             scorer_totals (defaultdict): Per-team tallies of goals scored per player across simulations.
 
         Example:
-            >>> sim = MatchSimulator("NC", "SD", 2024, 1.05, 0.95, use_psxg=True)
+            >>> sim = MatchSimulator(1234, 5678, 2024, 1.05, 0.95)
             >>> sim.run_simulations(1000)
             >>> print(sim.get_summary())
         """
         self.home_team_id = home_team_id
         self.away_team_id = away_team_id
         self.season = season
-        self.mode = mode.lower()
-        self.exclude_penalties = exclude_penalties
         self.n_simulations = 0
-        self.use_psxg = use_psxg
         self.cached_team_shots = {}
         self.cached_avg_shots = {}
         self.cached_goalkeepers = {}
@@ -94,12 +88,6 @@ class MatchSimulator:
         for team_id in [self.home_team_id, self.away_team_id]:
             # Get all shots
             all_shots = get_shots_for_team(team_id, self.season)
-            # Optionally filter penalties
-            if self.exclude_penalties:
-                all_shots = [
-                    s for s in all_shots
-                    if s["pattern_of_play"] and s["pattern_of_play"].lower() != "penalty"
-                ]
             # Cache unfiltered shots
             self.cached_team_shots[team_id] = all_shots
             # Cache average shots per game
@@ -159,8 +147,7 @@ class MatchSimulator:
             3. Applies home/away advantage to modify shot volume.
             4. Randomly samples a number of shots based on the adjusted average.
             5. For each sampled shot:
-                - Uses PSxG or xG depending on configuration.
-                - Applies a goalkeeper modifier (if using xG) to reflect shot-stopping performance.
+                - Applies a goalkeeper modifier to reflect shot-stopping performance.
                 - Runs a Bernoulli trial using the adjusted probability to determine whether the shot results in a goal.
             6. Returns the total number of goals and a list of player IDs who scored in this simulation.
 
@@ -190,21 +177,16 @@ class MatchSimulator:
 
         # Simulate shot outcomes
         for shot in sampled:
-            base_prob = shot["shot_psxg"] if self.use_psxg else shot["shot_xg"]
+            base_prob = shot["shot_xg"]
             if base_prob is None:
                 continue
-
-            if self.use_psxg:
-                adj_prob = base_prob  # PSxG already includes goalkeeper effect
             else:
                 adj_prob = max(0.01, min(0.95, base_prob * (1.0 + gk_modifier)))
 
             if random.random() < adj_prob:
                 goals += 1
                 scorers.append(shot["shooter_player_id"])
-
         return goals, scorers
-
 
     def run_simulations(self, n):
         """
