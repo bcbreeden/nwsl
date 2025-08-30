@@ -4,17 +4,13 @@
     <section class="column-container max-width-800 flex-vert-top-hori-center large-margin">
         <h2 class="text-audiowide text-xxlarge">NWSL Match Simulator</h2>
         <div id="instructions" class="tab-content active">
-            <p class="text-weight-500">
-            Welcome to the NWSL Match Simulator, a tool that lets you simulate head-to-head outcomes between any two NWSL teams using real player, team, and match-level data. Whether you're a fan, analyst, or developer, this tool allows you to explore likely results based on performance trends, not guesswork.
-            </p>
+        <p class="text-weight-500">
+        Welcome to the NWSL Match Simulator, a tool that lets you simulate head-to-head outcomes between any two NWSL teams using real player, team, and match-level data. Whether you're a fan, analyst, or developer, this tool allows you to explore likely results based on performance trends.
+        </p>
 
-            <p class="text-weight-500">
-            This simulator is built on shot-based modeling: it samples actual shot events from each team, adjusts for the strength of the opposing goalkeeper, and scales shot volume based on expected goals against (xGA). This means stronger defenses limit chances, while weaker ones open the floodgates, just like in real matches.
-            </p>
-
-            <p class="text-weight-500">
-            It also factors in post-shot expected goals (PSxG) and team shooting tendencies to produce a more accurate view of how a match might unfold. By running the simulation hundreds of times, you get a clearer picture of outcome probabilities, goal distributions, and even likely scorers.
-            </p>
+        <p class="text-weight-500">
+        This simulator is built on shot-based modeling: it samples actual shot events from each team, adjusts for the strength of the opposing goalkeeper, and scales shot volume based on expected goals against (xGA) and shots allowed per game. This means stronger defenses limit chances, while weaker ones open the floodgates, just like in real matches.
+        </p>
 
             <p class="text-weight-800 moderate-margin">Please be patient—simulations may take a few moments to complete.</p>
             <form class="max-width-800 border-3 border-radius-5 large_padding large-margin" id="simulation_form" action="/simulation_results" method="POST" autocomplete="off">
