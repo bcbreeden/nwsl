@@ -244,10 +244,9 @@
                             <tr class="flex-all-center row-border">
                                 <td>
                                     <p class="stat_text stat_label">{{ game.date_time_est }}</p>
-                                    <form action="/game" method="POST">
-                                        <input type="hidden" id="game_id" name="game_id" value="{{ game['game_id'] }}">
-                                        <input type="submit" class="grid_button stat_text stat_label" value="View Game Details">
-                                    </form>
+                                    <a class="btn-link" class="grid_button moderate-margin-top-bottom" href="{{ url_for('game', game_id=game.game_id) }}">
+                                        Game Details
+                                    </a>
                                 </td>
                                 <td class="text-center">
                                     {% if game.home_game == True %}
