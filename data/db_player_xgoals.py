@@ -468,7 +468,7 @@ def insert_player_data(conn, players_data, position_data, stats_to_track, season
         obj_id = generate_player_season_id(player_id=player_id, season=str(season))
         team_id = player.get('team_id', [])
         if isinstance(team_id, list):
-            team_id = team_id[-1]
+            team_id = team_id[0]
         general_position = player.get('general_position', 'Unknown General Position')
 
         # Prepare player stats and round values
